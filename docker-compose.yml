@@ -1,0 +1,66 @@
+version: '2'
+services:
+    db:
+        image: pastakhov/mysql:5.7
+        restart: unless-stopped
+        environment:
+            - MYSQL_ROOT_HOST=%
+            - MYSQL_ROOT_PASSWORD=$MW_DB_INSTALLDB_PASS
+            - MYSQL_DATABASE=$MW_DB_NAME
+        volumes:
+            - ./__initdb:/docker-entrypoint-initdb.d
+            - ./_data/mysql:/var/lib/mysql
+
+    web:
+        build:
+            context: ./web
+            dockerfile: Dockerfile
+        restart: unless-stopped
+        ports:
+            - "8081:80"
+        links:
+            - db
+            - redis
+        environment:
+            # DEFINE THIS VARIABLES IN .env FILE
+            - MW_NCBI_TAXONOMY_API_KEY
+            - MW_RECAPTCHA_SITE_KEY
+            - MW_RECAPTCHA_SECRET_KEY
+            - MW_ADMIN_USER
+            - MW_ADMIN_PASS
+            - MW_DB_NAME
+            - MW_DB_INSTALLDB_USER
+            - MW_DB_INSTALLDB_PASS
+            - MW_DB_USER=$MW_DB_INSTALLDB_USER
+            - MW_DB_PASS=$MW_DB_INSTALLDB_PASS
+            - MW_SECRET_KEY
+
+#            - XDEBUG_CONFIG=remote_host=0.0.0.0 remote_enable=1 remote_autostart=Off remote_connect_back=On
+            - MW_SITE_SERVER=https://bugsigdb.org
+            - MW_SITE_NAME=A Comprehensive Database of Microbial Signatures
+            - MW_SITE_LANG=en
+            - MW_ENABLE_UPLOADS=1
+            - MW_USE_INSTANT_COMMONS=0
+            - MW_AUTOUPDATE=true
+            - MW_MAIN_CACHE_TYPE=CACHE_REDIS
+            - MW_LOAD_SKINS=Vector,chameleon
+            - MW_DEFAULT_SKIN=chameleon
+            - MW_LOAD_EXTENSIONS=CodeEditor,Nuke,ParserFunctions,ReplaceText,WikiEditor,Interwiki,CodeEditor,Scribunto,SyntaxHighlight_GeSHi,DataTransfer,Variables,PubmedParser,CodeMirror,Loops,MyVariables,Arrays,DisplayTitle,NCBITaxonomyLookup,SemanticExtraSpecialProperties,SemanticResultFormats
+            - PHP_LOG_ERRORS=On
+            - PHP_ERROR_REPORTING=E_ALL & ~E_DEPRECATED & ~E_STRICT
+        volumes:
+            - ./_data/mediawiki:/mediawiki
+            - ./_logs/httpd:/var/log/httpd
+            - ./web/DockerSettings.php:/var/www/html/w/LocalSettings.php
+            - ./_resources/CustomSettings.php:/var/www/html/w/CustomSettings.php
+            - ./_resources/.htaccess:/var/www/html/.htaccess
+            - ./_resources/favicon.ico:/var/www/html/w/favicon.ico
+            - ./_resources/logo.png:/var/www/html/w/logo.png
+            - ./_resources/chameleon:/var/www/html/w/skins/chameleon/custom
+
+    redis:
+        image: "redis:alpine"
+        restart: unless-stopped
+        volumes:
+            - ./_data/redis:/data
+#            - ./_resources/redis.conf:/usr/local/etc/redis/redis.conf
