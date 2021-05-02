@@ -121,9 +121,9 @@ run_script_if_needed () {
 
 cd $MW_HOME
 
-# If there is no LocalSettings.php, create one using maintenance/install.php
+# If there is no LocalSettings.php
 if [ ! -e "$MW_VOLUME/LocalSettings.php" ] && [ ! -e "$MW_HOME/LocalSettings.php" ]; then
-    echo "There is no LocalSettings.php, create one using maintenance/install.php"
+    echo "There is no LocalSettings.php"
 
     for x in MW_DB_INSTALLDB_USER MW_DB_INSTALLDB_PASS
     do
@@ -135,24 +135,30 @@ if [ ! -e "$MW_VOLUME/LocalSettings.php" ] && [ ! -e "$MW_HOME/LocalSettings.php
 
     wait_database_started $MW_DB_INSTALLDB_USER $MW_DB_INSTALLDB_PASS
 
-    php maintenance/install.php \
-        --confpath "$MW_VOLUME" \
-        --dbserver "db" \
-        --dbtype "mysql" \
-        --dbname "$MW_DB_NAME" \
-        --dbuser "$MW_DB_USER" \
-        --dbpass "$MW_DB_PASS" \
-        --installdbuser "$MW_DB_INSTALLDB_USER" \
-        --installdbpass "$MW_DB_INSTALLDB_PASS" \
-        --scriptpath "/w" \
-        --lang "$MW_SITE_LANG" \
-        --pass "$MW_ADMIN_PASS" \
-        --skins "" \
-        "$MW_SITE_NAME" \
-        "$MW_ADMIN_USER"
+    if mysqlshow -h db -u"$MW_DB_INSTALLDB_USER" -p"$MW_DB_INSTALLDB_PASS" "$MW_DB_NAME" > /dev/null 2>&1 ; then
+        echo "Database exists. Create a symlink to DockerSettings.php as LocalSettings.php"
+        ln -s "$MW_HOME/DockerSettings.php" "$MW_VOLUME/LocalSettings.php"
+    else
+        echo "Create database and LocalSettings.php using maintenance/install.php"
+        php maintenance/install.php \
+            --confpath "$MW_VOLUME" \
+            --dbserver "db" \
+            --dbtype "mysql" \
+            --dbname "$MW_DB_NAME" \
+            --dbuser "$MW_DB_USER" \
+            --dbpass "$MW_DB_PASS" \
+            --installdbuser "$MW_DB_INSTALLDB_USER" \
+            --installdbpass "$MW_DB_INSTALLDB_PASS" \
+            --scriptpath "/w" \
+            --lang "$MW_SITE_LANG" \
+            --pass "$MW_ADMIN_PASS" \
+            --skins "" \
+            "$MW_SITE_NAME" \
+            "$MW_ADMIN_USER"
 
-    # Append inclusion of DockerSettings.php
-    echo "@include('DockerSettings.php');" >> "$MW_VOLUME/LocalSettings.php"
+        # Append inclusion of DockerSettings.php
+        echo "@include('DockerSettings.php');" >> "$MW_VOLUME/LocalSettings.php"
+    fi
 fi
 
 if [ ! -e "$MW_HOME/LocalSettings.php" ]; then

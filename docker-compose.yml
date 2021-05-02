@@ -29,9 +29,9 @@ services:
             - MW_ADMIN_USER
             - MW_ADMIN_PASS
             - MW_DB_NAME
-            - MW_DB_INSTALLDB_USER
+            - MW_DB_INSTALLDB_USER=root
             - MW_DB_INSTALLDB_PASS
-            - MW_DB_USER=$MW_DB_INSTALLDB_USER
+            - MW_DB_USER=root
             - MW_DB_PASS=$MW_DB_INSTALLDB_PASS
             - MW_SECRET_KEY
 
@@ -51,7 +51,6 @@ services:
         volumes:
             - ./_data/mediawiki:/mediawiki
             - ./_logs/httpd:/var/log/httpd
-            - ./web/DockerSettings.php:/var/www/html/w/LocalSettings.php
             - ./_resources/CustomSettings.php:/var/www/html/w/CustomSettings.php
             - ./_resources/.htaccess:/var/www/html/.htaccess
             - ./_resources/favicon.ico:/var/www/html/w/favicon.ico
