@@ -12,9 +12,7 @@ services:
             - ./_data/mysql:/var/lib/mysql
 
     web:
-        build:
-            context: ./web
-            dockerfile: Dockerfile
+        image: ghcr.io/wikiteq/mediawiki:1.35.1-20210512-30
         restart: unless-stopped
         ports:
             - "8081:80"

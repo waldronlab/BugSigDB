@@ -4,7 +4,7 @@
 
 This repo contains [Docker Compose](https://docs.docker.com/compose/) containers to run the [MediaWiki](https://www.mediawiki.org/) software.
 
-Obtain the docker image. Then create and start the containers:
+Clone the repo. Then create and start the containers:
 ```sh
 cd docker-bugsigdb.org
 copy a database dump to the __intdb directory
