@@ -12,7 +12,7 @@ services:
             - ./_data/mysql:/var/lib/mysql
 
     web:
-        image: ghcr.io/wikiteq/mediawiki:1.35.1-20210512-30
+        image: ghcr.io/wikiteq/mediawiki:1.35.2-latest
         restart: unless-stopped
         ports:
             - "8081:80"
