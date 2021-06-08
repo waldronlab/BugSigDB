@@ -234,3 +234,11 @@ $wgGroupPermissions['sysop']['confirmaccount'] = true;
 
 // Fixme in extensions/SemanticExtraSpecialProperties/SemanticExtraSpecialProperties.php
 $wgDisableCounters = false;
+
+// Bump the limits
+$wgMaxArticleSize = 2048*10;
+$wgMaxPPExpandDepth = 40*2;
+$wgMaxPPNodeCount = 1000000*2;
+$wgMaxTemplateDepth = 40*2;
+$wgMaxGeneratedPPNodeCount = 1000000*2;
+$wgExpensiveParserFunctionLimit = 99*2;

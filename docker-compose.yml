@@ -1,7 +1,10 @@
-version: '2'
+version: '2.1'
 services:
     db:
-        image: pastakhov/mysql:5.7
+        image: mysql:8.0
+        command: --default-authentication-plugin=mysql_native_password
+        cap_add:
+            - SYS_NICE  # CAP_SYS_NICE, fix error mbind: Operation not permitted
         restart: unless-stopped
         environment:
             - MYSQL_ROOT_HOST=%
@@ -12,13 +15,14 @@ services:
             - ./_data/mysql:/var/lib/mysql
 
     web:
-        image: ghcr.io/wikiteq/mediawiki:1.35.2-latest
+        image: ghcr.io/wikiteq/mediawiki:1.35.2-20210607-37
         restart: unless-stopped
         ports:
-            - "8081:80"
+            - "${PORT:-8081}:80"
         links:
             - db
             - redis
+            - elasticsearch
         environment:
             # DEFINE THIS VARIABLES IN .env FILE
             - MW_NCBI_TAXONOMY_API_KEY
@@ -34,7 +38,7 @@ services:
             - MW_SECRET_KEY
 
 #            - XDEBUG_CONFIG=remote_host=0.0.0.0 remote_enable=1 remote_autostart=Off remote_connect_back=On
-            - MW_SITE_SERVER=https://bugsigdb.org
+            - MW_SITE_SERVER=${MW_SITE_SERVER:-https://bugsigdb.org}
             - MW_SITE_NAME=A Comprehensive Database of Microbial Signatures
             - MW_SITE_LANG=en
             - MW_ENABLE_UPLOADS=1
@@ -44,12 +48,11 @@ services:
             - MW_LOAD_SKINS=Vector,chameleon
             - MW_DEFAULT_SKIN=chameleon
             - MW_LOAD_EXTENSIONS=CodeEditor,Nuke,ParserFunctions,ReplaceText,WikiEditor,Interwiki,CodeEditor,Scribunto,SyntaxHighlight_GeSHi,DataTransfer,Variables,PubmedParser,CodeMirror,Loops,MyVariables,Arrays,DisplayTitle,NCBITaxonomyLookup,SemanticExtraSpecialProperties,SemanticResultFormats
-            - PHP_LOG_ERRORS=On
-            - PHP_ERROR_REPORTING=E_ALL & ~E_DEPRECATED & ~E_STRICT
+            - MW_SEARCH_TYPE=CirrusSearch
         volumes:
             - ./_data/mediawiki:/mediawiki
             - ./_logs/httpd:/var/log/httpd
-            - ./_resources/CustomSettings.php:/var/www/html/w/CustomSettings.php
+            - ./_settings/:/var/www/html/w/_settings
             - ./_resources/.htaccess:/var/www/html/.htaccess
             - ./_resources/favicon.ico:/var/www/html/w/favicon.ico
             - ./_resources/logo.png:/var/www/html/w/logo.png
@@ -61,3 +64,17 @@ services:
         volumes:
             - ./_data/redis:/data
 #            - ./_resources/redis.conf:/usr/local/etc/redis/redis.conf
+
+    elasticsearch:
+        image: docker.elastic.co/elasticsearch/elasticsearch:6.8.13
+        restart: unless-stopped
+        environment:
+            - discovery.type=single-node
+            - bootstrap.memory_lock=true
+            - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+        ulimits:
+            memlock:
+                soft: -1
+                hard: -1
+        volumes:
+            - ./_data/elasticsearch:/usr/share/elasticsearch/data
