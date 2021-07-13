@@ -260,3 +260,6 @@ $wgFooterIcons['poweredby']['cuny'] = [
 	'width' => '90',
 	'height' => '31'
 ];
+
+$wgGTagAnalyticsId = 'G-YKH03F3F5K';
+$wgGroupPermissions['bot']['gtag-exempt'] = true;
