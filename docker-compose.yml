@@ -15,7 +15,7 @@ services:
             - ./_data/mysql:/var/lib/mysql
 
     web:
-        image: ghcr.io/wikiteq/mediawiki:1.35.2-20210702-53
+        image: ghcr.io/wikiteq/mediawiki:1.35.3-20210713-61
         restart: unless-stopped
         ports:
             - "${PORT:-8081}:80"
@@ -39,7 +39,7 @@ services:
 
 #            - XDEBUG_CONFIG=remote_host=0.0.0.0 remote_enable=1 remote_autostart=Off remote_connect_back=On
             - MW_SITE_SERVER=${MW_SITE_SERVER:-https://bugsigdb.org}
-            - MW_SITE_NAME=A Comprehensive Database of Microbial Signatures
+            - MW_SITE_NAME=BugSigDB
             - MW_SITE_LANG=en
             - MW_ENABLE_UPLOADS=1
             - MW_USE_INSTANT_COMMONS=0
@@ -56,6 +56,8 @@ services:
             - ./_resources/.htaccess:/var/www/html/.htaccess
             - ./_resources/favicon.ico:/var/www/html/w/favicon.ico
             - ./_resources/logo.png:/var/www/html/w/logo.png
+            - ./_resources/wikiworks-logo.png:/var/www/html/w/wikiworks-logo.png
+            - ./_resources/cuny-logo.png:/var/www/html/w/cuny-logo.png
             - ./_resources/chameleon:/var/www/html/w/skins/chameleon/custom
 
     redis:
