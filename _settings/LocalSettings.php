@@ -263,3 +263,4 @@ $wgFooterIcons['poweredby']['cuny'] = [
 
 $wgGTagAnalyticsId = 'G-YKH03F3F5K';
 $wgGroupPermissions['bot']['gtag-exempt'] = true;
+$wgGTagAnonymizeIP = true;
