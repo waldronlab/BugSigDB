@@ -20,6 +20,7 @@ Running `sudo docker-compose up` will start the containers:
 - `db` - MySQL [container](https://hub.docker.com/r/pastakhov/mysql/), used as the database backend for MediaWiki.
 - `web` - Apache/MediaWiki container with PHP 7.4 and MediaWiki 1.35.0
 - `redis` - Redis is an open source key-value store that functions as a data structure server
+- `matomo` - [Matomo](https://matomo.org/) instance
 
 ## Settings
 
@@ -58,6 +59,8 @@ If changed, make sure that `MW_DB_INSTALLDB_PASS` in the web section was changed
 - `MW_SHOW_EXCEPTION_DETAILS` if `true` (by default) configures [$wgShowExceptionDetails](https://www.mediawiki.org/wiki/Manual:$wgShowExceptionDetails) as true.
 - `PHP_LOG_ERRORS` specifies `log_errors` parameter in `php.ini` file.
 - `PHP_ERROR_REPORTING` specifies `error_reporting` parameter in `php.ini` file. `E_ALL` by default, on production should be changed to `E_ALL & ~E_DEPRECATED & ~E_STRICT`.
+- `MATOMO_USER` - Matomo admin username
+- `MATOMO_PASSWORD` - Matomo admin password
 
 ## LocalSettings.php
 
@@ -95,3 +98,40 @@ docker-compose stop
 docker-compose up
 ```
 The upgrade process is fully automated and includes the launch of all necessary maintenance scripts.
+
+# Matomo
+
+By default the Matomo runs on 8182 port (to be shadowed with Nginx) and requires initial setup
+on first run. Once installed, modify the `.env` file by adding `MATOMO_USER` and `MATOMO_PASSWORD`
+variables matching user/password that was used during installation.
+
+Make the `import_logs_matomo.sh` be run on Cron @daily close to midnight to keep the Matomo
+fed with visits information.
+
+## Nginx configuration
+
+```apacheconf
+   # matomo
+   location /matomo/ {
+        proxy_set_header Host $host;
+        proxy_set_header X-Forwarded-Host $host;
+        proxy_set_header X-Forwarded-Server $host;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Forwarded-Uri /matomo;
+        proxy_read_timeout 300;
+        proxy_pass http://127.0.0.1:8182/;
+        proxy_set_header X-Forwarded-For $remote_addr;
+   }
+```
+
+Plus once containers are started modify the Matomo config as below (the settings are intended to
+be generated automatically, but it's better to verify):
+
+```php
+[General]
+trusted_hosts[] = "127.0.0.1:8182"
+assume_secure_protocol = 1
+force_ssl=0
+proxy_uri_header = 1
+```
