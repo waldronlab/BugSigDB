@@ -61,6 +61,7 @@ services:
             - ./_resources/footer_icons/mw.png:/var/www/html/w/mw.png
             - ./_resources/footer_icons/smw.png:/var/www/html/w/smw.png
             - ./_resources/footer_icons/ww.png:/var/www/html/w/ww.png
+            - ./_resources/extensions/SemanticDependencyUpdater:/var/www/html/w/extensions/SemanticDependencyUpdater
 
     redis:
         image: "redis:alpine"
