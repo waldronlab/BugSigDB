@@ -56,9 +56,11 @@ services:
             - ./_resources/.htaccess:/var/www/html/.htaccess
             - ./_resources/favicon.ico:/var/www/html/w/favicon.ico
             - ./_resources/logo.png:/var/www/html/w/logo.png
-            - ./_resources/wikiworks-logo.png:/var/www/html/w/wikiworks-logo.png
-            - ./_resources/cuny-logo.png:/var/www/html/w/cuny-logo.png
             - ./_resources/chameleon:/var/www/html/w/skins/chameleon/custom
+            - ./_resources/footer_icons/cuny.png:/var/www/html/w/cuny.png
+            - ./_resources/footer_icons/mw.png:/var/www/html/w/mw.png
+            - ./_resources/footer_icons/smw.png:/var/www/html/w/smw.png
+            - ./_resources/footer_icons/ww.png:/var/www/html/w/ww.png
 
     redis:
         image: "redis:alpine"

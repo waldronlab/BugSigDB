@@ -1,9 +1,11 @@
-/* This file is not currently loaded - Ike */
-.study-button {
-	a {
-		@expand	.btn;
-		@expand	.btn-sm;
-		@expand	.btn-outline-secondary;
-	}
-}
+//.study-button {
+//	a {
+//		@expand	.btn;
+//		@expand	.btn-sm;
+//		@expand	.btn-outline-secondary;
+//	}
+//}
 
+#footer-info {
+	flex-direction: column-reverse;
+}

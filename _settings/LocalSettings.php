@@ -134,13 +134,13 @@ $wgSessionCacheType = CACHE_DB;
 	}
 };*/
 
-
 ############# Skin settings #############
 # chameleon
 $egChameleonExternalStyleModules = [
 	"$IP/skins/chameleon/custom/Cosmo/_variables.scss" => 'afterFunctions',
 	"$IP/skins/chameleon/custom/_variables.scss" => 'afterVariables',
 	"$IP/skins/chameleon/custom/Cosmo/_bootswatch.scss" => 'afterMain',
+	"$IP/skins/chameleon/custom/custom.scss" => 'afterMain',
 ];
 $egChameleonLayoutFile = "$IP/skins/chameleon/custom/layouts/navhead.xml";
 
@@ -245,22 +245,47 @@ $wgExpensiveParserFunctionLimit = 99*2;
 
 $egLoopsCounterLimit = 3000;
 
-$wgFooterIcons['poweredby']['wikiworks'] = [
-	'src' => $wgScriptPath . '/wikiworks-logo.png',
-	'url' => 'https://wikiworks.com/',
-	'alt' => 'WikiWorks',
-	'width' => '110',
-	'height' => '31'
-];
+$wgFooterIcons = [];
 
 $wgFooterIcons['poweredby']['cuny'] = [
-	'src' => $wgScriptPath . '/cuny-logo.png',
-	'url' => 'https://www.cuny.edu/',
+	'src' => $wgScriptPath . '/cuny.png',
+	'url' => 'https://sph.cuny.edu/about/people/faculty/levi-waldron/',
 	'alt' => 'The City University of New York',
-	'width' => '90',
-	'height' => '31'
+	'width' => 'auto',
+	'height' => '48',
+	'style' => 'padding-right: 15px; border-right: 1px solid lightgray;'
+];
+
+$wgFooterIcons['poweredby']['wikiworks'] = [
+	'src' => $wgScriptPath . '/ww.png',
+	'url' => 'https://wikiworks.com/',
+	'alt' => 'WikiWorks',
+	'width' => 'auto',
+	'height' => '48'
+];
+
+$wgFooterIcons['poweredby']['mediawiki'] = [
+	'src' => $wgScriptPath . '/mw.png',
+	'url' => 'https://www.mediawiki.org/',
+	'alt' => 'Powered by MediaWiki',
+	'width' => 'auto',
+	'height' => '48'
+];
+
+$wgFooterIcons['poweredby']['semanticmediawiki'] = [
+	'src' => $wgScriptPath . '/smw.png',
+	'url' => 'https://www.semantic-mediawiki.org/',
+	'alt' => 'Powered by Semantic MediaWiki',
+	'width' => 'auto',
+	'height' => '48'
 ];
 
 $wgGTagAnalyticsId = 'G-YKH03F3F5K';
 $wgGroupPermissions['bot']['gtag-exempt'] = true;
 $wgGTagAnonymizeIP = true;
+
+$wgHooks['SkinAddFooterLinks'][] = function ( $skin, string $key, array &$footerlinks  ) {
+	if ( $key === 'info' ) {
+		$footerlinks['funded'] = 'Funded by NIH 5R01CA230551 to the City University of New York';
+	}
+};
