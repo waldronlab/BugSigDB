@@ -15,10 +15,8 @@ services:
             - ./_data/mysql:/var/lib/mysql
 
     web:
-        image: ghcr.io/wikiteq/mediawiki:1.35.3-20210713-61
+        image: ghcr.io/wikiteq/mediawiki:1.35.3-20210821-73
         restart: unless-stopped
-        ports:
-            - "${PORT:-8081}:80"
         links:
             - db
             - redis
