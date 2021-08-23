@@ -96,3 +96,16 @@ services:
             - MATOMO_DATABASE_PASSWORD=$MW_DB_INSTALLDB_PASS
         volumes:
             - ./_data/matomo:/var/www/html
+
+    varnish:
+        image: varnish:stable
+        ports:
+            - "${PORT:-8081}:80"
+        links:
+            - web
+        tmpfs:
+            - /var/lib/varnish:exec
+        environment:
+            - VARNISH_SIZE=${VARNISH_SIZE:-2G}
+        volumes:
+            - ./_resources/varnish.vcl:/etc/varnish/default.vcl
