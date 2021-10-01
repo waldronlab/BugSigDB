@@ -23,7 +23,13 @@ sub vcl_recv {
         # is slow to respond.
         # set req.grace = 120s;
 #        set req.http.X-Forwarded-For = client.ip;
+		set req.http.X-Forwarded-For = req.http.X-Forwarded-For + ", " + client.ip;
         set req.backend_hint= default;
+
+		# Bypass cache for API calls
+        if (req.url ~ "/w/api.php") {
+            return(pass);
+        }
 
         # This uses the ACL action called "purge". Basically if a request to
         # PURGE the cache comes from anywhere other than localhost, ignore it.
@@ -31,6 +37,7 @@ sub vcl_recv {
             if (!client.ip ~ purge || ("" + client.ip) ~ "\.1$") { // don't allow to purge from docker gateways
                 return (synth(405, "Not allowed."));
             } else {
+                ban("req.url ~ " + req.url);
                 return (purge);
             }
         }
@@ -111,7 +118,7 @@ sub vcl_pipe {
 # Called if the cache has a copy of the page.
 sub vcl_hit {
         if (req.method == "PURGE") {
-            ban(req.url);
+            ban("req.url ~ " + req.url);
             return (synth(200, "Purged"));
         }
 
@@ -152,24 +159,28 @@ sub vcl_backend_response {
           return (deliver);
         }
 
-#        if (beresp.http.Cache-Control ~ "(private|no-cache|no-store)") {
-#          set beresp.uncacheable = true;
-#          return (deliver);
-#        }
+        if (beresp.http.Cache-Control ~ "(private|no-cache|no-store)") {
+          set beresp.uncacheable = true;
+          return (deliver);
+        }
 
         if (beresp.http.Authorization && !beresp.http.Cache-Control ~ "public") {
           set beresp.uncacheable = true;
           return (deliver);
         }
 
+
+
         return (deliver);
 }
 
 sub vcl_hash {
+    hash_data(req.url);
 	# Cache the mobile version of pages separately.
 	if ( req.http.X-Device ) {
 		hash_data(req.http.X-Device);
 	}
+    return (lookup);
 }
 
 sub mobile_detect {

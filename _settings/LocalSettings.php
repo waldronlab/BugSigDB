@@ -147,7 +147,7 @@ $wgNamespacesWithSubpages[SMW_NS_PROPERTY] = true;
 $smwgQMaxInlineLimit = 220000;
 
 $smwgCacheType = 'redis';
-$smwgQueryResultCacheType = 'redis';
+#$smwgQueryResultCacheType = 'redis';
 $smwgValueLookupCacheType = 'redis';
 
 //wfLoadExtension( 'DataTransfer' );
@@ -288,5 +288,14 @@ $wgGTagAnonymizeIP = true;
 $wgHooks['SkinAddFooterLinks'][] = function ( $skin, string $key, array &$footerlinks  ) {
 	if ( $key === 'info' ) {
 		$footerlinks['funded'] = 'Funded by NIH 5R01CA230551 to the City University of New York';
+	}
+};
+
+$wgInternalServer = "http://web:80";
+
+// Disables cache for Special:Random
+$wgHooks['SpecialPageBeforeExecute'][] = function( SpecialPage $special, $subPage ) {
+	if ( $special->getName() === 'Randompage' ) {
+		$special->getOutput()->enableClientCache( false );
 	}
 };

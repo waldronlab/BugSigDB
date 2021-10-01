@@ -47,6 +47,7 @@ services:
             - MW_DEFAULT_SKIN=chameleon
             - MW_LOAD_EXTENSIONS=GTag,CodeEditor,Nuke,ParserFunctions,ReplaceText,WikiEditor,Interwiki,CodeEditor,Scribunto,SyntaxHighlight_GeSHi,DataTransfer,Variables,PubmedParser,CodeMirror,Loops,MyVariables,Arrays,DisplayTitle,NCBITaxonomyLookup,SemanticExtraSpecialProperties,SemanticResultFormats
             - MW_SEARCH_TYPE=CirrusSearch
+            - MW_PROXY_SERVERS=varnish:80
         volumes:
             - ./_data/mediawiki:/mediawiki
             - ./_logs/httpd:/var/log/httpd
