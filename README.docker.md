@@ -135,3 +135,13 @@ assume_secure_protocol = 1
 force_ssl=0
 proxy_uri_header = 1
 ```
+
+## Purging homepage SMW caches
+
+The image configured to automatically purge homepage once per hour, you can
+configure this using the following environment variables:
+
+```
+MW_CACHE_PURGE_PAUSE=3600
+MW_CACHE_PURGE_PAGE=Main_Page
+```

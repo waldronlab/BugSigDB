@@ -147,7 +147,7 @@ $wgNamespacesWithSubpages[SMW_NS_PROPERTY] = true;
 $smwgQMaxInlineLimit = 220000;
 
 $smwgCacheType = 'redis';
-#$smwgQueryResultCacheType = 'redis';
+$smwgQueryResultCacheType = 'redis';
 $smwgValueLookupCacheType = 'redis';
 
 //wfLoadExtension( 'DataTransfer' );
