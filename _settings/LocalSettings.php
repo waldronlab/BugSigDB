@@ -299,3 +299,12 @@ $wgHooks['SpecialPageBeforeExecute'][] = function( SpecialPage $special, $subPag
 		$special->getOutput()->enableClientCache( false );
 	}
 };
+
+$wgResourceModules['ext.datatables'] = [
+	'scripts' => [ 'extensions/DataTables/datatables/datatables.min.js' ],
+	'styles' => [ 'extensions/DataTables/datatables/datatables.min.css' ]
+];
+
+$wgHooks['BeforePageDisplay'][] = function( $out ) {
+	$out->addModules( 'ext.datatables' );
+};
