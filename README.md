@@ -7,7 +7,7 @@ This repo contains [Docker Compose](https://docs.docker.com/compose/) containers
 Clone the repo. Then create and start the containers:
 ```sh
 cd docker-bugsigdb.org
-copy a database dump to the __intdb directory
+copy a database dump to the __initdb directory
 copy images to the `bugsigdb.org/_data/mediawiki/images` directory
 docker-compose up
 ```
@@ -19,15 +19,15 @@ Running `sudo docker-compose up` will start the containers:
 
 - `db` - MySQL [container](https://hub.docker.com/r/pastakhov/mysql/), used as the database backend for MediaWiki.
 - `web` - Apache/MediaWiki container with PHP 7.4 and MediaWiki 1.35.0
-- `redis` - Redis is an open source key-value store that functions as a data structure server
+- `redis` - Redis is an open-source key-value store that functions as a data structure server
 - `matomo` - [Matomo](https://matomo.org/) instance
 
 ## Settings
 
-Settings are in the `docker-compose.yml` file, the *environment* sections
+Settings are in the `docker-compose.yml` file, in the *environment* sections.
 
-also `_resources` contains favicon, logo and styles for chameleon skin
-`CustomSettings.php` contains settings for MediaWiki core and extensions; you should change the settings there.
+Also, `_resources` contains the favicon, logo and styles for the chameleon skin.
+`CustomSettings.php` contains settings for MediaWiki core and extensions. If customization is required, change the settings there.
 
 ### db
 Was cloned from the official [mysql](https://hub.docker.com/_/mysql/) container and has the same environment variables.
@@ -67,17 +67,17 @@ If changed, make sure that `MW_DB_INSTALLDB_PASS` in the web section was changed
 The [LocalSettings.php](https://www.mediawiki.org/wiki/Manual:LocalSettings.php) is divided into three parts:
 - LocalSettings.php will be created automatically upon container startup, contains settings specific to the MediaWiki installed instance such as database connection, [$wgSecretKey](https://www.mediawiki.org/wiki/Manual:$wgSecretKey) and etc. **Should not be changed**
 - DockerSettings.php contains settings specific to the released containers such as database server name, path to programs, installed extensions, etc. **Should be changed if you make changes to the containers only**
-- CustomSettings.php - contains user defined settings such as user rights, extensions settings and etc. **You should make changes there**.
+- CustomSettings.php - contains user-defined settings such as user rights, extensions settings and etc. **For any required customizations, make changes there**.
 `CustomSettings.php` placed in folder `_resources` And will be copied to the container during build
 
 ## Data (images, database)
 
-Data like uploaded images and the database files stored in the `_data` directory
-Docker containers write files to these directories using internal users; most likely you cannot change/remove these directories until you change permissions
+Data, like uploaded images and the database files are stored in the `_data` directory.
+Docker containers write files to these directories using internal users; most likely you cannot change/remove these directories until you change the permissions.
 
 ## Log files
 
-Log files stored in `_logs` directory
+Log files arestored in the `_logs` directory.
 
 ## Keeping up to date
 
@@ -89,7 +89,7 @@ docker-compose exec db /bin/bash -c 'mysqldump --all-databases -uroot -p"$MYSQL_
 docker-compose exec web /bin/bash -c 'tar -c $MW_VOLUME $MW_HOME/images 2>/dev/null | base64 -w 0' | base64 -d > backup_$(date +"%Y%m%d_%H%M%S").tar
 ```
 
-picking up the latest changes, stop, rebuld and start containers:
+For picking up the latest changes, stop, rebuild and start containers:
 ```sh
 cd compose-mediawiki-ubuntu
 git pull
@@ -101,12 +101,12 @@ The upgrade process is fully automated and includes the launch of all necessary 
 
 # Matomo
 
-By default the Matomo runs on 8182 port (to be shadowed with Nginx) and requires initial setup
-on first run. Once installed, modify the `.env` file by adding `MATOMO_USER` and `MATOMO_PASSWORD`
-variables matching user/password that was used during installation.
+By default, Matomo runs on port 8182 (to be shadowed with Nginx) and requires initial setup
+on the first run. Once installed, modify the `.env` file by adding `MATOMO_USER` and `MATOMO_PASSWORD`
+variables matching the user & password that were used during installation.
 
-Make the `import_logs_matomo.sh` be run on Cron @daily close to midnight to keep the Matomo
-fed with visits information.
+Make the `import_logs_matomo.sh` run on Cron @daily close to midnight to keep the Matomo
+fed with visit information.
 
 ## Nginx configuration
 
@@ -125,7 +125,7 @@ fed with visits information.
    }
 ```
 
-Plus once containers are started modify the Matomo config as below (the settings are intended to
+Also, once the containers are started, modify the Matomo config as below (the settings are intended to
 be generated automatically, but it's better to verify):
 
 ```php
@@ -138,7 +138,7 @@ proxy_uri_header = 1
 
 ## Purging homepage SMW caches
 
-The image configured to automatically purge homepage once per hour, you can
+The image is configured to automatically purge the homepage once per hour. You can
 configure this using the following environment variables:
 
 ```
