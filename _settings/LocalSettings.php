@@ -308,3 +308,9 @@ $wgResourceModules['ext.datatables'] = [
 $wgHooks['BeforePageDisplay'][] = function( $out ) {
 	$out->addModules( 'ext.datatables' );
 };
+
+// LinkTarget
+wfLoadExtension( 'LinkTarget' );
+$wgLinkTargetParentClasses = [ 'newtab' ];
+$wgExternalLinkTarget = '_blank';
+$wgPageFormsMaxLocalAutocompleteValues = 20;
