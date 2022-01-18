@@ -314,3 +314,5 @@ wfLoadExtension( 'LinkTarget' );
 $wgLinkTargetParentClasses = [ 'newtab' ];
 $wgExternalLinkTarget = '_blank';
 $wgPageFormsMaxLocalAutocompleteValues = 20;
+
+wfLoadExtension( 'WikiSEO' );
