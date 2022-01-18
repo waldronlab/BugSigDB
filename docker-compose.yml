@@ -51,6 +51,7 @@ services:
             - MW_PROXY_SERVERS=varnish:80
             - MW_CACHE_PURGE_PAUSE=${MW_CACHE_PURGE_PAUSE:-3600}
             - MW_CACHE_PURGE_PAGE=${MW_CACHE_PURGE_PAGE:-Main_Page}
+            - MW_ENABLE_SITEMAP_GENERATOR=true
         volumes:
             - ./_data/mediawiki:/mediawiki
             - ./_logs/httpd:/var/log/httpd
