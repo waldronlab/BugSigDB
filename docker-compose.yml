@@ -84,6 +84,10 @@ services:
             - discovery.type=single-node
             - bootstrap.memory_lock=true
             - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+            - cluster.routing.allocation.disk.threshold_enabled=true
+            - cluster.routing.allocation.disk.watermark.flood_stage=1gb
+            - cluster.routing.allocation.disk.watermark.high=2gb
+            - cluster.routing.allocation.disk.watermark.low=3gb
         ulimits:
             memlock:
                 soft: -1
