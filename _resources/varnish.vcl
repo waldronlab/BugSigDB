@@ -72,6 +72,10 @@ sub vcl_recv {
             return(pass);
         }
 
+        if (req.url ~ "\.xml(\.gz)?$") {
+            return (pass);
+        }
+
         # Pass requests from logged-in users directly.
         # Only detect cookies with "session" and "Token" in file name, otherwise nothing get cached.
         if (req.http.Authorization || req.http.Cookie ~ "_session" || req.http.Cookie ~ "Token") {
