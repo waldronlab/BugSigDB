@@ -108,6 +108,7 @@ services:
 
     varnish:
         image: varnish:stable
+        restart: unless-stopped
         ports:
             - "${PORT:-8081}:80"
         links:
