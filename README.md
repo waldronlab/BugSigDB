@@ -145,3 +145,22 @@ configure this using the following environment variables:
 MW_CACHE_PURGE_PAUSE=3600
 MW_CACHE_PURGE_PAGE=Main_Page
 ```
+
+## Updating EFO links
+
+The repo contains a Python script that is capable to walk the wiki Glossary terms
+pages and update outdated EFO links by replacing them with actual ones. Follow the
+steps below to set it up:
+
+* Install `python` v.3 and `pip`
+* Run `pip install -r updateEFO.requirements.txt`
+* Navigate to `Special:BotPasswords` on the wiki and create a new Bot with mass edit permissions
+* Run `python updateEFO.py --help` to ensure you hava a correct python version links as default binary, you should see a help text
+* Run `python updateEFO.py -s www.site.com -uBOT_USERNAME -pBOT_PASSWORD --verbose --dry`
+* The script should start working and printing some output, if everything looks good terminate it with Ctrl+C
+* Modify the `updateEFO.cron` file to use correct credentials and paths to the script and the output log
+* Copy the `updateEFO.cron` contents to your `crontab -e` file or move it to `/etc/cron.weekly/` by executing the following command: `cp updateEFO.cron /etc/cron.weekly/updateEFO && chown root:root /etc/cron.weekly/updateEFO && chmod +x /etc/cron.weekly/updateEFO`
+
+Note: the script may produce extra load to the wiki so it's recommended to schedule it for nigh time, also worth to
+consider that it takes time to process all the pages so average script cycle is ~4-8 hours. You can change sleep
+timeouts via `-z` parameter.
