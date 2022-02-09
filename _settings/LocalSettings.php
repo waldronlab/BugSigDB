@@ -235,6 +235,8 @@ $wgDisableCounters = false;
 
 // SemanticDependencyUpdater
 wfLoadExtension( 'SemanticDependencyUpdater' );
+$wgSDUProperty = 'Semantic Dependency';
+$wgSDUUseJobQueue = false;
 
 // Bump the limits
 $wgMaxArticleSize = 2048*10;
@@ -316,3 +318,4 @@ $wgExternalLinkTarget = '_blank';
 $wgPageFormsMaxLocalAutocompleteValues = 20;
 
 wfLoadExtension( 'WikiSEO' );
+
