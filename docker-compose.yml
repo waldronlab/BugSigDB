@@ -102,7 +102,7 @@ services:
         links:
             - db
         ports:
-            - "8182:80"
+            - "127.0.0.1:8182:80"
         environment:
             - MATOMO_DATABASE_HOST=db
             - MATOMO_DATABASE_DBNAME=matomo
@@ -115,7 +115,7 @@ services:
         image: varnish:stable
         restart: unless-stopped
         ports:
-            - "${PORT:-8081}:80"
+            - "127.0.0.1:${PORT:-8081}:80"
         links:
             - web
         tmpfs:
