@@ -319,3 +319,16 @@ $wgPageFormsMaxLocalAutocompleteValues = 20;
 
 wfLoadExtension( 'WikiSEO' );
 
+// WLDR-194
+#wfLoadExtension( 'ContributionScores' ); # for MW > 1.35
+require_once "$IP/extensions/ContributionScores/ContributionScores.php";
+$wgContribScoreIgnoreBots = true;
+$wgContribScoreIgnoreBlockedUsers = true;
+$wgContribScoreIgnoreUsernames = [
+    'Wikiteq',
+    'WikiWorks',
+    'WikiWorks753',
+    'WikiWorks743',
+    'WikiWorks017',
+    'Admin'
+];

@@ -9,3 +9,33 @@
 #footer-info {
 	flex-direction: column-reverse;
 }
+
+.contris {
+	.contributionscores-wrapper {
+		@extend .w-100;
+
+		.contributionscores {
+			@extend .w-100;
+			@extend .bg-white;
+
+			td,
+			th {
+				@extend .text-center;
+
+				&:nth-child(n+2):nth-child(-n+3) {
+					@extend .d-none;
+				}
+			}
+
+			tr.header,
+			tr>th {
+				@extend .border-top-0;
+			}
+		}
+
+		&>tbody>tr:nth-of-type(1)>td {
+			@extend .d-none;
+			display: none !important;
+		}
+	}
+}
