@@ -115,7 +115,7 @@ services:
         image: varnish:stable
         restart: unless-stopped
         ports:
-            - "127.0.0.1:${PORT:-8081}:80"
+            - "${PORT:-127.0.0.1:8081}:80"
         links:
             - web
         tmpfs:
