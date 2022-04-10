@@ -320,8 +320,7 @@ $wgPageFormsMaxLocalAutocompleteValues = 20;
 wfLoadExtension( 'WikiSEO' );
 
 // WLDR-194
-#wfLoadExtension( 'ContributionScores' ); # for MW > 1.35
-require_once "$IP/extensions/ContributionScores/ContributionScores.php";
+wfLoadExtension( 'ContributionScores' );
 $wgContribScoreIgnoreBots = true;
 $wgContribScoreIgnoreBlockedUsers = true;
 $wgContribScoreIgnoreUsernames = [
