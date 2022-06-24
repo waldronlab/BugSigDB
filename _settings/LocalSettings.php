@@ -42,8 +42,8 @@ $wgEnableUserEmail = true; # UPO
 $wgEmergencyContact = "apache@bugsigdb.org";
 $wgPasswordSender = "apache@bugsigdb.org";
 
-$wgEnotifUserTalk = false; # UPO
-$wgEnotifWatchlist = false; # UPO
+$wgEnotifUserTalk = true; # UPO
+$wgEnotifWatchlist = true; # UPO
 $wgEmailAuthentication = true;
 
 
@@ -256,6 +256,14 @@ $wgFooterIcons['poweredby']['cuny'] = [
 	'alt' => 'The City University of New York',
 	'width' => 'auto',
 	'height' => '48',
+];
+
+$wgFooterIcons['poweredby']['bioconductor'] = [
+	'src' => $wgScriptPath . '/bioc.png',
+	'url' => 'http://bioconductor.org/',
+	'alt' => 'Bioconductor - Open Source Software for Bioinformatics',
+	'width' => 'auto',
+	'height' => '48',
 	'style' => 'padding-right: 15px; border-right: 1px solid lightgray;'
 ];
 
@@ -331,3 +339,7 @@ $wgContribScoreIgnoreUsernames = [
     'WikiWorks017',
     'Admin'
 ];
+
+$wgPubmedParserApiKey = '';
+
+

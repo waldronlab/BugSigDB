@@ -65,6 +65,7 @@ services:
             - ./_resources/footer_icons/mw.png:/var/www/html/w/mw.png
             - ./_resources/footer_icons/smw.png:/var/www/html/w/smw.png
             - ./_resources/footer_icons/ww.png:/var/www/html/w/ww.png
+            - ./_resources/footer_icons/bioc.png:/var/www/html/w/bioc.png
             - ./_resources/extensions/SemanticDependencyUpdater:/var/www/html/w/extensions/SemanticDependencyUpdater
             - ./_resources/extensions/DataTables:/var/www/html/w/extensions/DataTables
             - ./_resources/googlef2273af339547660.html:/var/www/html/googlef2273af339547660.html
