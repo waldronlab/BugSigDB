@@ -260,7 +260,7 @@ $wgFooterIcons['poweredby']['cuny'] = [
 
 $wgFooterIcons['poweredby']['bioconductor'] = [
 	'src' => $wgScriptPath . '/bioc.png',
-	'url' => 'http://bioconductor.org/',
+	'url' => 'https://bioconductor.org/',
 	'alt' => 'Bioconductor - Open Source Software for Bioinformatics',
 	'width' => 'auto',
 	'height' => '48',
