@@ -52,7 +52,7 @@ services:
             - MW_CACHE_PURGE_PAUSE=${MW_CACHE_PURGE_PAUSE:-3600}
             - MW_CACHE_PURGE_PAGE=${MW_CACHE_PURGE_PAGE:-Main_Page}
             - MW_ENABLE_SITEMAP_GENERATOR=true
-            - PHP_MEMORY_LIMIT=1024M
+            - PHP_MEMORY_LIMIT=2048M
         volumes:
             - ./_data/mediawiki:/mediawiki
             - ./_logs/httpd:/var/log/httpd
