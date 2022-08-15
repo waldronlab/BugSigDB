@@ -342,4 +342,4 @@ $wgContribScoreIgnoreUsernames = [
 
 $wgPubmedParserApiKey = '';
 
-
+wfLoadExtension( 'Echo' );
