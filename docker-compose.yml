@@ -17,6 +17,8 @@ services:
     web:
         image: ghcr.io/wikiteq/mediawiki:1.35.7-20220803-133
         restart: unless-stopped
+        extra_hosts:
+            - "gateway.docker.internal:host-gateway"
         links:
             - db
             - redis
@@ -113,7 +115,7 @@ services:
             - ./_data/matomo:/var/www/html
 
     varnish:
-        image: varnish:stable
+        image: pastakhov/varnish:7.0
         restart: unless-stopped
         ports:
             - "${PORT:-127.0.0.1:8081}:80"
@@ -123,5 +125,8 @@ services:
             - /var/lib/varnish:exec
         environment:
             - VARNISH_SIZE=${VARNISH_SIZE:-2G}
+            - VARNISH_STORAGE_KIND=file
         volumes:
-            - ./_resources/varnish.vcl:/etc/varnish/default.vcl
+            - ./_resources/varnish:/etc/varnish/
+            - ./_data/varnish:/data
+
