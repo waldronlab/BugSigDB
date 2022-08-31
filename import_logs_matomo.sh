@@ -29,4 +29,4 @@ docker run \
   /var/log/httpd/access_log.current
 
 # Run maintenance tasks on the Matomo
-docker-compose exec matomo ./console core:archive --force-all-websites --url="$MATOMO_URL"
+docker-compose exec -T matomo ./console core:archive --force-all-websites --url="$MATOMO_URL"
