@@ -130,3 +130,17 @@ services:
             - ./_resources/varnish:/etc/varnish/
             - ./_data/varnish:/data
 
+
+    updateEFO:
+        image: python:3.7
+        restart: unless-stopped
+        environment:
+            - MW_BOT_USER
+            - MW_BOT_PASSWORD
+            # default is 24 hours
+            - MW_UPDATE_EFO_PAUSE=${MW_UPDATE_EFO_PAUSE:-86400}
+        volumes:
+            - ./updateEFO:/updateEFO
+            - ./_logs/updateEFO:/var/log/updateEFO
+        entrypoint:
+            - /updateEFO/updateEFO.sh

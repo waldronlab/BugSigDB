@@ -39,7 +39,10 @@ def entry(wikisite, wikipath, user, password, dry, verbose, logfile, protocol, s
             logfileName = logfile
 
     site = mwclient.Site(wikisite, wikipath, scheme=protocol)
-    site.requests['timeout'] = 300
+    site.requests['timeout'] = 1000
+
+    echo("Connecting to %s.." % wikisite)
+
     site.login(user, password)
 
     if dry:
