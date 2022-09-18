@@ -15,7 +15,7 @@ services:
             - ./_data/mysql:/var/lib/mysql
 
     web:
-        image: ghcr.io/wikiteq/mediawiki:1.35.7-20220803-133
+        image: ghcr.io/wikiteq/mediawiki:1.35.7-20220918-137
         restart: unless-stopped
         extra_hosts:
             - "gateway.docker.internal:host-gateway"

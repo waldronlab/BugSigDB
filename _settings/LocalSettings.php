@@ -339,7 +339,11 @@ $wgContribScoreIgnoreUsernames = [
     'WikiWorks017',
     'Admin'
 ];
+$wgContribScoreDisableCache = false;
 
 $wgPubmedParserApiKey = '';
 
 wfLoadExtension( 'Echo' );
+$wgPageFormsEmbedQueryCacheTTL = 60*60;
+$wgContribScoreCacheTTL = 60*60;
+
