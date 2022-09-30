@@ -344,6 +344,7 @@ $wgContribScoreDisableCache = false;
 $wgPubmedParserApiKey = '';
 
 wfLoadExtension( 'Echo' );
+$wgEchoWatchlistNotifications = true;
 $wgPageFormsEmbedQueryCacheTTL = 60*60;
 $wgContribScoreCacheTTL = 60*60;
 
