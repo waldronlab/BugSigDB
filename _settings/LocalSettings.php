@@ -348,3 +348,6 @@ $wgEchoWatchlistNotifications = true;
 $wgPageFormsEmbedQueryCacheTTL = 60*60;
 $wgContribScoreCacheTTL = 60*60;
 
+wfLoadExtension( 'WikiForum' );
+#$wgWikiForumAllowAnonymous = false;
+#$wgCaptchaTriggers[ 'wikiforum' ] = false;
