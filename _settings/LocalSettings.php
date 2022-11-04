@@ -351,3 +351,6 @@ $wgContribScoreCacheTTL = 60*60;
 wfLoadExtension( 'WikiForum' );
 #$wgWikiForumAllowAnonymous = false;
 #$wgCaptchaTriggers[ 'wikiforum' ] = false;
+
+$smwgQMaxLimit = 100000;
+
