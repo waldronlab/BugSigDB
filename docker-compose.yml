@@ -15,7 +15,7 @@ services:
             - ./_data/mysql:/var/lib/mysql
 
     web:
-        image: ghcr.io/wikiteq/mediawiki:1.35.8-20221104-05fa262
+        image: ghcr.io/wikiteq/taqasta:1.35.8-20221114-c540add
         restart: unless-stopped
         extra_hosts:
             - "gateway.docker.internal:host-gateway"
@@ -53,24 +53,24 @@ services:
             - MW_PROXY_SERVERS=varnish:80
             - MW_CACHE_PURGE_PAUSE=${MW_CACHE_PURGE_PAUSE:-3600}
             - MW_CACHE_PURGE_PAGE=${MW_CACHE_PURGE_PAGE:-Main_Page}
-            - MW_ENABLE_SITEMAP_GENERATOR=true
+            - MW_ENABLE_SITEMAP_GENERATOR=${MW_ENABLE_SITEMAP_GENERATOR:-true}
             - PHP_MEMORY_LIMIT=2048M
         volumes:
             - ./_data/mediawiki:/mediawiki
-            - ./_logs/httpd:/var/log/httpd
-            - ./_settings/:/var/www/html/w/_settings
-            - ./_resources/.htaccess:/var/www/html/.htaccess
-            - ./_resources/favicon.ico:/var/www/html/w/favicon.ico
-            - ./_resources/logo.png:/var/www/html/w/logo.png
-            - ./_resources/chameleon:/var/www/html/w/skins/chameleon/custom
-            - ./_resources/footer_icons/cuny.png:/var/www/html/w/cuny.png
-            - ./_resources/footer_icons/mw.png:/var/www/html/w/mw.png
-            - ./_resources/footer_icons/smw.png:/var/www/html/w/smw.png
-            - ./_resources/footer_icons/ww.png:/var/www/html/w/ww.png
-            - ./_resources/footer_icons/bioc.png:/var/www/html/w/bioc.png
-            - ./_resources/extensions/SemanticDependencyUpdater:/var/www/html/w/extensions/SemanticDependencyUpdater
-            - ./_resources/extensions/DataTables:/var/www/html/w/extensions/DataTables
-            - ./_resources/googlef2273af339547660.html:/var/www/html/googlef2273af339547660.html
+            - ./_logs/httpd:/var/log/apache2
+            - ./_settings/:/var/www/mediawiki/w/_settings
+            - ./_resources/.htaccess:/var/www/mediawiki/.htaccess
+            - ./_resources/favicon.ico:/var/www/mediawiki/w/favicon.ico
+            - ./_resources/logo.png:/var/www/mediawiki/w/logo.png
+            - ./_resources/chameleon:/var/www/mediawiki/w/skins/chameleon/custom
+            - ./_resources/footer_icons/cuny.png:/var/www/mediawiki/w/cuny.png
+            - ./_resources/footer_icons/mw.png:/var/www/mediawiki/w/mw.png
+            - ./_resources/footer_icons/smw.png:/var/www/mediawiki/w/smw.png
+            - ./_resources/footer_icons/ww.png:/var/www/mediawiki/w/ww.png
+            - ./_resources/footer_icons/bioc.png:/var/www/mediawiki/w/bioc.png
+            - ./_resources/extensions/SemanticDependencyUpdater:/var/www/mediawiki/w/extensions/SemanticDependencyUpdater
+            - ./_resources/extensions/DataTables:/var/www/mediawiki/w/extensions/DataTables
+            - ./_resources/googlef2273af339547660.html:/var/www/mediawiki/googlef2273af339547660.html
             - ./entrypoint.sh:/entrypoint.sh
             - ./cache_purge.sh:/cache_purge.sh
 
@@ -144,3 +144,4 @@ services:
             - ./_logs/updateEFO:/var/log/updateEFO
         entrypoint:
             - /updateEFO/updateEFO.sh
+
