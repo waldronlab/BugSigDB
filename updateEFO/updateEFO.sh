@@ -37,7 +37,7 @@ while true; do
       -s"web" \
       -u"$MW_BOT_USER" \
       -p"$MW_BOT_PASSWORD" \
-      -z 10 \
+      -z 15 \
       -l "$logfileNow" \
       -t http
 

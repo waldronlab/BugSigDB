@@ -142,6 +142,7 @@ services:
         volumes:
             - ./updateEFO:/updateEFO
             - ./_logs/updateEFO:/var/log/updateEFO
+            - ./updateEFO/rotatelogs-compress.sh:/rotatelogs-compress.sh
         entrypoint:
             - /updateEFO/updateEFO.sh
 
