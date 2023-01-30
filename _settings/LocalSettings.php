@@ -239,7 +239,7 @@ $wgSDUProperty = 'Semantic Dependency';
 $wgSDUUseJobQueue = false;
 
 // Bump the limits
-$wgMaxArticleSize = 2048*10;
+$wgMaxArticleSize = 2048*20;
 $wgMaxPPExpandDepth = 40*2;
 $wgMaxPPNodeCount = 1000000*2;
 $wgMaxTemplateDepth = 40*2;
