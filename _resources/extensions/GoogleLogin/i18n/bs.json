@@ -1,0 +1,27 @@
+{
+	"@metadata": {
+		"authors": [
+			"Macofe",
+			"Semso98",
+			"Srdjan m"
+		]
+	},
+	"managegooglelogin": "Upravljanje GoogleLogin vezama",
+	"googlelogin-manage-linked": "Račun je povezan s {{PLURAL:$1|Google računom|Google računima}} sa {{PLURAL:$1|sljedećom ID-om|sljedećim ID-jima}}:",
+	"googlelogin-manage-notlinked": "Račun trenutno nije povezan ni sa jednim Google računom.",
+	"googlelogin-manage-changelegend": "Promijeni Google ID",
+	"googlelogin-manage-changedsuccess": "Korisnik je sada povezan sa Google računom.",
+	"googlelogin-manage-terminatesuccess": "Korisnik više nije povezan sa Google računom.",
+	"googlelogin-manage-terminatebutton": "Ukloni pričključak",
+	"googlelogin-manage-invalidid": "Novi Google ID koji ste unijeli je nevažeći. ID mora biti numerički.",
+	"googlelogin-manage-isplusser": "Registriran na Google+",
+	"googlelogin-manage-orgname": "Ime organizacije",
+	"googlelogin-manage-orgtitle": "Poslovna pozicija",
+	"googlelogin-manage-orgsince": "Pošto",
+	"googlelogin-manage-yes": "da",
+	"googlelogin-manage-no": "ne",
+	"googlelogin-manage-dismiss": "Odbaci",
+	"googlelogin-manage-plusinfo-title": "Profilne informacije",
+	"googlelogin-manage-errorloading": "Greška pri učitavanju",
+	"action-managegooglelogin": "upravljate GoogleLogin vezama"
+}

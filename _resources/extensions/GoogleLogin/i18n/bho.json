@@ -1,0 +1,11 @@
+{
+	"@metadata": {
+		"authors": [
+			"Nepaboy"
+		]
+	},
+	"googlelogin": "गूगल से लॉग इन करीं",
+	"googlelogin-form-merge": "गूगल के विकी खाता में मर्ज करीं",
+	"googlelogin-form-unlink": "गूगल के बदला में -> विकी खाता",
+	"googlelogin-googleuser": "गूगल सदस्य"
+}

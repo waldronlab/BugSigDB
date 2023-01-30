@@ -1,0 +1,31 @@
+{
+	"@metadata": {
+		"authors": [
+			"An13sa",
+			"Macofe",
+			"Mikel Ibaiba",
+			"Sator",
+			"Subi"
+		]
+	},
+	"googlelogin": "Saioa hasi Googlekin",
+	"managegooglelogin": "Kudeatu GoogleLogin konexioak",
+	"googleloginalloweddomains": "Onartutako dominioak kudeatu GoogleLoginentzat",
+	"googlelogin-manage-changelegend": "Google ID aldatu",
+	"googlelogin-manage-isplusser": "Google+ erregistratua",
+	"googlelogin-manage-orgname": "Erakundearen izena",
+	"googlelogin-manage-orgtitle": "Lanpostua",
+	"googlelogin-manage-orgsince": "Noiztik",
+	"googlelogin-manage-yes": "bai",
+	"googlelogin-manage-no": "ez",
+	"googlelogin-manage-dismiss": "Baztertu",
+	"googlelogin-manage-openpluslink": "Google+ profila ireki",
+	"googlelogin-manage-plusinfo-title": "Profileko informazioa",
+	"googlelogin-create": "Googlekin sortu",
+	"googlelogin-googleuser": "Google erabiltzailea",
+	"googlelogin-alloweddomain-terminatebutton": "Ezabatu",
+	"googlelogin-alloweddomain-addlabel": "Onartutako arloa gehitu",
+	"googlelogin-alloweddomain-added-success": "$1 dominioa onartutako dominioen zerrendara gehitu da.",
+	"googlelogin-alloweddomain-removed-success": "$1 dominioa onartutako dominioen zerrendatik ezabatu da.",
+	"googlelogin-alloweddomain-change-error": "Oker bat gertatu da onartutako arloen zerrenda aldatzerakoan."
+}

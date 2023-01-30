@@ -354,3 +354,22 @@ wfLoadExtension( 'WikiForum' );
 
 $smwgQMaxLimit = 100000;
 
+wfLoadExtension( 'GoogleLogin' );
+$wgGLSecret = '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';
+$wgGLAppId = '766842223289-f249tnqkmcvq06oq88joriq4a2mi97ak.apps.googleusercontent.com';
+/**
+$wgAuthManagerConfig = [
+        'primaryauth' => [
+                GoogleLogin\Auth\GooglePrimaryAuthenticationProvider::class => [
+                        'class' => GoogleLogin\Auth\GooglePrimaryAuthenticationProvider::class,
+                        'sort' => 0
+                ]
+        ],
+        'preauth' => [],
+        'secondaryauth' => []
+];
+$wgInvalidUsernameCharacters = ':~';
+$wgUserrightsInterwikiDelimiter = '~';
+$wgGroupPermissions['*']['autocreateaccount'] = true;
+$wgGLAuthoritativeMode = true;
+**/

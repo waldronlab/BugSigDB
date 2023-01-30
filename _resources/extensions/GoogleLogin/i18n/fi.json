@@ -1,0 +1,25 @@
+{
+	"@metadata": {
+		"authors": [
+			"Pyscowicz",
+			"Silvonen",
+			"MITO"
+		]
+	},
+	"googlelogin": "Kirjaudu sisään käyttämällä Google-tunnusta",
+	"googlelogin-manage-usersubmit": "Hallitse käyttäjää",
+	"googlelogin-manage-orgsince": "Alkaen",
+	"googlelogin-manage-yes": "kyllä",
+	"googlelogin-manage-no": "ei",
+	"googlelogin-manage-dismiss": "Hylkää",
+	"googlelogin-manage-openpluslink": "Avaa Google+-profiili",
+	"googlelogin-manage-unknownerror": "Tapahtui tuntematon virhe ladattaessa tietojasi. Ehkä käyttäjää ei ole olemassa Google+-palvelussa tai profiilin ID on väärä?",
+	"googlelogin-manage-plusinfo-title": "Profiilin tiedot",
+	"googlelogin-manage-errorloading": "Latausvirhe",
+	"googlelogin-username": "Käyttäjänimi",
+	"googlelogin-form-merge": "Linkitä Google wiki-tiliin",
+	"googlelogin-form-unlink": "Pura linkitys wiki-tiliin",
+	"googlelogin-googleuser": "Google-käyttäjä",
+	"googlelogin-auth-service-unknown-account": "Tuntematon Google-tili",
+	"googlelogin-alloweddomain-terminatebutton": "Poista"
+}

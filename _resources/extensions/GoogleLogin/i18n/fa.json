@@ -1,0 +1,22 @@
+{
+	"@metadata": {
+		"authors": [
+			"Alirezaaa",
+			"Reza1615",
+			"Jeeputer"
+		]
+	},
+	"googlelogin": "ورود با گوگل",
+	"googlelogin-managelegend": "یافتن کاربر برای مدیریت",
+	"googlelogin-manage-usersubmit": "مدیریت کاربر",
+	"googlelogin-manage-orgname": "نام سازمان",
+	"googlelogin-manage-orgtitle": "موقعیت شغلی",
+	"googlelogin-manage-orgsince": "از",
+	"googlelogin-manage-yes": "بله",
+	"googlelogin-manage-no": "خیر",
+	"googlelogin-manage-dismiss": "نپذیرفتن",
+	"googlelogin-username": "نام کاربری",
+	"googlelogin-googleuser": "کاربر گوگل",
+	"googlelogin-prefs-status": "وضعیت واردشدن به‌وسیله گوگل:",
+	"googlelogin-alloweddomain-terminatebutton": "حذف"
+}

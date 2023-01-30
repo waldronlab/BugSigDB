@@ -1,0 +1,41 @@
+{
+	"@metadata": {
+		"authors": [
+			"Baffo",
+			"Beta16",
+			"Einreiher",
+			"Macofe",
+			"Senpremì",
+			"Statix64",
+			"Ajeje Brazorf"
+		]
+	},
+	"apihelp-googleplusprofileinfo-description": "Effettua una richiesta alle API Google+ per trovare alcune informazioni personali su di un determinato utente.",
+	"apihelp-googleplusprofileinfo-summary": "Effettua una richiesta alle API Google+ per trovare alcune informazioni personali su di un determinato utente.",
+	"apihelp-googleplusprofileinfo-param-googleid": "L'ID Google dell'utente.",
+	"apihelp-googleloginmanagealloweddomain-summary": "Gestisci domini consentiti per GoogleLogin",
+	"apihelp-googleloginmanagealloweddomain-param-domain": "Il dominio da aggiungere o rimuovere all'elenco.",
+	"googlelogin": "Accedi con Google",
+	"googleloginalloweddomains": "Amministra domini consentiti per GoogleLogin",
+	"googlelogin-manage-user": "Gestisci {{GENDER:$1|l'utente}} <strong>$1</strong>.",
+	"googlelogin-manage-linked": "L'utenza è collegata con {{PLURAL:$1|un|}} account Google con {{PLURAL:$1|il seguente|i seguenti}} ID:",
+	"googlelogin-manage-isplusser": "Registrato su Google+",
+	"googlelogin-manage-yes": "sì",
+	"googlelogin-manage-no": "no",
+	"googlelogin-manage-addlabel": "Aggiungi ID Google",
+	"googlelogin-username": "Nome utente",
+	"googlelogin-create": "Crea con Google",
+	"googlelogin-desc-authmanager": "Consente agli utenti di effettuare l'accesso con il proprio account Google.",
+	"googlelogin-generic-error": "Oops, c'è stato un'errore. Torna indietro e riprova. Messaggio: $1",
+	"googlelogin-googleuser": "Utente Google",
+	"googlelogin-link-help": "Collega la tua utenza wiki con il tuo account Google.",
+	"googlelogin-param-error-label": "Codice di errore restituito da Google",
+	"googlelogin-param-code-label": "Token di accesso da Google",
+	"googlelogin-auth-service-unknown-account": "Utenza Google sconosciuta",
+	"googlelogin-alloweddomain-terminatebutton": "Rimuovi",
+	"googlelogin-alloweddomain-addlabel": "Aggiungi dominio consentito",
+	"googlelogin-alloweddomain-added-success": "Il dominio $1 è stato aggiunto con successo nell'elenco dei domini consentiti.",
+	"googlelogin-alloweddomain-removed-success": "Il dominio $1 è stato rimosso con successo dall'elenco dei domini consentiti.",
+	"googlelogin-alloweddomain-change-error": "Si è verificato un errore durante la modifica dell'elenco dei domini consentiti.",
+	"action-managegooglelogindomains": "gestire i domini GoogleLogin consentiti"
+}

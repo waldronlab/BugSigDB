@@ -1,0 +1,19 @@
+{
+	"@metadata": {
+		"authors": [
+			"Csega",
+			"Macofe",
+			"ViDam",
+			"Tacsipacsi"
+		]
+	},
+	"googlelogin": "Bejelentkezés Google-lel",
+	"googlelogin-manage-yes": "igen",
+	"googlelogin-manage-no": "nem",
+	"googlelogin-username": "Felhasználónév",
+	"googlelogin-generic-error": "Hoppá, valami hiba történt. Kérjük, lépj vissza, és próbáld újra. Üzenet: $1",
+	"googlelogin-form-merge": "A Google fiók összekapcsolása a wikissel",
+	"googlelogin-form-unlink": "Google fiók leválasztása a wikisről",
+	"googlelogin-googleuser": "Google felhasználó",
+	"googlelogin-link-other": "A Google-fiókod már egy másik felhasználóhoz van hozzákapcsolva. Válaszd szét az összeköttetést a másik wikis fiókoddal, vagy ha nincs másik wikis fiókod, akkor lépj kapcsolatba egy rendszergazdával."
+}

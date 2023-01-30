@@ -1,0 +1,36 @@
+{
+	"@metadata": {
+		"authors": [
+			"Ghsuvr",
+			"Guycn2",
+			"LaG roiL"
+		]
+	},
+	"apihelp-googleplusprofileinfo-description": "לשלוח בקשה ל־api של Google+ כדי למצוא מידע אישי על משתמש מסוים.",
+	"googlelogin": "כניסה עם חשבון Google",
+	"googlelogin-manage-linked": "החשבון מקושר עם {{PLURAL:$1|חשבון Google|חשבונות Google}} באמצעות ה{{PLURAL:$1|מזהה הבא|מזהים הבאים}}:",
+	"googlelogin-manage-notlinked": "החשבון לא מקושר כרגע עם אף חשבון Google.",
+	"googlelogin-manage-yes": "כן",
+	"googlelogin-manage-addlabel": "הוספת מזהה Google",
+	"googlelogin-create": "יצירה באמצעות גוגל",
+	"googlelogin-desc-authmanager": "אפשרות להיכנס לחשבון עם חשבון Google מקושר.",
+	"googlelogin-link-same": "חשבון ה־Google שלך כבר מקושר למשתמש שלך, ולא ניתן לקשר אותו שוב.",
+	"googlelogin-error-no-authentication-workflow": "ביקשת להמשיך בתהליך האימות של Google, אבל לא התחיל שום תהליך כזה. נא להתחיל תהליך אימות חדש על־ידי כניסה לחשבון מחדש.",
+	"googlelogin-loginbutton-help": "אימות המשתמש שלך באמצעות חשבון ה־Google שלך.",
+	"googlelogin-link-help": "קישור חשבון הוויקי שלך עם חשבון ה־Google שלך.",
+	"googlelogin-param-error-label": "הוחזר קוד שגיאה מ־Google",
+	"googlelogin-param-error-help": "אם האימות נכשל, קוד השגיאה מוחזר מ־Google.",
+	"googlelogin-param-code-label": "אסימון הגישה מ־Google",
+	"googlelogin-param-code-help": "אם האימות מצליח, אסימון הגישה מוחזר מ־Google.",
+	"googlelogin-change-account-not-linked": "לא ניתן להסיר חיבור של חשבון Google, כי החשבון שלך לא מקושר עם שום חשבון Google.",
+	"googlelogin-auth-service-unknown-account": "חשבון Google לא ידוע",
+	"googlelogin-access-denied": "אין אפשרות להיכנס לחשבון. דחית את הגישה למידע על חשבון ה־Google שלך.",
+	"action-managegooglelogin": "לנהל חיבורים של GoogleLogin",
+	"right-managegooglelogin": "הוספה, הסרה וצפייה בחיבורים של GoogleLogin",
+	"echo-category-title-change-googlelogin": "שינויים בחשבון ה־Google המחובר",
+	"notification-header-change-googlelogin": "חשבונות ה־Google המחוברים שלך שונו",
+	"notification-change-googlelogin": "{{GENDER:$2|מנהל|מנהלת}} ה־GoogleLogin&rlm; \"$1\" {{GENDER:$2|שינה|שינתה}} את חשבונות ה־Google המחוברים שלך.",
+	"notification-add-googlelogin": "{{PLURAL:$2|חשבון ה־Google הבא|חשבונות ה־Google הבאים}} מחוברים עם חשבון הוויקי שלך: $1.",
+	"notification-remove-googlelogin": "{{PLURAL:$2|חשבון ה־Google הבא אינו מחובר|חשבונות ה־Google הבאים אינם מחוברים}} יותר לחשבון הוויקי שלך: $1",
+	"echo-pref-tooltip-change-googlelogin": "להודיע לי כשמנהל של GoogleLogin משנה את חשבונות ה־Google המחוברים שלי."
+}
