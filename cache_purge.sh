@@ -18,7 +18,8 @@ while true; do
     # Purge the page
     echo "$MW_CACHE_PURGE_PAGE" | php "$SCRIPT" >> "$logfileNow"
     # Fetch the page to warm up the caches
-    curl -I -XGET "http://localhost:8081/$MW_CACHE_PURGE_PAGE" >> "$logfileNow"
+    #### Disabled, Varnish does this itself in sub vcl_purge, see MBSD-103 ####
+    # curl -I -XGET "http://localhost:8081/$MW_CACHE_PURGE_PAGE" >> "$logfileNow"
 
     # Wait some seconds to let the CPU do other things, like handling web requests, etc
     echo cache_purge_log waits for "$MW_CACHE_PURGE_PAUSE" seconds... >> "$logfileNow"
