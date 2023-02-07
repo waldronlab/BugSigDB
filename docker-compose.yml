@@ -58,6 +58,7 @@ services:
         volumes:
             - ./_data/mediawiki:/mediawiki
             - ./_logs/httpd:/var/log/apache2
+            - ./_logs/mediawiki:/var/log/mediawiki
             - ./_settings/:/var/www/mediawiki/w/_settings
             - ./_resources/.htaccess:/var/www/mediawiki/.htaccess
             - ./_resources/favicon.ico:/var/www/mediawiki/w/favicon.ico
