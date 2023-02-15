@@ -369,3 +369,8 @@ $wgUserrightsInterwikiDelimiter = '~';
 $wgGroupPermissions['*']['autocreateaccount'] = true;
 $wgGLAuthoritativeMode = true;
 **/
+
+// WLDR-258
+wfLoadExtension( 'DynamicPageList3' );
+$wgDplSettings['functionalRichness'] = 3;
+
