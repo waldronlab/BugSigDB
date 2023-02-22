@@ -1,0 +1,100 @@
+{
+	"name": "DynamicPageList3",
+	"version": "3.3.8",
+	"author": [
+		"Alexia E. Smith",
+		"[https://meta.miraheze.org/wiki/User:Universal_Omega Universal Omega]",
+		"[https://de.wikipedia.org/wiki/Benutzer:Algorithmix Gero Scholz]"
+	],
+	"url": "https://www.mediawiki.org/wiki/Extension:DynamicPageList3",
+	"descriptionmsg": "dpl-desc",
+	"license-name": "GPL-3.0-or-later",
+	"type": "parserhook",
+	"requires": {
+		"MediaWiki": ">= 1.35.0"
+	},
+	"GroupPermissions": {
+		"sysop": {
+			"dpl_param_update_rules": true,
+			"dpl_param_delete_rules": true
+		}
+	},
+	"AvailableRights": [
+		"dpl_param_update_rules",
+		"dpl_param_delete_rules"
+	],
+	"MessagesDirs": {
+		"DynamicPageList3": [
+			"i18n"
+		]
+	},
+	"ExtensionMessagesFiles": {
+		"DynamicPageListMagic": "includes/DynamicPageListMagic.php"
+	},
+	"AutoloadClasses": {
+		"DPL\\Article": "includes/Article.php",
+		"DPL\\Config": "includes/Config.php",
+		"DPL\\Heading\\DefinitionHeading": "includes/heading/DefinitionHeading.php",
+		"DPL\\Heading\\Heading": "includes/heading/Heading.php",
+		"DPL\\Heading\\OrderedHeading": "includes/heading/OrderedHeading.php",
+		"DPL\\Heading\\TieredHeading": "includes/heading/TieredHeading.php",
+		"DPL\\Heading\\UnorderedHeading": "includes/heading/UnorderedHeading.php",
+		"DPL\\Lister\\CategoryList": "includes/lister/CategoryList.php",
+		"DPL\\Lister\\DefinitionList": "includes/lister/DefinitionList.php",
+		"DPL\\Lister\\GalleryList": "includes/lister/GalleryList.php",
+		"DPL\\Lister\\InlineList": "includes/lister/InlineList.php",
+		"DPL\\Lister\\Lister": "includes/lister/Lister.php",
+		"DPL\\Lister\\OrderedList": "includes/lister/OrderedList.php",
+		"DPL\\Lister\\SubPageList": "includes/lister/SubPageList.php",
+		"DPL\\Lister\\UnorderedList": "includes/lister/UnorderedList.php",
+		"DPL\\Lister\\UserFormatList": "includes/lister/UserFormatList.php",
+		"DPL\\Logger": "includes/Logger.php",
+		"DPL\\LST": "includes/LST.php",
+		"DPL\\Maintenance\\CreateTemplate": "maintenance/createTemplate.php",
+		"DPL\\Parameters": "includes/Parameters.php",
+		"DPL\\ParametersData": "includes/ParametersData.php",
+		"DPL\\Parse": "includes/Parse.php",
+		"DPL\\Query": "includes/Query.php",
+		"DPL\\UpdateArticle": "includes/UpdateArticle.php",
+		"DPL\\Variables": "includes/Variables.php",
+		"DPL\\DynamicPageListHooks": "includes/DynamicPageListHooks.php",
+		"DPL\\DPLIntegrationTestCase": "tests/phpunit/DPLIntegrationTestCase.php"
+	},
+	"Hooks": {
+		"ParserFirstCallInit": [
+			"DPL\\DynamicPageListHooks::onParserFirstCallInit"
+		],
+		"LoadExtensionSchemaUpdates": [
+			"DPL\\DynamicPageListHooks::onLoadExtensionSchemaUpdates"
+		]
+	},
+	"config": {
+		"DplSettings": {
+			"allowedNamespaces": null,
+			"allowUnlimitedCategories": false,
+			"allowUnlimitedResults": false,
+			"behavingLikeIntersection": false,
+			"categoryStyleListCutoff": 6,
+			"fixedCategories": [],
+			"functionalRichness": 3,
+			"maxCategoryCount": 4,
+			"minCategoryCount": 0,
+			"maxResultCount": 500,
+			"recursiveTagParse": false,
+			"runFromProtectedPagesOnly": false,
+			"handleSectionTag": false,
+			"alwaysCacheResults": false
+		}
+	},
+	"TrackingCategories": [
+		"dpl-tag-tracking-category",
+		"dpl-intersection-tracking-category",
+		"dpl-parserfunc-tracking-category",
+		"dplnum-parserfunc-tracking-category",
+		"dplvar-parserfunc-tracking-category",
+		"dplreplace-parserfunc-tracking-category",
+		"dplchapter-parserfunc-tracking-category",
+		"dplmatrix-parserfunc-tracking-category"
+	],
+	"manifest_version": 1
+}
