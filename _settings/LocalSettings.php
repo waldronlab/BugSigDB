@@ -374,3 +374,5 @@ $wgGLAuthoritativeMode = true;
 wfLoadExtension( 'DynamicPageList3' );
 $wgDplSettings['functionalRichness'] = 3;
 
+wfLoadExtension( 'VariablesLua' );
+
