@@ -9,6 +9,7 @@ Clone the repo. Then create and start the containers:
 cd docker-bugsigdb.org
 copy a database dump to the __initdb directory
 copy images to the `bugsigdb.org/_data/mediawiki/images` directory
+copy .env_example to .env and modify as needed (see the Settings section)
 docker-compose up
 ```
 Wait for the completion of the build and initialization process and access it via `http://localhost:8081` in a browser.
