@@ -1,3 +1,7 @@
 [submodule "_resources/extensions/SemanticDependencyUpdater"]
 	path = _resources/extensions/SemanticDependencyUpdater
 	url = https://github.com/gesinn-it/SemanticDependencyUpdater.git
+[submodule "_resources/extensions/SubpageWatchlist"]
+	path = _resources/extensions/SubpageWatchlist
+	url = https://gerrit.wikimedia.org/r/mediawiki/extensions/SubpageWatchlist.git
+	branch = REL1_35

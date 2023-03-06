@@ -72,6 +72,7 @@ services:
             - ./_resources/extensions/SemanticDependencyUpdater:/var/www/mediawiki/w/extensions/SemanticDependencyUpdater
             - ./_resources/extensions/DataTables:/var/www/mediawiki/w/extensions/DataTables
             - ./_resources/extensions/DynamicPageList3:/var/www/mediawiki/w/extensions/DynamicPageList3
+            - ./_resources/extensions/SubpageWatchlist:/var/www/mediawiki/w/extensions/SubpageWatchlist
             - ./_resources/googlef2273af339547660.html:/var/www/mediawiki/googlef2273af339547660.html
             - ./entrypoint.sh:/entrypoint.sh
             - ./cache_purge.sh:/cache_purge.sh
