@@ -142,9 +142,10 @@ $egChameleonLayoutFile = "$IP/skins/chameleon/custom/layouts/navhead.xml";
 # Semantic Mediawiki - keep this early
 enableSemantics( 'bugsigdb.org' ); # Keep this first
 $smwgEntityCollation = $wgCategoryCollation;
-$smwgEnabledQueryDependencyLinksStore = false;
 $wgNamespacesWithSubpages[SMW_NS_PROPERTY] = true;
 $smwgQMaxInlineLimit = 220000;
+# Enable embedded query updates, see MBSD-142
+$smwgEnabledQueryDependencyLinksStore = true;
 
 $smwgCacheType = 'redis';
 $smwgQueryResultCacheType = 'redis';
