@@ -73,6 +73,7 @@ services:
             - ./_resources/extensions/DataTables:/var/www/mediawiki/w/extensions/DataTables
             - ./_resources/extensions/DynamicPageList3:/var/www/mediawiki/w/extensions/DynamicPageList3
             - ./_resources/extensions/SubpageWatchlist:/var/www/mediawiki/w/extensions/SubpageWatchlist
+            - ./_resources/extensions/SemanticScribunto:/var/www/mediawiki/w/extensions/SemanticScribunto
             - ./_resources/googlef2273af339547660.html:/var/www/mediawiki/googlef2273af339547660.html
             - ./entrypoint.sh:/entrypoint.sh
             - ./cache_purge.sh:/cache_purge.sh

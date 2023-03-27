@@ -378,3 +378,4 @@ $wgDplSettings['functionalRichness'] = 3;
 wfLoadExtension( 'VariablesLua' );
 wfLoadExtension( 'SubpageWatchlist' );
 $wgInternalServer = 'http://127.0.0.1:8081'; # MBSD-139
+wfLoadExtension( 'SemanticScribunto' );
