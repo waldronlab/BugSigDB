@@ -165,3 +165,7 @@ steps below to set it up:
 Note: the script may produce extra load to the wiki so it's recommended to schedule it for nigh time, also worth to
 consider that it takes time to process all the pages so average script cycle is ~4-8 hours. You can change sleep
 timeouts via `-z` parameter.
+
+## Updating Active user count
+
+To work around T333776 we run maintenance/updateSpecialPages.php once a day. This ensures the count of active users on Special:CreateAccount stays up to date.
