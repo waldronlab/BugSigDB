@@ -379,8 +379,8 @@ wfLoadExtension( 'VariablesLua' );
 wfLoadExtension( 'SubpageWatchlist' );
 $wgInternalServer = 'http://127.0.0.1:8081'; # MBSD-139
 wfLoadExtension( 'SemanticScribunto' );
-if ( !$wgScribuntoEngineConf ) {
+if ( !isset( $wgScribuntoEngineConf ) ) {
 	$wgScribuntoEngineConf = [ 'luasandbox' => [] ];
 }
 // WLDR-312
-$wgScribuntoEngineConf['luasandbox']['cpuLimit'] = 15;
+$wgScribuntoEngineConf['luasandbox']['cpuLimit'] = 20;
