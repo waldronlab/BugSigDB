@@ -15,7 +15,7 @@ services:
             - ./_data/mysql:/var/lib/mysql
 
     web:
-        image: ghcr.io/wikiteq/taqasta:1.35.8-20230316-48
+        image: ghcr.io/wikiteq/taqasta:1.35.8-20230331-51
         restart: unless-stopped
         extra_hosts:
             - "gateway.docker.internal:host-gateway"
@@ -55,6 +55,7 @@ services:
             - MW_CACHE_PURGE_PAGE=${MW_CACHE_PURGE_PAGE:-Main_Page}
             - MW_ENABLE_SITEMAP_GENERATOR=${MW_ENABLE_SITEMAP_GENERATOR:-true}
             - PHP_MEMORY_LIMIT=2048M
+            - MW_JOB_RUNNER_MEMORY_LIMIT=1G
         volumes:
             - ./_data/mediawiki:/mediawiki
             - ./_logs/httpd:/var/log/apache2
