@@ -89,13 +89,14 @@ sub vcl_recv {
 # Process any "PURGE" requests converting
 # them to GET and restarting for the articles
 sub vcl_purge {
-    if (!req.url ~ "^/w/") {
-        set req.method = "GET";
-        if (req.http.X-Host) {
-            set req.http.host = req.http.X-Host;
-        }
-        return (restart);
-    }
+# Remove, it is taking down the site. See WLDR-312, WLDR-314
+#    if (!req.url ~ "^/w/") {
+#        set req.method = "GET";
+#        if (req.http.X-Host) {
+#            set req.http.host = req.http.X-Host;
+#        }
+#        return (restart);
+#    }
 }
 
 sub vcl_pipe {
