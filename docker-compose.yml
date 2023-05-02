@@ -62,7 +62,7 @@ services:
             - ./_logs/mediawiki:/var/log/mediawiki
             - ./_settings/:/var/www/mediawiki/w/_settings
             - ./_resources/.htaccess:/var/www/mediawiki/.htaccess
-            - ./_resources/favicon.ico:/var/www/mediawiki/w/favicon.ico
+            - ./_resources/favicon.ico:/var/www/mediawiki/favicon.ico
             - ./_resources/logo.png:/var/www/mediawiki/w/logo.png
             - ./_resources/chameleon:/var/www/mediawiki/w/skins/chameleon/custom
             - ./_resources/footer_icons/cuny.png:/var/www/mediawiki/w/cuny.png

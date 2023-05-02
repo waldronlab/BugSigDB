@@ -108,8 +108,6 @@ $wgCategoryCollation = 'numeric';
 //# Add more configuration options below.
 
 ############# Custom core settings #############
-$wgFavicon = "$wgScriptPath/favicon.ico";
-
 $wgRestrictDisplayTitle = false;
 
 $wgNamespacesWithSubpages[NS_MAIN] = true;
