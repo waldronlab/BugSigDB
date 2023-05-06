@@ -143,7 +143,7 @@ $smwgEntityCollation = $wgCategoryCollation;
 $wgNamespacesWithSubpages[SMW_NS_PROPERTY] = true;
 $smwgQMaxInlineLimit = 220000;
 # Enable embedded query updates, see MBSD-142
-$smwgEnabledQueryDependencyLinksStore = true;
+$smwgEnabledQueryDependencyLinksStore = false;
 
 $smwgCacheType = 'redis';
 $smwgQueryResultCacheType = 'redis';
@@ -377,3 +377,6 @@ if ( !isset( $wgScribuntoEngineConf ) ) {
 }
 // WLDR-312
 $wgScribuntoEngineConf['luasandbox']['cpuLimit'] = 20;
+
+wfLoadExtension( 'SemanticDependencyUpdater' );
+
