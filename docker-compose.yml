@@ -151,3 +151,35 @@ services:
         entrypoint:
             - /updateEFO/updateEFO.sh
 
+    restic:
+        image: ghcr.io/wikiteq/restic-backup-docker:stream
+        restart: unless-stopped
+        links:
+            - db
+        environment:
+            - MW_DB_USER=root
+            - MW_DB_PASS=$MW_DB_INSTALLDB_PASS
+            - MW_DB_NAME=$MW_DB_NAME
+            - RESTIC_REPOSITORY=${MW_RESTIC_REPOSITORY}
+            - RESTIC_PASSWORD=${MW_RESTIC_PASSWORD:-rest1cpassw0rd}
+            - RESTIC_TAG=backup_full
+            - AWS_ACCESS_KEY_ID=${MW_RESTIC_S3_KEY}
+            - AWS_SECRET_ACCESS_KEY=${MW_RESTIC_S3_SECRET}
+            - BACKUP_CRON=0 1 * * 6
+            - CHECK_CRON=0 23 * * 5
+            - RESTIC_FORGET_ARGS=--prune --keep-weekly 1 --keep-monthly 1
+            # pre-backup script
+            - RESTIC_PRE_BACKUP=if [ ! -d "/data" ]; then mkdir /data; fi && mysqldump -hdb -u$$MW_DB_USER -p$$MW_DB_PASS $$MW_DB_NAME | gzip -c > /data/database.sql.gz
+            # post-backup script
+            - RESTIC_POST_BACKUP=rm /data/database.sql.gz
+            - RESTIC_STREAM=yes
+            - RESTIC_STREAM_CMD=tar -cf - -C /data_mediawiki/ /data/database.sql.gz images
+            - RESTIC_STREAM_FILENAME=full.images.database.tar
+        volumes:
+            # read-only mount of mediawiki data directory for images access
+            - ./_data/mediawiki:/data_mediawiki:ro
+            # restic repository mount
+            - ./_data/restic:/mnt/restic
+            # logs
+            - ./_logs/restic:/var/log
+
