@@ -1,0 +1,63 @@
+{
+	"name": "mediawiki/page-forms",
+	"type": "mediawiki-extension",
+	"description": "Forms for creating and editing wiki pages.",
+	"keywords": [
+		"Page Forms",
+		"Semantic Forms",
+		"forms",
+		"PF",
+		"Wiki",
+		"MediaWiki"
+	],
+	"homepage": "https://www.mediawiki.org/wiki/Extension:Page_Forms",
+	"license": "GPL-2.0-or-later",
+	"authors": [
+		{
+			"name": "Yaron Koren"
+		}
+	],
+	"require": {
+		"php": ">=5.5.9",
+		"composer/installers": "1.*,>=1.0.1"
+	},
+	"suggest": {
+		"mediawiki/open-layers": "Allow us to use a local version of OpenLayers."
+	},
+	"extra": {
+		"branch-alias": {
+			"dev-master": "4.0.x-dev"
+		},
+		"installer-paths": {
+			"../{$name}": [
+				"mediawiki/open-layers"
+			]
+		}
+	},
+	"require-dev": {
+		"mediawiki/mediawiki-codesniffer": "40.0.1",
+		"mediawiki/mediawiki-phan-config": "0.12.0",
+		"mediawiki/minus-x": "1.1.1",
+		"php-parallel-lint/php-console-highlighter": "1.0.0",
+		"php-parallel-lint/php-parallel-lint": "1.3.2"
+	},
+	"scripts": {
+		"test": [
+			"parallel-lint . --exclude vendor --exclude node_modules",
+			"minus-x check .",
+			"@phpcs"
+		],
+		"fix": [
+			"minus-x fix .",
+			"phpcbf .",
+			"phpcbf"
+		],
+		"phpcs": "phpcs -p -s .",
+		"phan": "phan -d . --long-progress-bar"
+	},
+	"config": {
+		"allow-plugins": {
+			"composer/installers": true
+		}
+	}
+}

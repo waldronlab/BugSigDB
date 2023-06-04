@@ -1,0 +1,19 @@
+{
+	"@metadata": {
+		"authors": [
+			"Joachim Mos",
+			"Slomox"
+		]
+	},
+	"pf_createproperty_propname": "Naam:",
+	"pf_createproperty_proptype": "Typ:",
+	"templates": "Vörlagen",
+	"createtemplate": "Stell een Vörlaag op",
+	"pf_createtemplate_namelabel": "Vörlaagnaam:",
+	"pf_createtemplate_deletefield": "Wegdoon",
+	"pf_createform_template": "Vörlaag:",
+	"createcategory": "Stell een Kategorie op",
+	"pf_createcategory_name": "Kategorienaam:",
+	"createclass": "Stell en Class op",
+	"pf_createclass_create": "Opstellen"
+}

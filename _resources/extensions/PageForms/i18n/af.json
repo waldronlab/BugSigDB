@@ -1,0 +1,31 @@
+{
+	"@metadata": {
+		"authors": [
+			"Arnobarnard",
+			"Naudefj",
+			"SPQRobin"
+		]
+	},
+	"pf_createproperty_propname": "Naam:",
+	"pf_createproperty_proptype": "Tipe:",
+	"templates": "Sjablone",
+	"pf_createtemplate_standardformat": "Standaard",
+	"pf_createtemplate_deletefield": "Skrap",
+	"pf_createform_template": "Sjabloon:",
+	"pf_createform_field": "Veld:",
+	"pf_createform_inputtypedefault": "(standaard)",
+	"pf_createform_hidden": "Verborge",
+	"pf_createform_add": "Voeg by",
+	"pf_createcategory_name": "Naam:",
+	"pf_formedit_remove": "Skrap",
+	"pf_formedit_none": "Geen",
+	"pf_blank_error": "mag nie leeg wees nie",
+	"pf_bad_date_error": "moet 'n geldige datum wees",
+	"pf_deletionlog": "Skraplogboek",
+	"pf_form_freetextlabel": "Vrye teks",
+	"pf-datepicker-close": "Sluit",
+	"pf-datepicker-prev": "Vorige",
+	"pf-datepicker-next": "Volgende",
+	"pf-datepicker-today": "Vandag",
+	"pf-regexp-wrongformat": "Verkeerde formaat."
+}

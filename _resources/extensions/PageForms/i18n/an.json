@@ -1,0 +1,16 @@
+{
+	"@metadata": {
+		"authors": [
+			"Juanpabl",
+			"Willtron"
+		]
+	},
+	"pf_createproperty_propname": "Nombre d'a propiedat:",
+	"templates": "Plantillas",
+	"pf_createtemplate_deletefield": "Borrar",
+	"pf_createform_template": "Plantilla:",
+	"pf_createcategory_name": "Nombre d'a categoría:",
+	"pf_formedit_createtitle": "Creyar $1: $2",
+	"pf_editsource": "Editar codigo",
+	"pf_bad_date_error": "ha d'estar una calendata conforme"
+}

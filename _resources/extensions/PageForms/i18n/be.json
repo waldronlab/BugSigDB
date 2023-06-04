@@ -1,0 +1,21 @@
+{
+	"@metadata": {
+		"authors": [
+			"Artsiom91",
+			"Irus",
+			"Mechanizatar",
+			"ZlyiLev",
+			"Тест"
+		]
+	},
+	"pf_createproperty_proptype": "Тып:",
+	"templates": "Шаблоны",
+	"forms": "Формы",
+	"pf_forminputs_checkboxes_select_all": "Выбраць усё",
+	"pf_createform_template": "Шаблон:",
+	"formedit": "Рэдагаваць з дапамогай формы",
+	"pf_viewform": "Глядзець форму",
+	"pf_formedit_formwarning": "Папярэджанне: гэтая старонка [[$1|ўжо існуе]], але не выкарыстоўвае гэтую форму.",
+	"pf_autoedit_redlinkexists": "$1 ужо існуе.",
+	"pf-datepicker-close": "Закрыць"
+}

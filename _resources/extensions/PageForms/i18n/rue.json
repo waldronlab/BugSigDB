@@ -1,0 +1,13 @@
+{
+	"@metadata": {
+		"authors": [
+			"Gazeb"
+		]
+	},
+	"pf_createproperty_proptype": "Тіп:",
+	"templates": "Шаблоны",
+	"pf_createtemplate_deletefield": "Вымазати",
+	"pf_createform_add": "Придати",
+	"createcategory": "Створити катеґорію",
+	"pf_createcategory_name": "Мено катеґорії:"
+}

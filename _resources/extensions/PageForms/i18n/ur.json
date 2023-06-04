@@ -1,0 +1,39 @@
+{
+	"@metadata": {
+		"authors": [
+			"Hindustanilanguage",
+			"Saraiki",
+			"පසිඳු කාවින්ද"
+		]
+	},
+	"pf_createproperty_proptype": "قسم:",
+	"templates": "سانچے",
+	"createtemplate": "ایک سانچے تخلیق کریں",
+	"pf_createtemplate_namelabel": "سانچے کے نام:",
+	"pf_createtemplate_fieldname": "میدان کا نام:",
+	"pf_createtemplate_displaylabel": "ڈسپلے لیبل:",
+	"pf_createtemplate_standardformat": "ٹیبل",
+	"pf_createtemplate_sectionsformat": "حصوں",
+	"pf_createtemplate_deletefield": "حذف کریں",
+	"forms": "فارم",
+	"createform": "ایک شکل تخلیق کریں",
+	"pf_createform_nameinput": "فارم کے نام",
+	"pf_createform_template": "سانچہ:",
+	"pf_createform_field": "میدان:",
+	"pf_createform_inputtype": "ان پٹ کی قسم:",
+	"pf_createform_inputtypedefault": "(طے شدہ)",
+	"pf_createform_hidden": "پوشیدہ",
+	"pf_createform_removetemplate": "سانچے کو حذف کریں",
+	"pf_createform_addtemplate": "سانچے شامل کریں:",
+	"pf_createform_add": "شامل کریں",
+	"pf_createform_before": "سانچہ: سے پہلے",
+	"createcategory": "ایک قسم کی تخلیق",
+	"pf_createcategory_name": "شعبے کا نام:",
+	"pf_createcategory_defaultform": "پہلے سے طے شدہ فارم:",
+	"createclass": "ایک کلاس کی تخلیق",
+	"pf_createclass_nameinput": "فارم کے نام:",
+	"pf_createclass_create": "تخلیق کریں",
+	"pf-autoedit-wait": "رکو...",
+	"pf_modified_input_error": "اس تبدیلی کو منظور یا نامنظور کیا جانا چاہیے",
+	"pf-datepicker-close": "بند کرو"
+}

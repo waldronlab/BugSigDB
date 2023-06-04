@@ -1,0 +1,40 @@
+{
+	"@metadata": {
+		"authors": [
+			"Crazymadlover",
+			"Omnipaedista"
+		]
+	},
+	"specialpages-group-pf_group": "Σημασιολογικοὶ Τύποι",
+	"createproperty": "Ποιεῖν ἰδιότητα τινά",
+	"pf_createproperty_propname": "Ὄνομα ἰδιότητος:",
+	"pf_createproperty_proptype": "Τύπος:",
+	"templates": "Πρότυπα",
+	"pf_templates_definescat": "ὁρίζει κατηγορίαν: $1",
+	"createtemplate": "Ποιεῖν πρότυπόν τι",
+	"pf_createtemplate_namelabel": "Ὄνομα προτύπου:",
+	"pf_createtemplate_fieldname": "Ὄνομα πεδίου:",
+	"pf_createtemplate_addfield": "Προστιθέναι πεδίον",
+	"pf_createtemplate_deletefield": "Σβεννύναι",
+	"forms": "Τύποι",
+	"pf_forminputs_mandatory": "Ὑποχρεωτικόν",
+	"createform": "Ποιεῖν τύπον τινά",
+	"pf_createform_template": "Πρότυπον:",
+	"pf_createform_field": "Πεδίον:",
+	"pf_createform_inputtypedefault": "(προκαθωρισμένη)",
+	"pf_createform_hidden": "Κεκρυμμένη",
+	"pf_createform_add": "Προστιθέναι",
+	"pf_createcategory_name": "Ὄνομα κατηγορίας:",
+	"pf_formstart_createoredit": "Ποιεῖν ἢ μεταγράφειν",
+	"pf_formedit_createtitle": "Ποιεῖν $1: $2",
+	"pf_viewform": "Ὁρᾶν τύπον",
+	"pf_editsource": "Μεταγράφειν πηγήν",
+	"pf_formedit_edittitle": "Μεταγράφειν $1: $2",
+	"pf_formedit_remove": "Άφαιρεῖν",
+	"pf_formedit_none": "Οὐδέν",
+	"runquery": "Ἐκτελεῖν πεῦσιν",
+	"pf_runquery_title": "Ἐκτελεῖν πεῦσιν: $1",
+	"uploadwindow": "Ἐπιφορτίζειν θυρίδα",
+	"pf_form_freetextlabel": "Ἐλεύθερον κείμενον",
+	"pf_blank_namespace": "Κύριον"
+}

@@ -1,0 +1,10 @@
+{
+	"@metadata": {
+		"authors": [
+			"John Reid"
+		]
+	},
+	"pf_createproperty_editsummary": "Cræftit ae propertie o type [[Has type::$1]]",
+	"pf_forminputs_checkboxes_select_all": "Select aw",
+	"pf_forminputs_checkboxes_select_none": "Select nane"
+}

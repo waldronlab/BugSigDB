@@ -1,0 +1,35 @@
+{
+	"@metadata": {
+		"authors": [
+			"Игорь Бродский"
+		]
+	},
+	"pf_createproperty_propname": "Ičendan nimi:",
+	"pf_createproperty_proptype": "Tip:",
+	"templates": "Šablonad",
+	"pf_templates_docu": "Wikiš om ningoižid šablonoid:",
+	"pf_templates_definescat": "märhapaneb kategorijan: $1",
+	"createtemplate": "Säta šablon",
+	"pf_createtemplate_namelabel": "Šablonan nimi:",
+	"pf_createtemplate_categorylabel": "Kategorii, kudamban märhapaneb šablon (opcionaližikš):",
+	"pf_createtemplate_templatefields": "Šablonan pöudod:",
+	"pf_createtemplate_outputformat": "Lähtmižformat:",
+	"pf_createtemplate_standardformat": "Standartine",
+	"pf_createtemplate_addfield": "Läžata pöud",
+	"pf_createtemplate_deletefield": "Čuta poiš",
+	"forms": "Formad",
+	"createform": "Säta form",
+	"pf_createform_nameinput": "Forman nimi",
+	"pf_createform_template": "Šablon:",
+	"pf_createform_field": "Pöud:",
+	"pf_createform_hidden": "Peittud",
+	"pf_createform_add": "Ližata",
+	"createcategory": "Säta kategorii",
+	"pf_createcategory_name": "Kategorijan nimi:",
+	"pf_createcategory_defaultform": "Form augotižjärgendusen mödhe:",
+	"pf_formstart_createoredit": "Ližada vai redaktirui",
+	"pf_editsource": "Redaktiruida purde",
+	"pf_formedit_remove": "Čuta poiš",
+	"pf_formedit_addanother": "Ližata völ",
+	"pf_form_freetextlabel": "Joudai tekst"
+}

@@ -1,0 +1,22 @@
+{
+	"@metadata": {
+		"authors": [
+			"VASANTH S.N."
+		]
+	},
+	"templates": "ಟೆಂಪ್ಲೆಟ್‍ಲು",
+	"pf_createtemplate_standardformat": "ಪಟ್ಟಿ",
+	"pf_createtemplate_deletefield": "ಮಾಜಾಲೆ",
+	"pf_forminputs_checkboxes_select_all": "ಮಾತೈನ್‘ಲಾ ಆಯ್ಕೆ ಮಲ್ಪುಲೆ",
+	"pf_createform_template": "ಟೆಂಪ್ಲೆಟ್:",
+	"pf_createform_add": "ಸೇರಾಲೆ",
+	"pf_createform_before": "ದುಂಬು:",
+	"pf_createcategory_name": "ವರ್ಗದೊ ಪುದರ್:",
+	"pf_createclass_create": "ಸೃಷ್ಟಿಸಾಲೆ",
+	"pf_editsource": "ಮೂಲೊನು ಸಂಪಾದನೆ ಮಲ್ಪುಲೆ",
+	"pf-autocomplete-searching": "ನಡೊಂತುಂಡು...",
+	"pf-datepicker-close": "ಮುಚ್ಚಿಲೆ",
+	"pf-datepicker-prev": "ದುಂಬುತಾ",
+	"pf-datepicker-next": "ನನತಾ",
+	"pf-datepicker-today": "ಇನಿ"
+}

@@ -1,0 +1,11 @@
+{
+	"@metadata": {
+		"authors": [
+			"Chinneeb",
+			"Munkhzaya.E"
+		]
+	},
+	"pf_createform_add": "Нэмэх",
+	"pf_deletionlog": "Устгалын лог",
+	"pf-regexp-wrongformat": "Буруу формат"
+}

@@ -1,0 +1,13 @@
+{
+	"@metadata": {
+		"authors": [
+			"Amikeco",
+			"Bouron"
+		]
+	},
+	"pf_createproperty_proptype": "Тип:",
+	"templates": "Шаблонтæ",
+	"pf_createtemplate_deletefield": "Схафын",
+	"pf_createform_template": "Шаблон:",
+	"pf_formedit_none": "Нæй"
+}

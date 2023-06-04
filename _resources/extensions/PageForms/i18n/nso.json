@@ -1,0 +1,16 @@
+{
+	"@metadata": {
+		"authors": [
+			"Mohau"
+		]
+	},
+	"pf_createproperty_propname": "Leina:",
+	"pf_createproperty_proptype": "Mohuta:",
+	"pf_createtemplate_deletefield": "Phumula",
+	"pf_createform_add": "Lokela",
+	"pf_createcategory_name": "Leina la sehlopha:",
+	"pf_formedit_createtitle": "Hloma $1: $2",
+	"pf_editsource": "Fetola mothapo",
+	"pf_formedit_edittitle": "Fetola $1: $2",
+	"pf-autocomplete-searching": "Re a fehleka..."
+}

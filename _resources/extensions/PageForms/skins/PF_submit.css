@@ -1,0 +1,22 @@
+/**
+* Style sheet for the save-and-continue button
+*
+* The order of the rules is actually important!
+* There might be several classes set at the same time.
+*/
+
+.pf-save_and_continue-ok button {
+    background-color: #afa !important;
+}
+
+.pf-save_and_continue-error button {
+    background-color: #f35 !important;
+}
+
+.pf-save_and_continue-wait button {
+    background-color: transparent !important;
+}
+
+.pf-save_and_continue-changed button {
+    background-color: #ff0 !important;
+}

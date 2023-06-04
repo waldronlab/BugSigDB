@@ -1,0 +1,41 @@
+{
+	"@metadata": {
+		"authors": [
+			"Basharh",
+			"Michaelovic"
+		]
+	},
+	"pf_createproperty_proptype": "ܐܕܫܐ:",
+	"templates": "ܩܠܒ̈ܐ",
+	"createtemplate": "ܒܪܝ ܩܠܒܐ",
+	"pf_createtemplate_namelabel": "ܫܡܐ ܕܩܠܒܐ:",
+	"pf_createtemplate_templatefields": "ܚܩܠ̈ܐ ܕܩܠܒ̈ܐ",
+	"pf_createtemplate_fieldname": "ܫܡܐ ܕܚܩܠܐ:",
+	"pf_createtemplate_aggregationlabel": "ܟܘܢܝܐ ܕܡܟܬܒܘܬܐ:",
+	"pf_createtemplate_deletefield": "ܫܘܦ",
+	"forms": "ܕ̈ܘܡܝܐ",
+	"pf_createform_template": "ܩܠܒܐ:",
+	"pf_createform_field": "ܚܩܠܐ:",
+	"pf_createform_hidden": "ܛܘܫܝܐ",
+	"pf_createform_removetemplate": "ܠܚܝ ܩܠܒܐ",
+	"pf_createform_addtemplate": "ܐܘܣܦ ܩܠܒܐ:",
+	"pf_createform_add": "ܐܘܣܦ",
+	"pf_createform_before": "ܩܕܡ ܩܠܒܐ:",
+	"createcategory": "ܒܪܝ ܣܕܪܐ",
+	"pf_createcategory_name": "ܫܡܐ ܕܣܕܪܐ:",
+	"pf_formstart_createoredit": "ܒܪܝ ܐܘ ܫܚܠܦ",
+	"pf_formedit_createtitle": "ܒܪܝ $1: $2",
+	"pf_editsource": "ܫܚܠܦ ܡܒܘܥܐ",
+	"pf_formedit_edittitle": "ܫܚܠܦ $1: $2",
+	"pf_formedit_remove": "ܠܚܝ ܐܝܟܢܘܬܐ ܗܕܐ",
+	"pf_formedit_addanother": "ܐܘܣܦ ܐܚܪܢܐ",
+	"pf_formedit_none": "ܠܐ ܡܕܡ",
+	"uploadwindow": "ܐܣܩ ܟܘܬܐ",
+	"pf_deletionlog": "ܣܓܠܐ ܕܫܝܦܐ",
+	"pf_form_freetextlabel": "ܟܬܒܬܐ ܚܐܪܬܐ",
+	"pf_blank_namespace": "ܪܫܝܬܐ",
+	"pf-datepicker-close": "ܣܟܘܪ",
+	"pf-datepicker-prev": "ܕܩܕܡ",
+	"pf-datepicker-next": "ܕܒܬܪ",
+	"pf-datepicker-today": "ܝܘܡܢܐ"
+}

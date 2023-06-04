@@ -1,0 +1,22 @@
+{
+	"@metadata": {
+		"authors": [
+			"Srtxg"
+		]
+	},
+	"pf_createproperty_proptype": "Sôre:",
+	"templates": "Modeles",
+	"pf_createtemplate_deletefield": "Disfacer",
+	"pf_createform_template": "Modele:",
+	"pf_createform_add": "Radjouter",
+	"pf_createclass_create": "Ahiver",
+	"pf_formstart_createoredit": "Ahiver ou candjî",
+	"formedit": "Candjî avou formulrece",
+	"pf_formedit_formwarning": "Asteme: cisse pådje ci [[$1|egzistêye dedja]], mins elle n' eploye nén li formulrece.",
+	"pf_formedit_remove": "Oister",
+	"pf_formedit_addanother": "Radjouter ene ôte",
+	"pf_formedit_none": "Nole",
+	"pf_formedit_saveandcontinueediting": "Schaper et continouwer",
+	"pf_autoedit_anoneditwarning": "'''Asteme:''' Vos n' estoz nén elodjî.\nVoste adresse IP serè rashiowe dins l' istwere di cisse pådje ci.",
+	"pf_form_freetextlabel": "Tecse libe"
+}
