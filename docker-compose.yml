@@ -79,6 +79,7 @@ services:
             - ./_resources/googlef2273af339547660.html:/var/www/mediawiki/googlef2273af339547660.html
             - ./entrypoint.sh:/entrypoint.sh
             - ./cache_purge.sh:/cache_purge.sh
+            - sitemap:/mediawiki/sitemap
 
     redis:
         image: "redis:alpine"
@@ -183,4 +184,7 @@ services:
             - ./_data/restic:/mnt/restic
             # logs
             - ./_logs/restic:/var/log
+
+volumes:
+    sitemap:
 
