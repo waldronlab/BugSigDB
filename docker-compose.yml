@@ -169,7 +169,7 @@ services:
             - AWS_SECRET_ACCESS_KEY=${MW_RESTIC_S3_SECRET}
             - BACKUP_CRON=0 1 * * 6
             - CHECK_CRON=0 23 * * 5
-            - RESTIC_FORGET_ARGS=--prune --keep-weekly 1 --keep-monthly 1
+            - RESTIC_FORGET_ARGS=--prune --keep-weekly 1 --keep-monthly 1 --group-by paths
             # pre-backup script
             - RESTIC_PRE_BACKUP=if [ ! -d "/data" ]; then mkdir /data; fi && mysqldump -hdb -u$$MW_DB_USER -p$$MW_DB_PASS $$MW_DB_NAME | gzip -c > /data/database.sql.gz
             # post-backup script
