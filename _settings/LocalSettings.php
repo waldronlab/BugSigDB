@@ -304,15 +304,6 @@ $wgHooks['SpecialPageBeforeExecute'][] = function( SpecialPage $special, $subPag
 	}
 };
 
-$wgResourceModules['ext.datatables'] = [
-	'scripts' => [ 'extensions/DataTables/datatables/datatables.min.js' ],
-	'styles' => [ 'extensions/DataTables/datatables/datatables.min.css' ]
-];
-
-$wgHooks['BeforePageDisplay'][] = function( $out ) {
-	$out->addModules( 'ext.datatables' );
-};
-
 // LinkTarget
 wfLoadExtension( 'LinkTarget' );
 $wgLinkTargetParentClasses = [ 'newtab' ];
@@ -379,4 +370,7 @@ if ( !isset( $wgScribuntoEngineConf ) ) {
 $wgScribuntoEngineConf['luasandbox']['cpuLimit'] = 20;
 
 wfLoadExtension( 'SemanticDependencyUpdater' );
+
+// MBSD-192
+wfLoadExtension( 'Gadgets' );
 
