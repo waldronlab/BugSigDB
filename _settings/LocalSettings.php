@@ -222,8 +222,6 @@ require_once "$IP/extensions/ConfirmAccount/ConfirmAccount.php";
 $wgGroupPermissions['*']['createaccount'] = false;
 $wgConfirmAccountContact = "waldronlab@gmail.com";
 
-$wgMaxArticleSize = 2048 * 4;
-
 $wgGroupPermissions['sysop']['smw-pageedit'] = true;
 $wgPageFormsCacheFormDefinitions = false;
 $wgAllowSiteCSSOnRestrictedPages = true;
@@ -233,7 +231,7 @@ $wgGroupPermissions['sysop']['confirmaccount'] = true;
 $wgDisableCounters = false;
 
 // Bump the limits
-$wgMaxArticleSize = 2048*20;
+$wgMaxArticleSize = 2048*80;
 $wgMaxPPExpandDepth = 40*2;
 $wgMaxPPNodeCount = 1000000*2;
 $wgMaxTemplateDepth = 40*2;
