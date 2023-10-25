@@ -372,3 +372,8 @@ wfLoadExtension( 'SemanticDependencyUpdater' );
 // MBSD-192
 wfLoadExtension( 'Gadgets' );
 
+// WLDR-351
+wfLoadExtension( 'TextExtracts' );
+$wgWikiSeoEnableAutoDescription = true;
+$wgWikiSeoTryCleanAutoDescription = true;
+$wgPFStringLengthLimit = 10000;
