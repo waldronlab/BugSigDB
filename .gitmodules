@@ -7,7 +7,7 @@
 	url = https://github.com/SemanticMediaWiki/SemanticScribunto
 [submodule "_resources/extensions/SemanticDependencyUpdater"]
 	path = _resources/extensions/SemanticDependencyUpdater
-	url = https://github.com/gesinn-it/SemanticDependencyUpdater.git
+	url = https://github.com/WikiTeq/SemanticDependencyUpdater.git
 [submodule "_resources/extensions/DynamicPageList3"]
 	path = _resources/extensions/DynamicPageList3
 	url = https://github.com/Universal-Omega/DynamicPageList3.git
