@@ -16,7 +16,7 @@ while true; do
 
     date >> "$logfileNow"
     # Purge the page
-    echo "$MW_CACHE_PURGE_PAGE" | php "$SCRIPT" >> "$logfileNow"
+    printf "$MW_CACHE_PURGE_PAGE" | php "$SCRIPT" >> "$logfileNow"
     # Fetch the page to warm up the caches
     #### Disabled, Varnish does this itself in sub vcl_purge, see MBSD-103 ####
     # curl -I -XGET "http://localhost:8081/$MW_CACHE_PURGE_PAGE" >> "$logfileNow"
