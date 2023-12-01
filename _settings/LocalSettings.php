@@ -183,7 +183,12 @@ define("NS_REVIEW", 3100);
 define("NS_REVIEW_TALK", 3101);
 $wgExtraNamespaces[NS_REVIEW] = "Review";
 $wgExtraNamespaces[NS_REVIEW_TALK] = "Review_talk";
-$wgNamespaceProtection[NS_REVIEW] = [ 'review' ];
+
+// WLDR-356
+# $wgNamespaceProtection[NS_REVIEW] = [ 'review' ]; # removed in favor of CategoryLockdown
+wfLoadExtension( 'CategoryLockdown' );
+$wgCategoryLockdown['Reviews']['edit'] = 'reviewer';
+
 $smwgNamespacesWithSemanticLinks[NS_REVIEW] = true;
 //wfLoadExtension( 'CodeMirror' );
 $wgDefaultUserOptions['usecodemirror'] = 1;
