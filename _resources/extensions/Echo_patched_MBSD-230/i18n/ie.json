@@ -1,0 +1,10 @@
+{
+	"@metadata": {
+		"authors": [
+			"Stavanger7",
+			"Renan"
+		]
+	},
+	"tooltip-pt-notifications-alert": "Tui notificationes",
+	"tooltip-pt-notifications-notice": "{{GENDER:|Tui}} notificationes"
+}
