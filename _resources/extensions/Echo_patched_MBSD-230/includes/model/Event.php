@@ -528,11 +528,8 @@ class EchoEvent extends EchoAbstractEntity implements Bundleable {
 				return $this->title;
 			}
 
-			$title = Title::newFromID( $this->pageId, $fromMaster ? Title::GAID_FOR_UPDATE : 0 );
-			if ( $title ) {
-				$this->title = $title;
-				return $this->title;
-			}
+			$this->title = Title::newFromID( $this->pageId, $fromMaster ? Title::GAID_FOR_UPDATE : 0 );
+			return $this->title;
 		} elseif ( isset( $this->extra['page_title'] ) && isset( $this->extra['page_namespace'] ) ) {
 			$this->title = Title::makeTitleSafe(
 				$this->extra['page_namespace'],
@@ -540,23 +537,15 @@ class EchoEvent extends EchoAbstractEntity implements Bundleable {
 			);
 			return $this->title;
 		}
-		# the latest change to receive a title from archive, the bug was in MW 1.35
-		$dbr = wfGetDB( DB_REPLICA );
-		$row = $dbr->selectRow(
-			'archive',
-			[ 'ar_title', 'ar_namespace' ],
-			[ 'ar_page_id' => $this->pageId ],
-			__METHOD__,
-			[ 'MAX' => 'ar_id', 'ar_id DESC' ]
-		);
-		if ( $row ) {
-			$title = Title::makeTitleSafe( $row->ar_namespace, $row->ar_title );
-		}
-		if ( !$title ) {
-			$title = Title::makeTitleSafe( NS_MAIN, 'UNKNOWN TITLE' );
-		}
-		$this->title = $title;
-		return $this->title;
+
+		return null;
+	}
+
+	/**
+	 * @return int|null
+	 */
+	public function getPageId(): ?int {
+		return $this->pageId;
 	}
 
 	/**
