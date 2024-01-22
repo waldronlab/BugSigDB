@@ -70,6 +70,7 @@ services:
             - ./_resources/footer_icons/smw.png:/var/www/mediawiki/w/smw.png
             - ./_resources/footer_icons/ww.png:/var/www/mediawiki/w/ww.png
             - ./_resources/footer_icons/bioc.png:/var/www/mediawiki/w/bioc.png
+            - ./_resources/extensions/Echo_patched_MBSD-230:/var/www/mediawiki/w/extensions/Echo
             - ./_resources/extensions/DynamicPageList3:/var/www/mediawiki/w/extensions/DynamicPageList3
             - ./_resources/extensions/SubpageWatchlist:/var/www/mediawiki/w/extensions/SubpageWatchlist
             - ./_resources/extensions/SemanticScribunto:/var/www/mediawiki/w/extensions/SemanticScribunto
