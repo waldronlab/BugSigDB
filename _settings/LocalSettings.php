@@ -382,3 +382,6 @@ wfLoadExtension( 'TextExtracts' );
 $wgWikiSeoEnableAutoDescription = true;
 $wgWikiSeoTryCleanAutoDescription = true;
 $wgPFStringLengthLimit = 10000;
+
+// MBSD-247
+wfLoadExtension( 'EmbedVideo' );
