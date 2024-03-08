@@ -385,3 +385,9 @@ $wgPFStringLengthLimit = 10000;
 
 // MBSD-247
 wfLoadExtension( 'EmbedVideo' );
+
+// Disable options to change skins, MBSD-188
+$wgHiddenPrefs[] = 'skin';
+$wgHiddenPrefs[] = 'skin-responsive';
+$wgHiddenPrefs[] = 'skin-prefs';
+$wgHiddenPrefs[] = 'VectorSkinVersion'; // 1.35 Vector
