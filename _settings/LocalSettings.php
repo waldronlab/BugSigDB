@@ -241,7 +241,7 @@ $wgMaxPPExpandDepth = 40*2;
 $wgMaxPPNodeCount = 1000000*2;
 $wgMaxTemplateDepth = 40*2;
 $wgMaxGeneratedPPNodeCount = 1000000*2;
-$wgExpensiveParserFunctionLimit = 99*2;
+$wgExpensiveParserFunctionLimit = 99*4;
 
 $egLoopsCounterLimit = 3000;
 
