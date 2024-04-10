@@ -373,6 +373,8 @@ if ( !isset( $wgScribuntoEngineConf ) ) {
 $wgScribuntoEngineConf['luasandbox']['cpuLimit'] = 20;
 
 wfLoadExtension( 'SemanticDependencyUpdater' );
+// MBSD-256
+$wgSDUUseJobQueue = true;
 
 // MBSD-192
 wfLoadExtension( 'Gadgets' );
