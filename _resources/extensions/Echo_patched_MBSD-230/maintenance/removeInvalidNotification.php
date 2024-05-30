@@ -16,13 +16,14 @@ require_once getenv( 'MW_INSTALL_PATH' ) !== false
  */
 class RemoveInvalidNotification extends Maintenance {
 
-	protected $batchSize = 500;
+	/** @var string[] */
 	protected $invalidEventType = [ 'article-linked' ];
 
 	public function __construct() {
 		parent::__construct();
 
 		$this->addDescription( "Removes invalid notifications from the database." );
+		$this->setBatchSize( 500 );
 		$this->requireExtension( 'Echo' );
 	}
 
@@ -34,12 +35,13 @@ class RemoveInvalidNotification extends Maintenance {
 			return;
 		}
 
-		$dbw = $lbFactory->getEchoDb( DB_MASTER );
+		$dbw = $lbFactory->getEchoDb( DB_PRIMARY );
 		$dbr = $lbFactory->getEchoDb( DB_REPLICA );
 
-		$count = $this->batchSize;
+		$batchSize = $this->getBatchSize();
+		$count = $batchSize;
 
-		while ( $count == $this->batchSize ) {
+		while ( $count == $batchSize ) {
 			$res = $dbr->select(
 				[ 'echo_event' ],
 				[ 'event_id' ],
@@ -47,12 +49,13 @@ class RemoveInvalidNotification extends Maintenance {
 					'event_type' => $this->invalidEventType,
 				],
 				__METHOD__,
-				[ 'LIMIT' => $this->batchSize ]
+				[ 'LIMIT' => $batchSize ]
 			);
 
 			$event = [];
 			$count = 0;
 			foreach ( $res as $row ) {
+				// @phan-suppress-next-line PhanPossiblyUndeclaredVariable
 				if ( !in_array( $row->event_id, $event ) ) {
 					$event[] = $row->event_id;
 				}

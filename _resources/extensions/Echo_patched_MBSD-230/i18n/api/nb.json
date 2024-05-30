@@ -31,8 +31,11 @@
 	"apihelp-echopushsubscriptions+create-summary": "Registrer push-abonnement for den gjeldende brukeren.",
 	"apihelp-echopushsubscriptions+create-param-provider": "Push-tjenestetilbyderen det skal registreres en nøkkel for.",
 	"apihelp-echopushsubscriptions+create-param-providertoken": "Nøkkelen som skal registreres.",
+	"apihelp-echopushsubscriptions+create-param-topic": "APNS-emnet (app bundle ID) varselet skal sendes til.",
 	"apihelp-echopushsubscriptions+create-example": "Registrer et push-abonnement for den gjeldende brukeren.",
+	"apihelp-echopushsubscriptions+delete-summary": "Avregistrer push-abonnementer for den gjeldende brukeren eller en annen angitt bruker.",
 	"apihelp-echopushsubscriptions+delete-param-providertoken": "Nøkkelen tilknyttet push-abonnementet som skal avregistreres.",
+	"apihelp-echopushsubscriptions+delete-param-centraluserid": "Sentral bruker-ID tilknyttet abonnementet som skal avregistreres.",
 	"apihelp-echopushsubscriptions+delete-example": "Avregistrer et push-abonnement for den gjeldende brukeren.",
 	"apihelp-query+notifications-description": "Hent ventende beskjeder for den aktuelle brukeren.",
 	"apihelp-query+notifications-summary": "Hent varsler som venter for den gjeldende brukeren.",
@@ -55,8 +58,10 @@
 	"apihelp-query+notifications-param-messageunreadfirst": "Hvorvidt uleste beskjeder skal vises først (kun brukt hvos groupbysection er satt).",
 	"apihelp-query+notifications-param-titles": "Bare returner notiser for disse sidene. For å få notiser som ikke er knyttet til noen side, bruk [] som tittel.",
 	"apihelp-query+notifications-param-bundle": "Hvorvidt uleste beskjeder skal grupperes.",
-	"apihelp-query+notifications-example-1": "List beskjeder",
-	"apihelp-query+notifications-example-2": "List beskjeder, gruppert etter seksjon, med antall",
+	"apihelp-query+notifications-param-notifiertypes": "Varslingstyper varsel skal returneres for.",
+	"apihelp-query+notifications-example-1": "List opp nettvarsler.",
+	"apihelp-query+notifications-example-2": "List opp nettvarsler, gruppert etter seksjon, med antall",
+	"apihelp-query+notifications-example-3": "List opp epostvarsler",
 	"apihelp-query+unreadnotificationpages-description": "Få sider som har uleste notiser for gjeldende bruker.",
 	"apihelp-query+unreadnotificationpages-summary": "Hent sider det er uleste varsler for for den gjeldende brukeren.",
 	"apihelp-query+unreadnotificationpages-param-grouppages": "Grupper diskusjonssider sammen med hovedsidene, og grupper beskjeder som ikke er knytta til en side sammen med den aktive brukerens brukerside.",
@@ -75,5 +80,7 @@
 	"apiwarn-echo-deprecation-html": "<kbd>notformat=html</kbd> er utdatert og vil fjernes snart. Bruk <kbd>notformat=special</kbd> i stedet.",
 	"apierror-echo-event-creation-failed": "Kunne ikke opprette Echo-hendelse",
 	"apierror-echo-push-token-exists": "Den gitte nøkkelen finnes allerede i databasen.",
-	"apierror-echo-push-token-not-found": "Den gitte nøkkelen ble ikke funnet i databasen."
+	"apierror-echo-push-token-not-found": "Den gitte nøkkelen ble ikke funnet i databasen.",
+	"apierror-echo-push-too-many-subscriptions": "Den gjeldende brukeren har allerede registrert maksimalt antall pushabonnementer ($1).",
+	"apierror-echo-push-topic-required": "Emnefeltet er påkrevd for denne tilbyderen."
 }

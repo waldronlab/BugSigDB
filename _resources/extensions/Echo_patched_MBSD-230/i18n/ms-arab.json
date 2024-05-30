@@ -8,6 +8,7 @@
 	"echo-pref-send-me": "هانتر ساي:",
 	"echo-pref-email": "إي-ميل",
 	"echo-log": "لوݢ عوام",
+	"echo-new-messages": "اندا اد ڤسنن بارو",
 	"echo-category-title-system": "{{PLURAL:$1|سيستم}}",
 	"echo-category-title-system-noemail": "{{PLURAL:$1|سيستم}}",
 	"echo-category-title-system-emailonly": "{{PLURAL:$1|سيستم}}",

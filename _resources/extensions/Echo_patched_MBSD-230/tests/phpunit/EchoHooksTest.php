@@ -1,8 +1,10 @@
 <?php
 
-class EchoHooksTest extends MediaWikiTestCase {
+use MediaWiki\Extension\Notifications\Hooks as EchoHooks;
+
+class EchoHooksTest extends MediaWikiIntegrationTestCase {
 	/**
-	 * @covers \EchoHooks::onUserGetDefaultOptions()
+	 * @covers \MediaWiki\Extension\Notifications\Hooks::onUserGetDefaultOptions()
 	 */
 	public function testOnUserGetDefaultOptions() {
 		$this->setMwGlobals( [

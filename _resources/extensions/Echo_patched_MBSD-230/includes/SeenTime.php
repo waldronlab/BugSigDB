@@ -84,8 +84,9 @@ class EchoSeenTime {
 		$data = self::cache()->get( $this->getMemcKey( $type ) );
 
 		if ( $data === false ) {
+			$userOptionsLookup = MediaWikiServices::getInstance()->getUserOptionsLookup();
 			// Check if the user still has it set in their preferences
-			$data = $this->user->getOption( 'echo-seen-time', false );
+			$data = $userOptionsLookup->getOption( $this->user, 'echo-seen-time', false );
 		}
 
 		if ( $data === false ) {
@@ -119,7 +120,7 @@ class EchoSeenTime {
 		$key = $this->getMemcKey( $type );
 		$cache = self::cache();
 		$cache->set( $key, $time, $cache::TTL_YEAR, BagOStuff::WRITE_CACHE_ONLY );
-		DeferredUpdates::addCallableUpdate( function () use ( $key, $time, $cache ) {
+		DeferredUpdates::addCallableUpdate( static function () use ( $key, $time, $cache ) {
 			$cache->set( $key, $time, $cache::TTL_YEAR );
 		} );
 	}
@@ -144,13 +145,15 @@ class EchoSeenTime {
 		$localKey = self::cache()->makeKey(
 			'echo', 'seen', $type, 'time', $this->user->getId()
 		);
+		$userOptionsLookup = MediaWikiServices::getInstance()->getUserOptionsLookup();
 
-		if ( !$this->user->getOption( 'echo-cross-wiki-notifications' ) ) {
+		if ( !$userOptionsLookup->getOption( $this->user, 'echo-cross-wiki-notifications' ) ) {
 			return $localKey;
 		}
 
-		$lookup = CentralIdLookup::factory();
-		$globalId = $lookup->centralIdFromLocalUser( $this->user, CentralIdLookup::AUDIENCE_RAW );
+		$globalId = MediaWikiServices::getInstance()
+			->getCentralIdLookup()
+			->centralIdFromLocalUser( $this->user, CentralIdLookup::AUDIENCE_RAW );
 
 		if ( !$globalId ) {
 			return $localKey;

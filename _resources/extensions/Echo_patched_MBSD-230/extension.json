@@ -15,34 +15,65 @@
 	"license-name": "MIT",
 	"type": "specialpage",
 	"requires": {
-		"MediaWiki": ">= 1.35.0"
+		"MediaWiki": ">= 1.39.0"
 	},
 	"APIMetaModules": {
-		"notifications": "ApiEchoNotifications",
-		"unreadnotificationpages": "ApiEchoUnreadNotificationPages"
+		"notifications": {
+			"class": "ApiEchoNotifications",
+			"services": [
+				"MainConfig"
+			]
+		},
+		"unreadnotificationpages": {
+			"class": "ApiEchoUnreadNotificationPages",
+			"services": [
+				"PageStore",
+				"TitleFactory"
+			]
+		}
 	},
 	"APIModules": {
 		"echomarkread": "ApiEchoMarkRead",
 		"echomarkseen": "ApiEchoMarkSeen",
 		"echoarticlereminder": "ApiEchoArticleReminder",
-		"echomute": "ApiEchoMute"
+		"echomute": {
+			"class": "ApiEchoMute",
+			"services": [
+				"CentralIdLookup",
+				"UserOptionsManager"
+			]
+		}
 	},
 	"DefaultUserOptions": {
 		"echo-email-frequency": 0,
 		"echo-dont-email-read-notifications": false
 	},
 	"ExtensionFunctions": [
-		"EchoHooks::initEchoExtension"
+		"MediaWiki\\Extension\\Notifications\\Hooks::initEchoExtension"
 	],
 	"JobClasses": {
 		"EchoNotificationJob": "EchoNotificationJob",
 		"EchoNotificationDeleteJob": "EchoNotificationDeleteJob",
-		"EchoPushNotificationRequest": "EchoPush\\NotificationRequestJob"
+		"EchoPushNotificationRequest": "MediaWiki\\Extension\\Notifications\\Push\\NotificationRequestJob"
 	},
 	"SpecialPages": {
 		"Notifications": "SpecialNotifications",
-		"DisplayNotificationsConfiguration": "SpecialDisplayNotificationsConfiguration",
+		"DisplayNotificationsConfiguration": {
+			"class": "SpecialDisplayNotificationsConfiguration",
+			"services": [
+				"EchoAttributeManager",
+				"UserOptionsManager"
+			]
+		},
 		"NotificationsMarkRead": "SpecialNotificationsMarkRead"
+	},
+	"AvailableRights": [
+		"manage-all-push-subscriptions"
+	],
+	"GroupPermissions": {
+		"push-subscription-manager": {
+			"manage-all-push-subscriptions": true
+		}
 	},
 	"MessagesDirs": {
 		"Echo": [
@@ -56,13 +87,22 @@
 	"QUnitTestModule": {
 		"localBasePath": "",
 		"remoteExtPath": "Echo",
-		"templates": {
-			"NotificationBadge.mustache": "modules/mobile/NotificationBadge.mustache"
-		},
-		"packageFiles": [
-			"tests/qunit/mobile/index.js",
+		"dependencies": [
+			"ext.echo.dm",
+			"ext.echo.mobile"
+		],
+		"scripts": [
 			"tests/qunit/mobile/test_NotificationBadge.js",
-			"modules/mobile/NotificationBadge.js"
+			"tests/qunit/model/test_mw.echo.dm.BundleNotificationItem.js",
+			"tests/qunit/model/test_mw.echo.dm.CrossWikiNotificationItem.js",
+			"tests/qunit/model/test_mw.echo.dm.FiltersModel.js",
+			"tests/qunit/model/test_mw.echo.dm.NotificationGroupsList.js",
+			"tests/qunit/model/test_mw.echo.dm.NotificationItem.js",
+			"tests/qunit/model/test_mw.echo.dm.NotificationsList.js",
+			"tests/qunit/model/test_mw.echo.dm.PaginationModel.js",
+			"tests/qunit/model/test_mw.echo.dm.SeenTimeModel.js",
+			"tests/qunit/model/test_mw.echo.dm.SourcePagesModel.js",
+			"tests/qunit/model/test_mw.echo.dm.UnreadNotificationCounter.js"
 		]
 	},
 	"ResourceModules": {
@@ -71,7 +111,7 @@
 				"logger/mw.echo.Logger.js",
 				{
 					"name": "logger/config.json",
-					"callback": "EchoHooks::getLoggerConfigVars"
+					"callback": "MediaWiki\\Extension\\Notifications\\Hooks::getLoggerConfigVars"
 				}
 			],
 			"dependencies": [
@@ -145,8 +185,14 @@
 				"vector": [
 					"styles/mw.echo.ui.overlay.vector.less"
 				],
+				"vector-2022": [
+					"styles/mw.echo.ui.overlay.vector.less"
+				],
 				"minerva": [
 					"styles/mw.echo.ui.overlay.minerva.less"
+				],
+				"wikimediaapiportal": [
+					"styles/mw.echo.ui.overlay.wikimediaapiportal.less"
 				]
 			},
 			"dependencies": [
@@ -289,6 +335,10 @@
 			"packageFiles": [
 				"mobile/notifications.js",
 				"mobile/list.js",
+				{
+					"name": "mobile/config.json",
+					"callback": "MediaWiki\\Extension\\Notifications\\Hooks::getConfigVars"
+				},
 				"mobile/overlay.js",
 				"mobile/NotificationBadge.js",
 				"mobile/notificationsFilterOverlay.js"
@@ -303,7 +353,7 @@
 				"ext.echo.init.js",
 				{
 					"name": "config.json",
-					"callback": "EchoHooks::getConfigVars"
+					"callback": "MediaWiki\\Extension\\Notifications\\Hooks::getConfigVars"
 				}
 			],
 			"dependencies": [
@@ -333,6 +383,9 @@
 					"nojs/mw.echo.badge.monobook.less"
 				],
 				"vector": [
+					"nojs/mw.echo.badge.vector.less"
+				],
+				"vector-2022": [
 					"nojs/mw.echo.badge.vector.less"
 				]
 			},
@@ -388,6 +441,11 @@
 				"styles/mw.echo.ui.CrossWikiUnreadFilterWidget.less",
 				"styles/mw.echo.ui.SpecialHelpMenuWidget.less"
 			],
+			"skinStyles": {
+				"minerva": [
+					"styles/mw.echo.ui.NotificationsInboxWidget.minerva.less"
+				]
+			},
 			"dependencies": [
 				"ext.echo.ui",
 				"mediawiki.Uri",
@@ -406,7 +464,8 @@
 				"echo-learn-more",
 				"mypreferences",
 				"echo-specialpage-section-markread",
-				"echo-specialpage-pagefilterwidget-aria-label"
+				"echo-specialpage-pagefilterwidget-aria-label",
+				"echo-specialpage-special-help-menu-widget-aria-label"
 			],
 			"targets": [
 				"desktop",
@@ -428,45 +487,44 @@
 		"remoteExtPath": "Echo/modules"
 	},
 	"Hooks": {
-		"SkinMinervaReplaceNotificationsBadge": "EchoHooks::onSkinMinervaReplaceNotificationsBadge",
-		"LoadExtensionSchemaUpdates": "EchoHooks::onLoadExtensionSchemaUpdates",
-		"GetPreferences": "EchoHooks::getPreferences",
-		"PersonalUrls": "EchoHooks::onPersonalUrls",
-		"BeforePageDisplay": "EchoHooks::beforePageDisplay",
-		"ResourceLoaderRegisterModules": "EchoHooks::onResourceLoaderRegisterModules",
-		"ResourceLoaderTestModules": "EchoHooks::onResourceLoaderTestModules",
-		"UserGroupsChanged": "EchoHooks::onUserGroupsChanged",
-		"UserLoadOptions": "EchoHooks::onUserLoadOptions",
-		"UserSaveOptions": "EchoHooks::onUserSaveOptions",
-		"UserGetDefaultOptions": "EchoHooks::onUserGetDefaultOptions",
-		"UserClearNewTalkNotification": "EchoHooks::onUserClearNewTalkNotification",
-		"ParserTestTables": "EchoHooks::onParserTestTables",
-		"EmailUserComplete": "EchoHooks::onEmailUserComplete",
-		"LoginFormValidErrorMessages": "EchoHooks::onLoginFormValidErrorMessages",
-		"OutputPageCheckLastModified": "EchoHooks::onOutputPageCheckLastModified",
-		"ArticleDeleteComplete": "EchoHooks::onArticleDeleteComplete",
-		"ArticleUndelete": "EchoHooks::onArticleUndelete",
-		"UserMergeAccountFields": "EchoHooks::onUserMergeAccountFields",
-		"MergeAccountFromTo": "EchoHooks::onMergeAccountFromTo",
-		"UserMergeAccountDeleteTables": "EchoHooks::onUserMergeAccountDeleteTables",
-		"EchoGetBundleRules": "EchoHooks::onEchoGetBundleRules",
-		"EchoAbortEmailNotification": "EchoHooks::onEchoAbortEmailNotification",
-		"PageSaveComplete": "EchoHooks::onPageSaveComplete",
-		"LocalUserCreated": "EchoHooks::onLocalUserCreated",
-		"RollbackComplete": "EchoHooks::onRollbackComplete",
-		"UserSaveSettings": "EchoHooks::onUserSaveSettings",
-		"AbortTalkPageEmailNotification": "EchoHooks::onAbortTalkPageEmailNotification",
-		"SendWatchlistEmailNotification": "EchoHooks::onSendWatchlistEmailNotification",
-		"GetNewMessagesAlert": "EchoHooks::abortNewMessagesAlert",
-		"LinksUpdateAfterInsert": "EchoHooks::onLinksUpdateAfterInsert",
-		"SpecialMuteModifyFormFields": "EchoHooks::onSpecialMuteModifyFormFields",
+		"LoadExtensionSchemaUpdates": "MediaWiki\\Extension\\Notifications\\Hooks::onLoadExtensionSchemaUpdates",
+		"GetPreferences": "MediaWiki\\Extension\\Notifications\\Hooks::getPreferences",
+		"BeforePageDisplay": "MediaWiki\\Extension\\Notifications\\Hooks::beforePageDisplay",
+		"ResourceLoaderRegisterModules": "MediaWiki\\Extension\\Notifications\\Hooks::onResourceLoaderRegisterModules",
+		"UserGroupsChanged": "MediaWiki\\Extension\\Notifications\\Hooks::onUserGroupsChanged",
+		"LoadUserOptions": "MediaWiki\\Extension\\Notifications\\Hooks::onLoadUserOptions",
+		"SaveUserOptions": "MediaWiki\\Extension\\Notifications\\Hooks::onSaveUserOptions",
+		"UserGetDefaultOptions": "MediaWiki\\Extension\\Notifications\\Hooks::onUserGetDefaultOptions",
+		"UserClearNewTalkNotification": "MediaWiki\\Extension\\Notifications\\Hooks::onUserClearNewTalkNotification",
+		"EmailUserComplete": "MediaWiki\\Extension\\Notifications\\Hooks::onEmailUserComplete",
+		"LoginFormValidErrorMessages": "MediaWiki\\Extension\\Notifications\\Hooks::onLoginFormValidErrorMessages",
+		"OutputPageCheckLastModified": "MediaWiki\\Extension\\Notifications\\Hooks::onOutputPageCheckLastModified",
+		"ArticleDeleteComplete": "MediaWiki\\Extension\\Notifications\\Hooks::onArticleDeleteComplete",
+		"ArticleUndelete": "MediaWiki\\Extension\\Notifications\\Hooks::onArticleUndelete",
+		"UserMergeAccountFields": "MediaWiki\\Extension\\Notifications\\Hooks::onUserMergeAccountFields",
+		"MergeAccountFromTo": "MediaWiki\\Extension\\Notifications\\Hooks::onMergeAccountFromTo",
+		"UserMergeAccountDeleteTables": "MediaWiki\\Extension\\Notifications\\Hooks::onUserMergeAccountDeleteTables",
+		"EchoGetBundleRules": "MediaWiki\\Extension\\Notifications\\Hooks::onEchoGetBundleRules",
+		"EchoAbortEmailNotification": "MediaWiki\\Extension\\Notifications\\Hooks::onEchoAbortEmailNotification",
+		"PageSaveComplete": "MediaWiki\\Extension\\Notifications\\Hooks::onPageSaveComplete",
+		"LocalUserCreated": "MediaWiki\\Extension\\Notifications\\Hooks::onLocalUserCreated",
+		"RollbackComplete": "MediaWiki\\Extension\\Notifications\\Hooks::onRollbackComplete",
+		"UserSaveSettings": "MediaWiki\\Extension\\Notifications\\Hooks::onUserSaveSettings",
+		"AbortTalkPageEmailNotification": "MediaWiki\\Extension\\Notifications\\Hooks::onAbortTalkPageEmailNotification",
+		"SendWatchlistEmailNotification": "MediaWiki\\Extension\\Notifications\\Hooks::onSendWatchlistEmailNotification",
+		"GetNewMessagesAlert": "MediaWiki\\Extension\\Notifications\\Hooks::abortNewMessagesAlert",
+		"LinksUpdateComplete": "MediaWiki\\Extension\\Notifications\\Hooks::onLinksUpdateComplete",
+		"SpecialMuteModifyFormFields": "MediaWiki\\Extension\\Notifications\\Hooks::onSpecialMuteModifyFormFields",
 		"RecentChange_save": "main",
-		"ApiMain::moduleManager": "EchoHooks::onApiMainModuleManager"
+		"ApiMain::moduleManager": "MediaWiki\\Extension\\Notifications\\Hooks::onApiMainModuleManager",
+		"SkinTemplateNavigation::Universal": "MediaWiki\\Extension\\Notifications\\Hooks::onSkinTemplateNavigationUniversal"
 	},
 	"HookHandlers": {
 		"main": {
-			"class": "\\EchoHooks",
-			"services": [ "MainConfig" ]
+			"class": "MediaWiki\\Extension\\Notifications\\Hooks",
+			"services": [
+				"MainConfig"
+			]
 		}
 	},
 	"config": {
@@ -656,6 +714,12 @@
 		},
 		"EchoNotificationIcons": {
 			"value": {
+				"watchlist-progressive": {
+					"path": {
+						"ltr": "Echo/modules/icons/watchlist-ltr-progressive.svg",
+						"rtl": "Echo/modules/icons/watchlist-rtl-progressive.svg"
+					}
+				},
 				"placeholder": {
 					"path": "Echo/modules/icons/notice.svg"
 				},
@@ -800,6 +864,7 @@
 					],
 					"category": "minor-watchlist",
 					"group": "interactive",
+					"section": "message",
 					"presentation-model": "EchoWatchlistChangePresentationModel",
 					"bundle": {
 						"web": true,
@@ -811,6 +876,7 @@
 					"user-locators": [
 						"EchoUserLocator::locateUsersWatchingTitle"
 					],
+					"section": "message",
 					"category": "watchlist",
 					"group": "interactive",
 					"presentation-model": "EchoWatchlistChangePresentationModel",
@@ -889,7 +955,7 @@
 						"expandable": true
 					},
 					"group": "positive",
-					"section": "alert",
+					"section": "message",
 					"presentation-model": "EchoMentionStatusPresentationModel"
 				},
 				"user-rights": {
@@ -999,12 +1065,17 @@
 		"EchoPushServiceBaseUrl": {
 			"value": false,
 			"description": "Request endpoint URL for the push notification service"
+		},
+		"EchoPushMaxSubscriptionsPerUser": {
+			"value": 0,
+			"description": "Maximum number of push subscriptions that may be stored in the DB at any given time for a single central user ID."
 		}
 	},
 	"attributes": {
 		"EventLogging": {
 			"Schemas": {
-				"EchoInteraction": 15823738
+				"EchoInteraction": "/analytics/legacy/echointeraction/1.0.0",
+				"EchoMail": "/analytics/legacy/echomail/1.0.0"
 			}
 		}
 	},
@@ -1050,11 +1121,9 @@
 		"EchoForeignNotifications": "includes/ForeignNotifications.php",
 		"EchoForeignPresentationModel": "includes/formatters/EchoForeignPresentationModel.php",
 		"EchoForeignWikiRequest": "includes/ForeignWikiRequest.php",
-		"EchoHooks": "includes/EchoHooks.php",
 		"EchoHtmlDigestEmailFormatter": "includes/formatters/EchoHtmlDigestEmailFormatter.php",
 		"EchoHtmlEmailFormatter": "includes/formatters/EchoHtmlEmailFormatter.php",
 		"EchoIcon": "includes/formatters/EchoIcon.php",
-		"EchoIteratorDecorator": "includes/iterator/IteratorDecorator.php",
 		"EchoLocalCache": "includes/cache/LocalCache.php",
 		"EchoMentionInSummaryPresentationModel": "includes/formatters/MentionInSummaryPresentationModel.php",
 		"EchoMentionPresentationModel": "includes/formatters/MentionPresentationModel.php",
@@ -1105,12 +1174,12 @@
 		"SpecialNotificationsFormatter": "includes/formatters/SpecialNotificationsFormatter.php",
 		"SpecialNotificationsMarkRead": "includes/special/SpecialNotificationsMarkRead.php",
 		"UpdateEchoSchemaForSuppression": "maintenance/updateEchoSchemaForSuppression.php",
-		"EchoUpdatePerUserBlacklist": "maintenance/updatePerUserBlacklist.php"
+		"EchoUpdatePerUserBlacklist": "maintenance/updatePerUserBlacklist.php",
+		"EchoPush\\PushNotifier": "includes/Push/PushNotifier.php",
+		"MediaWiki\\Extension\\Notifications\\Push\\PushNotifier": "includes/Push/PushNotifier.php"
 	},
 	"AutoloadNamespaces": {
-		"EchoOOUI\\": "includes/ooui/",
-		"EchoPush\\": "includes/Push/",
-		"EchoPush\\Api\\": "includes/api/Push/"
+		"MediaWiki\\Extension\\Notifications\\": "includes/"
 	},
 	"TestAutoloadClasses": {
 		"EchoAbstractMapperStub": "tests/phpunit/mapper/EchoAbstractMapperStub.php",

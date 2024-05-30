@@ -1,5 +1,4 @@
 @import '../echo.variables.less';
-@import 'mediawiki.mixins.less';
 
 /* stylelint-disable no-descending-specificity */
 /* We have to include the #pt-notifications selector due to monobook */
@@ -8,18 +7,18 @@
 	#pt-notifications-notice & {
 		position: relative;
 		display: block;
+		box-sizing: border-box;
 		width: 20px;
 		height: 20px;
 		margin: 0 2px;
 		// Hide the text, but keep accessible for screen-readers
 		// Later we put the counter back onscreen with a zero text-indent
-		top: -5px;
+		top: 0;
 		text-indent: -9999px;
 		border-radius: @border-radius-base;
 		cursor: pointer;
 		text-decoration: none;
 		line-height: normal;
-		.box-sizing( border-box );
 		opacity: 0.87;
 		color: transparent;
 
@@ -30,7 +29,7 @@
 		}
 
 		&:focus {
-			.box-shadow( ~'0 0 0 1px #fff, 0 0 0 3px #36c' );
+			box-shadow: 0 0 0 1px #fff, 0 0 0 3px #36c;
 			opacity: 1;
 
 			&:after {

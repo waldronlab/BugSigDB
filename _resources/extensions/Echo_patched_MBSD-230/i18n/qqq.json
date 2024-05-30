@@ -1,6 +1,7 @@
 {
 	"@metadata": {
 		"authors": [
+			"Ajeje Brazorf",
 			"Amire80",
 			"Ans",
 			"Beta16",
@@ -25,6 +26,7 @@
 			"Purodha",
 			"Pxos",
 			"Raymond",
+			"Rodney Araujo",
 			"Shirayuki",
 			"Siebrand",
 			"Tacsipacsi",
@@ -34,12 +36,10 @@
 			"Umherirrender",
 			"Urhixidur",
 			"Verdy p",
-			"రహ్మానుద్దీన్",
-			"Rodney Araujo",
-			"Ajeje Brazorf"
+			"రహ్మానుద్దీన్"
 		]
 	},
-	"echo-desc": "{{desc|name=Echo|url=https://www.mediawiki.org/wiki/Extension:Echo}} The [https://www.mediawiki.org/wiki/Help:Notifications Mediawiki help] page gives notes on the terminology in this extension.",
+	"echo-desc": "{{desc|name=Echo|url=https://www.mediawiki.org/wiki/Extension:Echo}} The [https://www.mediawiki.org/wiki/Help:Notifications MediaWiki help] page gives notes on the terminology in this extension.",
 	"prefs-echo": "Name of preferences section for Echo notifications.\n{{Identical|Notification}}",
 	"prefs-emailsettings": "Header for the section of preferences that deals with how often notification emails are sent out and what address they are sent to.\n{{Identical|E-mail option}}",
 	"prefs-echosubscriptions": "Header for the section of preferences that deals with which notifications the user receives",
@@ -53,9 +53,9 @@
 	"echo-pref-send-me": "Label for the following email delivery options:\n* {{msg-mw|Echo-pref-email-frequency-never}}\n* {{msg-mw|Echo-pref-email-frequency-immediately}} (default)\n* {{msg-mw|Echo-pref-email-frequency-daily}}\n* {{msg-mw|Echo-pref-email-frequency-weekly}}",
 	"echo-pref-send-to": "Label for the address to send email notifications to.",
 	"echo-pref-email-format": "Label for individual email notification format, the label will be updated once HTML email is ready for email digest.\n\nUsed as label for the select box which has the following options:\n* {{msg-mw|Echo-pref-email-format-html}}\n* {{msg-mw|Echo-pref-email-format-plain-text}}",
-	"echo-pref-web": "Label for list of notifications which are delivered on the web. In other words, on the wiki itself rather by email or another method. This should be kept very short.\n\n{{Identical|Web}}",
-	"echo-pref-email": "Label for list of notifications which are delivered via email. This should be kept very short.\n{{Identical|E-mail}}",
-	"echo-pref-push": "Label for the notification preferences column controlling which notifications should be delivered by push notification to Wikipedia mobile app installations for which the user has registered a push notification subscription.",
+	"echo-pref-web": "Label for list of notifications which are delivered on the web. In other words, on the wiki itself rather by email or another method. This should be kept very short.\n\nShould be worded similarly to the labels for the other columns:\n* {{msg-mw|echo-pref-email}}\n* {{msg-mw|echo-pref-push}}\n\n{{Identical|Web}}",
+	"echo-pref-email": "Label for list of notifications which are delivered via email. This should be kept very short.\n\nShould be worded similarly to the labels for the other columns:\n* {{msg-mw|echo-pref-web}}\n* {{msg-mw|echo-pref-push}}\n\n{{Identical|E-mail}}",
+	"echo-pref-push": "Heading label for the notification preferences column controlling which notifications should be delivered by push notification to Wikipedia mobile app installations for which the user has registered a push notification subscription.\n\nShould be worded similarly to the labels for the other columns:\n* {{msg-mw|echo-pref-web}}\n* {{msg-mw|echo-pref-email}}",
 	"echo-pref-email-frequency-never": "Option for users who don't want to receive any email notifications\n\nSee also:\n* {{msg-mw|Echo-pref-email-frequency-immediately}}\n* {{msg-mw|Echo-pref-email-frequency-daily}}\n* {{msg-mw|Echo-pref-email-frequency-weekly}}",
 	"echo-pref-email-frequency-immediately": "Option for users who want to receive email for each notification as it occurs",
 	"echo-pref-email-frequency-daily": "Option for users who want to receive a daily digest of email notifications",
@@ -69,7 +69,7 @@
 	"echo-learn-more": "Text for link to more information about a topic.\n{{Identical|Learn more}}",
 	"echo-log": "Text for link to go to Special:Log",
 	"echo-new-messages": "Message to let the user know that they have new talk page messages, displayed in the personal menu (top-right corner on Vector and Monobook).\n\nKeep this message short. It '''should not''' end in a full stop.",
-	"echo-category-title-edit-user-talk": "{{doc-echo-category-title|tooltip=Echo-pref-tooltip-edit-user-talk}}",
+	"echo-category-title-edit-user-talk": "'''When translating, please emphasize the distinction between “my user talk page” and “other talk pages”, to avoid confusion with {{msg-mw|echo-category-title-dt-subscription}}.'''\n\n{{doc-echo-category-title|tooltip=Echo-pref-tooltip-edit-user-talk}}",
 	"echo-category-title-article-linked": "{{doc-echo-category-title|tooltip=Echo-pref-tooltip-article-linked}}",
 	"echo-category-title-reverted": "{{doc-echo-category-title|tooltip=Echo-pref-tooltip-reverted}}",
 	"echo-category-title-mention": "{{doc-echo-category-title|tooltip=Echo-pref-tooltip-mention}}\n{{Identical|Mention}}",
@@ -201,6 +201,7 @@
 	"notification-header-watchlist-multiuser-deleted": "Text of a notification when multiple different users delete pages on your watchlist.\n* $1 - name of the page that was deleted (with namespace) \n* $2 - name of the user viewing the notification, can be used for GENDER \n* $3 - Number of times the page has been deleted. (Always greater than one)",
 	"notification-header-watchlist-multiuser-moved": "Text of a notification when multiple different users move pages on your watchlist.\n* $1 - name of the page that was moved (with namespace) \n* $2 - name of the user viewing the notification, can be used for GENDER \n* $3 - Number of times the page has been moved. (Always greater than one)",
 	"notification-header-watchlist-multiuser-restored": "Text of a notification when multiple different users restore pages on your watchlist.\n* $1 - name of the page that was restored (with namespace) \n* $2 - name of the user viewing the notification, can be used for GENDER \n* $3 - Number of times the page has been restored. (Always greater than one)",
+	"notification-body-watchlist-once": "Text added to email notifications of watchlist changes to specify that no further emails will be sent for that page until it is visited. \n* $1 - user's name for use in GENDER",
 	"notification-welcome-link": "{{notranslate}}",
 	"notification-welcome-linktext": "Link text for link to the wiki's welcome or introduction page.\n{{Identical|Welcome}}",
 	"notification-header-thank-you-1-edit": "Text of the editor welcome notification for their first edit.\nParameters:\n* $1 - the formatted username of the new user\n* $2 - the username for gender purposes",
@@ -263,5 +264,10 @@
 	"notification-body-foreign": "{{notranslate}}",
 	"echo-foreign-wiki-lang": "{{optional}}\nTitle of the wiki for which you're seeing foreign notifications:\n\nParameters:\n* $1 - the name of the site (e.g. 'Wikipedia', 'Wikiversity', ...)\n* $2 - the language of the website (e.g. 'English', 'Deutsch', ...)",
 	"echo-badge-count": "{{optional}}\nUsed only for the two Echo badges shown on the personal toolbar.\nParameters:\n* $1 - Formatted notification count.  However, for 100 or greater, 100 will be passed.",
-	"echo-blacklist": "{{ignored}} Site-wide list of accounts that cannot trigger notifications. Can be overridden by users at [[Special:MyPage/Echo-whitelist]]."
+	"echo-blacklist": "{{ignored}} Site-wide list of accounts that cannot trigger notifications. Can be overridden by users at [[Special:MyPage/Echo-whitelist]].",
+	"right-manage-all-push-subscriptions": "{{doc-right|manage-all-push-subscriptions}}",
+	"action-manage-all-push-subscriptions": "{{doc-action|manage-all-push-subscriptions}}",
+	"group-push-subscription-manager": "{{doc-group|push-subscription-manager}}",
+	"group-push-subscription-manager-member": "{{doc-group|push-subscription-manager|member}}",
+	"grouppage-push-subscription-manager": "{{doc-group|push-subscription-manager|page}}"
 }

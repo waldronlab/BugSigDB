@@ -1,11 +1,15 @@
 <?php
 
+use MediaWiki\MediaWikiServices;
+use MediaWiki\User\UserIdentity;
+
 /**
  * Manages what wikis a user has unread notifications on
  */
 class EchoUnreadWikis {
 
-	const DEFAULT_TS = '00000000000000';
+	private const DEFAULT_TS = '00000000000000';
+	private const DEFAULT_TS_DB = '00010101010101';
 
 	/**
 	 * @var int
@@ -28,12 +32,13 @@ class EchoUnreadWikis {
 	/**
 	 * Use the user id provided by the CentralIdLookup
 	 *
-	 * @param User $user
+	 * @param UserIdentity $user
 	 * @return EchoUnreadWikis|false
 	 */
-	public static function newFromUser( User $user ) {
-		$lookup = CentralIdLookup::factory();
-		$id = $lookup->centralIdFromLocalUser( $user, CentralIdLookup::AUDIENCE_RAW );
+	public static function newFromUser( UserIdentity $user ) {
+		$id = MediaWikiServices::getInstance()
+			->getCentralIdLookup()
+			->centralIdFromLocalUser( $user, CentralIdLookup::AUDIENCE_RAW );
 		if ( !$id ) {
 			return false;
 		}
@@ -78,11 +83,13 @@ class EchoUnreadWikis {
 			$wikis[$row->euw_wiki] = [
 				EchoAttributeManager::ALERT => [
 					'count' => $row->euw_alerts,
-					'ts' => $row->euw_alerts_ts,
+					'ts' => wfTimestamp( TS_MW, $row->euw_alerts_ts ) === static::DEFAULT_TS_DB ?
+						static::DEFAULT_TS : wfTimestamp( TS_MW, $row->euw_alerts_ts ),
 				],
 				EchoAttributeManager::MESSAGE => [
 					'count' => $row->euw_messages,
-					'ts' => $row->euw_messages_ts,
+					'ts' => wfTimestamp( TS_MW, $row->euw_messages_ts ) === static::DEFAULT_TS_DB ?
+						static::DEFAULT_TS : wfTimestamp( TS_MW, $row->euw_messages_ts ),
 				],
 			];
 		}
@@ -100,7 +107,7 @@ class EchoUnreadWikis {
 	 *   false meaning no timestamp because there are no unread messages.
 	 */
 	public function updateCount( $wiki, $alertCount, $alertTime, $msgCount, $msgTime ) {
-		$dbw = $this->getDB( DB_MASTER );
+		$dbw = $this->getDB( DB_PRIMARY );
 		if ( $dbw === false || $dbw->isReadOnly() ) {
 			return;
 		}
@@ -113,13 +120,17 @@ class EchoUnreadWikis {
 		if ( $alertCount || $msgCount ) {
 			$values = [
 				'euw_alerts' => $alertCount,
-				'euw_alerts_ts' => $alertTime
-					? $alertTime->getTimestamp( TS_MW )
-					: static::DEFAULT_TS,
+				'euw_alerts_ts' => $dbw->timestamp(
+					$alertTime
+						? $alertTime->getTimestamp( TS_MW )
+						: static::DEFAULT_TS_DB
+				),
 				'euw_messages' => $msgCount,
-				'euw_messages_ts' => $msgTime
-					? $msgTime->getTimestamp( TS_MW )
-					: static::DEFAULT_TS,
+				'euw_messages_ts' => $dbw->timestamp(
+					$msgTime
+						? $msgTime->getTimestamp( TS_MW )
+						: static::DEFAULT_TS_DB
+				),
 			];
 
 			// when there is unread alert(s) and/or message(s), upsert the row

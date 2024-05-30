@@ -5,7 +5,7 @@
  * @group Echo
  * @group Database
  */
-class ContainmentSetTest extends MediaWikiTestCase {
+class ContainmentSetTest extends MediaWikiIntegrationTestCase {
 
 	public function testGenericContains() {
 		$list = new EchoContainmentSet( self::getTestUser()->getUser() );
@@ -35,6 +35,7 @@ class ContainmentSetTest extends MediaWikiTestCase {
 		$list->expects( $this->once() )
 			->method( 'getValues' )
 			->will( $this->returnValue( $inner ) );
+		$list->method( 'getCacheKey' )->willReturn( '' );
 
 		$cached = new EchoCachedList( $wanCache, 'test_key', $list );
 

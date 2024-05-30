@@ -1,7 +1,8 @@
 {
 	"@metadata": {
 		"authors": [
-			"McDutchie"
+			"McDutchie",
+			"Amire80"
 		]
 	},
 	"apihelp-echomarkread-description": "Marcar notificationes como legite pro le usator actual.",
@@ -18,6 +19,7 @@
 	"apihelp-echomarkseen-summary": "Marcar notificationes como vidite pro le usator actual.",
 	"apihelp-echomarkseen-example-1": "Marcar notificationes de tote le typos como vidite",
 	"apihelp-echomarkseen-param-type": "Typo de notificationes de marcar como vidite: 'alert', 'message' o 'all'.",
+	"apihelp-echomarkseen-param-timestampFormat": "Formato del data e hora a usar pro le sortita, 'ISO_8601' o 'MW'. 'MW' es obsolescente hic, dunque tote le clientes deberea cambiar a 'ISO_8601'. Iste parametro essera removite e 'ISO_8601' devenira le unic formato de sortita.",
 	"apihelp-echomute-description": "Silentiar o non plus silentiar notificationes de certe usatores o paginas.",
 	"apihelp-echomute-summary": "Silentiar o non plus silentiar notificationes de certe usatores o paginas.",
 	"apihelp-echomute-param-type": "In qual lista de silentiamento adder o remover",
@@ -28,8 +30,11 @@
 	"apihelp-echopushsubscriptions+create-summary": "Registrar subscriptiones push pro le usator actual.",
 	"apihelp-echopushsubscriptions+create-param-provider": "Le fornitor del servicio push pro le qual registrar un token.",
 	"apihelp-echopushsubscriptions+create-param-providertoken": "Le token a registrar.",
+	"apihelp-echopushsubscriptions+create-param-topic": "Le topico APNS ''(app bundle ID)'' al qual inviar le notification.",
 	"apihelp-echopushsubscriptions+create-example": "Registrar un subscription push pro le usator actual.",
+	"apihelp-echopushsubscriptions+delete-summary": "Cancellar le registration de subscriptiones push pro le usator actual o un altere usator specificate.",
 	"apihelp-echopushsubscriptions+delete-param-providertoken": "Le token associate al subscription push pro le qual cancellar le registration.",
+	"apihelp-echopushsubscriptions+delete-param-centraluserid": "Le ID de usator central associate al subscription pro le qual cancellar le subscription.",
 	"apihelp-echopushsubscriptions+delete-example": "Cancellar le registration de un subscription push pro le usator actual.",
 	"apihelp-query+notifications-description": "Obtener notificationes attendente pro le usator actual.",
 	"apihelp-query+notifications-summary": "Obtener notificationes attendente pro le usator actual.",
@@ -47,11 +52,15 @@
 	"apihelp-query+notifications-param-crosswikisummary": "Defini isto como ver pro reciper un notification de summario sur le notificationes de wikis externe.",
 	"apihelp-query+notifications-param-alertcontinue": "Quando plus resultatos de alerta es disponibile, usar isto pro continuar.",
 	"apihelp-query+notifications-param-unreadfirst": "Indica si monstrar notificationes non legite primo (usate solmente si groupbysection non es definite).",
-	"apihelp-query+notifications-param-alertunreadfirst": "Indica si monstrar notificationes de messages non legite  primo (usate solmente si groupbysection non es definite).",
+	"apihelp-query+notifications-param-alertunreadfirst": "Indica si monstrar notificationes de messages non legite primo (usate solmente si groupbysection non es definite).",
 	"apihelp-query+notifications-param-messagecontinue": "Quando plus resultatos de message es disponibile, usar isto pro continuar.",
 	"apihelp-query+notifications-param-messageunreadfirst": "Indica si monstrar notificationes de alertas non legite primo (usate solmente si groupbysection non es definite).",
 	"apihelp-query+notifications-param-titles": "Solmente restituer notificationes pro iste paginas. Pro obtener notificationes non associate a alcun pagina, usa [] como titulo.",
 	"apihelp-query+notifications-param-bundle": "Indica si notificationes non legite compatibile con gruppamentos, debe esser monstrate de accordo con le regulas de gruppamento de typos de notification.",
+	"apihelp-query+notifications-param-notifiertypes": "Typos de notificator pro le quales restituer notificationes.",
+	"apihelp-query+notifications-example-1": "Listar notificationes web",
+	"apihelp-query+notifications-example-2": "Listar notificationes web, gruppate per section, con quantitates",
+	"apihelp-query+notifications-example-3": "Listar notificationes per e-mail",
 	"apihelp-query+unreadnotificationpages-description": "Obtener paginas pro le quales il ha notificationes non legite pro le usator actual.",
 	"apihelp-query+unreadnotificationpages-summary": "Obtener paginas pro le quales il ha notificationes non legite pro le usator actual.",
 	"apihelp-query+unreadnotificationpages-param-grouppages": "Gruppar paginas de discussion con lor paginas de subjecto, e gruppar notificationes non associate a un pagina con le pagina de usator del usator actual.",
@@ -65,9 +74,12 @@
 	"apihelp-echoarticlereminder-param-comment": "Commento de usator optional pro includer in le rememoration",
 	"apihelp-echoarticlereminder-example-1": "Crear un notification de rememoration de articulo pro deman, con un commento",
 	"apihelp-echoarticlereminder-example-2": "Crear un notification de rememoration de articulo pro deman, sin commento",
+	"apiwarn-echo-deprecation-timestampformat": "Le formato de sortita de data e hora MW es obsolescente hic. In le futuro, ISO 8601 essera sempre usate pro le formato de data e hora de sortita. Adjusta tu cliente e mitte <var>timestampFormat</var> a <kbd>ISO_8601</kbd>.",
 	"apiwarn-echo-deprecation-flyout": "<kbd>notformat=flyout</kbd> ha devenite obsolescente e essera removite tosto. Usa <kbd>notformat=model</kbd> pro obtener le datos crude o <kbd>notformat=special</kbd> pro obtener codice HTML pre-formatate.",
 	"apiwarn-echo-deprecation-html": "<kbd>notformat=html</kbd> ha devenite obsolescente e essera removite tosto. Usa <kbd>notformat=special</kbd> in su loco.",
 	"apierror-echo-event-creation-failed": "Non poteva crear evento Echo",
 	"apierror-echo-push-token-exists": "Le token fornite jam existe in le base de datos.",
-	"apierror-echo-push-token-not-found": "Le token fornite non ha essite trovate in le base de datos."
+	"apierror-echo-push-token-not-found": "Le token fornite non ha essite trovate in le base de datos.",
+	"apierror-echo-push-too-many-subscriptions": "Le usator actual ha jam registrate le numero maxime de subscriptiones push ($1).",
+	"apierror-echo-push-topic-required": "Le campo de topico es obligatori pro iste fornitor."
 }

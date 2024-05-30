@@ -7,9 +7,10 @@
 	&-popup {
 		> .oo-ui-popupWidget-popup {
 			> .oo-ui-popupWidget-head {
-				.box-sizing( border-box );
+				box-sizing: border-box;
 				height: 3.1428571em; // = 44px as result of 44 / 16 (font-size browser) / 0.875 (OOUI WikimediaUI theme font-size)
 				border-bottom: 1px solid #c8ccd1;
+				margin: 0;
 
 				> .oo-ui-iconWidget {
 					float: left;
@@ -22,16 +23,12 @@
 					margin: 0 0 0 0.4761905em; // = 8px as result of ≈0.5714286 / 1.2 (element's font-size)
 					font-size: 1.2em;
 					font-weight: bold;
-					line-height: 2.6190476em; // = 44px as result of ≈3.1428571 / 1.2 (element's font-size)
+					line-height: 2.5595238em; // = 43px as result of 43 (44 - 1 because of the border-box) / 16 / 0.875 / 1.2 (element's font-size)
 				}
 
 				.mw-echo-ui-notificationsWidget-markAllReadButton {
 					margin-top: 0.4285714em; // = 6px as result of 6 / 16 / 0.875
 					margin-right: 0.5714286em; // = 8px as result of 8 / 16 / 0.875
-
-					.oo-ui-buttonElement-button {
-						padding-right: 0;
-					}
 				}
 			}
 
@@ -70,7 +67,7 @@
 						display: table-cell;
 						white-space: normal;
 						width: @notification-popup-width / 2;
-						.box-sizing( border-box );
+						box-sizing: border-box;
 
 						&:last-child {
 							border-left: 1px solid #c8ccd1;

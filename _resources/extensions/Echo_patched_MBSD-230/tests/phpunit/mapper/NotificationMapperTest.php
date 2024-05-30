@@ -5,7 +5,7 @@ use Wikimedia\Rdbms\IDatabase;
 /**
  * @covers \EchoNotificationMapper
  */
-class EchoNotificationMapperTest extends MediaWikiTestCase {
+class EchoNotificationMapperTest extends MediaWikiIntegrationTestCase {
 
 	/**
 	 * @todo write this test
@@ -32,7 +32,7 @@ class EchoNotificationMapperTest extends MediaWikiTestCase {
 				'event_agent_ip' => '',
 				'notification_user' => 1,
 				'notification_timestamp' => '20140615101010',
-				'notification_read_timestamp' => '',
+				'notification_read_timestamp' => null,
 				'notification_bundle_hash' => 'testhash',
 			]
 		];
@@ -131,8 +131,8 @@ class EchoNotificationMapperTest extends MediaWikiTestCase {
 	public function testDeleteByUserEventOffset() {
 		$this->setMwGlobals( [ 'wgUpdateRowsPerQuery' => 4 ] );
 		$mockDb = $this->createMock( IDatabase::class );
-		$makeResultRows = function ( $eventIds ) {
-			return new ArrayIterator( array_map( function ( $eventId ) {
+		$makeResultRows = static function ( $eventIds ) {
+			return new ArrayIterator( array_map( static function ( $eventId ) {
 				return (object)[ 'notification_event' => $eventId ];
 			}, $eventIds ) );
 		};
@@ -198,6 +198,7 @@ class EchoNotificationMapperTest extends MediaWikiTestCase {
 
 	/**
 	 * Mock object of User
+	 * @return User
 	 */
 	protected function mockUser() {
 		$user = $this->getMockBuilder( User::class )
@@ -206,18 +207,13 @@ class EchoNotificationMapperTest extends MediaWikiTestCase {
 		$user->expects( $this->any() )
 			->method( 'getID' )
 			->will( $this->returnValue( 1 ) );
-		$user->expects( $this->any() )
-			->method( 'getOption' )
-			->will( $this->returnValue( true ) );
-		$user->expects( $this->any() )
-			->method( 'getGroups' )
-			->will( $this->returnValue( [ 'echo_group' ] ) );
 
 		return $user;
 	}
 
 	/**
 	 * Mock object of EchoNotification
+	 * @return EchoNotification
 	 */
 	protected function mockEchoNotification() {
 		$event = $this->getMockBuilder( EchoNotification::class )
@@ -233,6 +229,7 @@ class EchoNotificationMapperTest extends MediaWikiTestCase {
 	/**
 	 * Mock object of MWEchoDbFactory
 	 * @param array|\Wikimedia\Rdbms\IDatabase $dbResultOrMockDb
+	 * @return MWEchoDbFactory
 	 */
 	protected function mockMWEchoDbFactory( $dbResultOrMockDb ) {
 		$mockDb = is_array( $dbResultOrMockDb ) ? $this->mockDb( $dbResultOrMockDb ) : $dbResultOrMockDb;
@@ -248,6 +245,7 @@ class EchoNotificationMapperTest extends MediaWikiTestCase {
 
 	/**
 	 * Returns a mock database object
+	 * @param array $dbResult
 	 * @return \Wikimedia\Rdbms\IDatabase
 	 */
 	protected function mockDb( array $dbResult ) {

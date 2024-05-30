@@ -1,13 +1,13 @@
 {
 	"@metadata": {
 		"authors": [
+			"ArenaL5",
 			"Banjo",
 			"Elisardojm",
 			"Iváns",
 			"Macofe",
 			"Toliño",
-			"Vivaelcelta",
-			"ArenaL5"
+			"Vivaelcelta"
 		]
 	},
 	"echo-desc": "Sistema para notificar aos usuarios sobre eventos e mensaxes",
@@ -36,8 +36,8 @@
 	"echo-pref-dont-email-read-notifications": "Non incluir notificacións lidas nos correos electrónicos de resumo",
 	"echo-learn-more": "Máis información",
 	"echo-log": "Rexistro público",
-	"echo-new-messages": "Ten mensaxes novas",
-	"echo-category-title-edit-user-talk": "{{PLURAL:$1|Mensaxe|Mensaxes}} na páxina de conversa",
+	"echo-new-messages": "Ten unha mensaxe nova na súa conversa",
+	"echo-category-title-edit-user-talk": "{{PLURAL:$1|Edición feita|Edicións feitas}} na miña páxina de conversa",
 	"echo-category-title-article-linked": "{{PLURAL:$1|Ligazón|Ligazóns}} a unha páxina",
 	"echo-category-title-reverted": "{{PLURAL:$1|Reversión|Reversións}} dunha edición",
 	"echo-category-title-mention": "{{PLURAL:$1|Mención|Mencións}}",
@@ -179,7 +179,7 @@
 	"notification-inbox-filter-read": "Lidas",
 	"notification-inbox-filter-unread": "Non lidas",
 	"notification-inbox-filter-all": "Todas",
-	"echo-specialmute-label-mute-notifications": "Silenciar notificacións dest{{GENDER:$1|e usuario|a usuaria|a persoa}}",
+	"echo-specialmute-label-mute-notifications": "Silenciar as notificacións {{GENDER:$1|deste usuario|desta usuaria|desta persoa}}",
 	"echo-email-plain-footer": "Para controlar os emais que {{GENDER:$1|lle}} mandamos, {{GENDER:$1|revise}} as súas preferenciasː",
 	"echo-email-html-footer-preference-link-text": "{{GENDER:$1|comprobe}} as súas preferencias",
 	"echo-email-html-footer-with-link": "Para controlar que correos electrónicos {{GENDER:$2|lle}} enviamos, $1.",

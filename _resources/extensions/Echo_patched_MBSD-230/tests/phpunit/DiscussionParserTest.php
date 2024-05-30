@@ -3,6 +3,8 @@
 // phpcs:disable Generic.Files.LineLength -- Long html test examples
 
 use MediaWiki\MediaWikiServices;
+use MediaWiki\Revision\MutableRevisionRecord;
+use MediaWiki\Revision\SlotRecord;
 use Wikimedia\TestingAccessWrapper;
 
 /**
@@ -10,7 +12,7 @@ use Wikimedia\TestingAccessWrapper;
  * @group Echo
  * @group Database
  */
-class EchoDiscussionParserTest extends MediaWikiTestCase {
+class EchoDiscussionParserTest extends MediaWikiIntegrationTestCase {
 	/**
 	 * @var string[]
 	 */
@@ -130,12 +132,12 @@ class EchoDiscussionParserTest extends MediaWikiTestCase {
 		],
 	];
 
-	protected function setUp() : void {
+	protected function setUp(): void {
 		parent::setUp();
 		$this->setMwGlobals( [ 'wgDiff' => false ] );
 	}
 
-	protected function tearDown() : void {
+	protected function tearDown(): void {
 		parent::tearDown();
 
 		global $wgHooks;
@@ -159,8 +161,9 @@ class EchoDiscussionParserTest extends MediaWikiTestCase {
 
 		// Set preferences
 		if ( $user ) {
+			$userOptionsManager = $this->getServiceContainer()->getUserOptionsManager();
 			foreach ( $preferences as $option => $value ) {
-				$user->setOption( $option, $value );
+				$userOptionsManager->setOption( $user, $option, $value );
 			}
 			$user->saveSettings();
 		}
@@ -383,7 +386,7 @@ class EchoDiscussionParserTest extends MediaWikiTestCase {
 		);
 		$events = [];
 		$this->setupEventCallbackForEventGeneration(
-			function ( EchoEvent $event ) use ( &$events ) {
+			static function ( EchoEvent $event ) use ( &$events ) {
 				$events[] = [
 					'type' => $event->getType(),
 					'agent' => $event->getAgent()->getName(),
@@ -399,6 +402,7 @@ class EchoDiscussionParserTest extends MediaWikiTestCase {
 			// enable pings from summary
 			'wgEchoMaxMentionsInEditSummary' => 5,
 		] );
+		$this->clearHook( 'EchoGetEventsForRevision' );
 
 		EchoDiscussionParser::generateEventsForRevision( $revision, false );
 
@@ -700,7 +704,7 @@ class EchoDiscussionParserTest extends MediaWikiTestCase {
 		);
 		$events = [];
 		$this->setupEventCallbackForEventGeneration(
-			function ( EchoEvent $event ) use ( &$events ) {
+			static function ( EchoEvent $event ) use ( &$events ) {
 				$events[] = [
 					'type' => $event->getType(),
 					'agent' => $event->getAgent()->getName(),
@@ -715,6 +719,7 @@ class EchoDiscussionParserTest extends MediaWikiTestCase {
 		$this->setMwGlobals( 'wgEchoMentionStatusNotifications', true );
 		// enable multiple sections mentions
 		$this->setMwGlobals( 'wgEchoMentionsOnMultipleSectionEdits', true );
+		$this->clearHook( 'EchoGetEventsForRevision' );
 
 		EchoDiscussionParser::generateEventsForRevision( $revision, false );
 
@@ -900,7 +905,7 @@ TEXT
 
 		$events = [];
 		$this->setupEventCallbackForEventGeneration(
-			function ( EchoEvent $event ) use ( &$events ) {
+			static function ( EchoEvent $event ) use ( &$events ) {
 				$events[] = [
 					'type' => $event->getType(),
 					'agent' => $event->getAgent()->getName(),
@@ -917,6 +922,7 @@ TEXT
 			// lower limit for the mention-failure-too-many notification
 			'wgEchoMaxMentionsCount' => 5
 		] );
+		$this->clearHook( 'EchoGetEventsForRevision' );
 
 		EchoDiscussionParser::generateEventsForRevision( $revision, false );
 
@@ -940,9 +946,12 @@ TEXT
 		// pages to be created: templates may be used to ping users (e.g.
 		// {{u|...}}) but if we don't have that template, it just won't work!
 		$pages += [ $title => '' ];
+
+		$user = $this->getTestUser()->getUser();
+		$wikiPageFactory = MediaWikiServices::getInstance()->getWikiPageFactory();
 		foreach ( $pages as $pageTitle => $pageText ) {
-			$template = WikiPage::factory( Title::newFromText( $pageTitle ) );
-			$template->doEditContent( new WikitextContent( $pageText ), '' );
+			$template = $wikiPageFactory->newFromTitle( Title::newFromText( $pageTitle ) );
+			$template->doUserEditContent( new WikitextContent( $pageText ), $user, '' );
 		}
 
 		// force i18n messages to be reloaded from MessageCache (from DB, where a new message
@@ -964,16 +973,21 @@ TEXT
 		$property->setValue( $title, $lang );
 
 		// create stub MutableRevisionRecord object
-		$row = [
-			'id' => $newId,
-			'user_text' => $username,
-			'user' => User::newFromName( $username )->getId(),
-			'parent_id' => $oldId,
-			'text' => $newText,
-			'title' => $title,
-			'comment' => $summary,
-		];
-		$revision = $store->newMutableRevisionFromArray( $row );
+		$revision = new MutableRevisionRecord( $title );
+
+		$content = new WikitextContent( $newText );
+
+		$revision->setId( $newId );
+		$revision->setUser( User::newFromName( $username ) );
+
+		$revision->setParentId( $oldId );
+		$comment = CommentStoreComment::newUnsavedComment(
+			$summary,
+			null
+		);
+		$revision->setComment( $comment );
+		$revision->setContent( SlotRecord::MAIN, $content );
+
 		$userName = $revision->getUser()->getName();
 
 		// generate diff between 2 revisions
@@ -1013,6 +1027,11 @@ TEXT
 		$this->assertSame( 1, $match );
 	}
 
+	public function testTimestampRegex_T264922() {
+		$this->setMwGlobals( 'wgLanguageCode', 'skr' );
+		$this->assertIsString( EchoDiscussionParser::getTimestampRegex(), 'does not fail' );
+	}
+
 	public function testGetTimestampPosition() {
 		$line = 'Hello World. ' . self::getExemplarTimestamp();
 		$pos = EchoDiscussionParser::getTimestampPosition( $line );
@@ -1029,8 +1048,7 @@ TEXT
 		}
 
 		if ( !EchoDiscussionParser::isSignedComment( $line ) ) {
-			$this->assertEquals( $expectedUser, false );
-
+			$this->assertFalse( $expectedUser );
 			return;
 		}
 
@@ -1795,8 +1813,28 @@ TEXT
 			EchoDiscussionParser::getTextSnippet(
 				'[[:{{BASEPAGENAME}}]]',
 				Language::factory( 'en' ),
-				150,
+				EchoDiscussionParser::DEFAULT_SNIPPET_LENGTH,
 				Title::newFromText( 'Page001' )
+			)
+		);
+		$this->assertEquals(
+			'Hello',
+			EchoDiscussionParser::getTextSnippet(
+				'* Hello',
+				Language::factory( 'en' ),
+				EchoDiscussionParser::DEFAULT_SNIPPET_LENGTH,
+				null,
+				true
+			)
+		);
+		$this->assertEquals(
+			'* Hello',
+			EchoDiscussionParser::getTextSnippet(
+				'* Hello',
+				Language::factory( 'en' ),
+				EchoDiscussionParser::DEFAULT_SNIPPET_LENGTH,
+				null,
+				false
 			)
 		);
 	}

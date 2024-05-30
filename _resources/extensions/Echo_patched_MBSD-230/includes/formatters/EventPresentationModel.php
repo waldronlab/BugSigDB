@@ -1,5 +1,6 @@
 <?php
 
+use MediaWiki\MediaWikiServices;
 use MediaWiki\Revision\RevisionRecord;
 use Wikimedia\Timestamp\TimestampException;
 
@@ -7,37 +8,37 @@ use Wikimedia\Timestamp\TimestampException;
  * Class that returns structured data based
  * on the provided event.
  */
-abstract class EchoEventPresentationModel implements JsonSerializable {
+abstract class EchoEventPresentationModel implements JsonSerializable, MessageLocalizer {
 
 	/**
 	 * Recommended length of usernames included in messages, in
 	 * characters (not bytes).
 	 */
-	const USERNAME_RECOMMENDED_LENGTH = 20;
+	private const USERNAME_RECOMMENDED_LENGTH = 20;
 
 	/**
 	 * Recommended length of usernames used as link label, in
 	 * characters (not bytes).
 	 */
-	const USERNAME_AS_LABEL_RECOMMENDED_LENGTH = 15;
+	private const USERNAME_AS_LABEL_RECOMMENDED_LENGTH = 15;
 
 	/**
 	 * Recommended length of page names included in messages, in
 	 * characters (not bytes).
 	 */
-	const PAGE_NAME_RECOMMENDED_LENGTH = 50;
+	protected const PAGE_NAME_RECOMMENDED_LENGTH = 50;
 
 	/**
 	 * Recommended length of page names used as link label, in
 	 * characters (not bytes).
 	 */
-	const PAGE_NAME_AS_LABEL_RECOMMENDED_LENGTH = 15;
+	private const PAGE_NAME_AS_LABEL_RECOMMENDED_LENGTH = 15;
 
 	/**
 	 * Recommended length of section titles included in messages, in
 	 * characters (not bytes).
 	 */
-	const SECTION_TITLE_RECOMMENDED_LENGTH = 50;
+	public const SECTION_TITLE_RECOMMENDED_LENGTH = 50;
 
 	/**
 	 * @var EchoEvent
@@ -112,6 +113,7 @@ abstract class EchoEventPresentationModel implements JsonSerializable {
 		global $wgEchoNotifications;
 		// @todo don't depend upon globals
 
+		// @phan-suppress-next-line PhanTypeArraySuspiciousNullable
 		$class = $wgEchoNotifications[$event->getType()]['presentation-model'];
 		return new $class( $event, $language, $user, $distributionType );
 	}
@@ -144,8 +146,6 @@ abstract class EchoEventPresentationModel implements JsonSerializable {
 	}
 
 	/**
-	 * Get the distribution type
-	 *
 	 * @return string 'web' or 'email'
 	 */
 	final public function getDistributionType() {
@@ -156,14 +156,16 @@ abstract class EchoEventPresentationModel implements JsonSerializable {
 	 * Equivalent to IContextSource::msg for the current
 	 * language
 	 *
-	 * @param string ...$args
+	 * @param string|string[]|MessageSpecifier $key Message key, or array of keys,
+	 *   or a MessageSpecifier.
+	 * @param mixed ...$params Normal message parameters
 	 * @return Message
 	 */
-	protected function msg( ...$args ) {
+	public function msg( $key, ...$params ) {
 		/**
 		 * @var Message $msg
 		 */
-		$msg = wfMessage( ...$args );
+		$msg = wfMessage( $key, ...$params );
 		$msg->inLanguage( $this->language );
 
 		// Notifications are considered UI (and should be in UI language, not
@@ -187,7 +189,7 @@ abstract class EchoEventPresentationModel implements JsonSerializable {
 	 */
 	public function getBundledIds() {
 		if ( $this->isBundled() ) {
-			return array_map( function ( EchoEvent $event ) {
+			return array_map( static function ( EchoEvent $event ) {
 				return $event->getId();
 			}, $this->getBundledEvents() );
 		}
@@ -467,7 +469,7 @@ abstract class EchoEventPresentationModel implements JsonSerializable {
 
 			$queryParams = [ 'markasread' => implode( '|', $eventIds ) ];
 			if ( $wgEchoCrossWikiNotifications ) {
-				$queryParams['markasreadwiki'] = wfWikiID();
+				$queryParams['markasreadwiki'] = WikiMap::getCurrentWikiId();
 			}
 
 			$primaryLink['url'] = wfAppendQuery( $primaryLink['url'], $queryParams );
@@ -532,10 +534,7 @@ abstract class EchoEventPresentationModel implements JsonSerializable {
 	 * @return array
 	 * @throws TimestampException
 	 */
-	// phpcs:disable
-	#[ReturnTypeWillChange]
-	// phpcs:enable
-	public function jsonSerialize() {
+	public function jsonSerialize(): array {
 		$body = $this->getBodyMessage();
 
 		return [
@@ -583,7 +582,7 @@ abstract class EchoEventPresentationModel implements JsonSerializable {
 			return null;
 		}
 
-		$url = $user->isAnon()
+		$url = !$user->isRegistered()
 			? SpecialPage::getTitleFor( 'Contributions', $user->getName() )->getFullURL()
 			: $user->getUserPage()->getFullURL();
 
@@ -676,7 +675,8 @@ abstract class EchoEventPresentationModel implements JsonSerializable {
 	 * @return array Array compatible with dynamic action link
 	 */
 	final protected function getWatchActionLink( Title $title ) {
-		$isTitleWatched = $this->getUser()->isWatched( $title );
+		$isTitleWatched = MediaWikiServices::getInstance()->getWatchlistManager()
+			->isWatched( $this->getUser(), $title );
 		$availableAction = $isTitleWatched ? 'unwatch' : 'watch';
 
 		$data = [
@@ -729,7 +729,7 @@ abstract class EchoEventPresentationModel implements JsonSerializable {
 					$this->getTruncatedTitleText( $title ),
 					$title->getFullURL( [ 'action' => $availableAction ] ),
 					$this->getUser()->getName()
-				)->escaped(),
+				)->text(),
 			null,
 			$data,
 			[ 'action' => $availableAction ]

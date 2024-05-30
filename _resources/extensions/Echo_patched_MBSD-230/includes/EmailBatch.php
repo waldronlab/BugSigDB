@@ -1,6 +1,7 @@
 <?php
 
 use MediaWiki\MediaWikiServices;
+use MediaWiki\User\UserOptionsManager;
 use Wikimedia\Rdbms\IResultWrapper;
 
 /**
@@ -17,6 +18,11 @@ class MWEchoEmailBatch {
 	 * @var Language
 	 */
 	protected $language;
+
+	/**
+	 * @var UserOptionsManager
+	 */
+	protected $userOptionsManager;
 
 	/**
 	 * @var EchoEvent[] events included in this email
@@ -41,10 +47,14 @@ class MWEchoEmailBatch {
 
 	/**
 	 * @param User $user
+	 * @param UserOptionsManager $userOptionsManager
 	 */
-	public function __construct( User $user ) {
+	public function __construct( User $user, UserOptionsManager $userOptionsManager ) {
 		$this->mUser = $user;
-		$this->language = Language::factory( $this->mUser->getOption( 'language' ) );
+		$this->language = Language::factory(
+			$userOptionsManager->getOption( $user, 'language' )
+		);
+		$this->userOptionsManager = $userOptionsManager;
 	}
 
 	/**
@@ -67,12 +77,13 @@ class MWEchoEmailBatch {
 	 */
 	public static function newFromUserId( $userId, $enforceFrequency = true ) {
 		$user = User::newFromId( (int)$userId );
+		$userOptionsManager = MediaWikiServices::getInstance()->getUserOptionsManager();
 
-		$userEmailSetting = (int)$user->getOption( 'echo-email-frequency' );
+		$userEmailSetting = (int)$userOptionsManager->getOption( $user, 'echo-email-frequency' );
 
 		// clear all existing events if user decides not to receive emails
 		if ( $userEmailSetting == -1 ) {
-			$emailBatch = new self( $user );
+			$emailBatch = new self( $user, $userOptionsManager );
 			$emailBatch->clearProcessedEvent();
 
 			return false;
@@ -89,7 +100,7 @@ class MWEchoEmailBatch {
 			return false;
 		}
 
-		$userLastBatch = $user->getOption( 'echo-email-last-batch' );
+		$userLastBatch = $userOptionsManager->getOption( $user, 'echo-email-last-batch' );
 
 		// send email batch, if
 		// 1. it has been long enough since last email batch based on frequency
@@ -103,7 +114,7 @@ class MWEchoEmailBatch {
 			}
 		}
 
-		return new self( $user );
+		return new self( $user, $userOptionsManager );
 	}
 
 	/**
@@ -170,14 +181,18 @@ class MWEchoEmailBatch {
 	 * Update the user's last batch timestamp after a successful batch
 	 */
 	protected function updateUserLastBatchTimestamp() {
-		$this->mUser->setOption( 'echo-email-last-batch', wfTimestampNow() );
+		$this->userOptionsManager->setOption(
+			$this->mUser,
+			'echo-email-last-batch',
+			wfTimestampNow()
+		);
 		$this->mUser->saveSettings();
 		$this->mUser->invalidateCache();
 	}
 
 	/**
 	 * Get the events queued for the current user
-	 * @return \stdClass[]
+	 * @return stdClass[]
 	 */
 	protected function getEvents() {
 		global $wgEchoNotifications;
@@ -200,13 +215,17 @@ class MWEchoEmailBatch {
 			];
 
 			$tables = [ 'echo_email_batch', 'echo_event' ];
-
-			if ( $this->mUser->getOption( 'echo-dont-email-read-notifications' ) ) {
-				$conds += [
-					'notification_event = event_id',
-					'notification_read_timestamp' => null
-				];
-				array_push( $tables, 'echo_notification' );
+			if ( $this->userOptionsManager->getOption(
+				$this->mUser, 'echo-dont-email-read-notifications'
+			) ) {
+				$conds = array_merge(
+					$conds,
+					[
+						'notification_event = event_id',
+						'notification_read_timestamp IS NULL',
+					]
+				);
+				$tables[] = 'echo_notification';
 			}
 
 			// See setLastEvent() for more detail for this variable
@@ -252,7 +271,7 @@ class MWEchoEmailBatch {
 		global $wgUpdateRowsPerQuery;
 		$eventMapper = new EchoEventMapper();
 		$dbFactory = MWEchoDbFactory::newFromDefault();
-		$dbw = $dbFactory->getEchoDb( DB_MASTER );
+		$dbw = $dbFactory->getEchoDb( DB_PRIMARY );
 		$dbr = $dbFactory->getEchoDb( DB_REPLICA );
 		$lbFactory = MediaWikiServices::getInstance()->getDBLoadBalancerFactory();
 		$ticket = $lbFactory->getEmptyTransactionTicket( __METHOD__ );
@@ -264,6 +283,8 @@ class MWEchoEmailBatch {
 			// There is a processed cutoff point
 			$iterator->addConditions( [ 'eeb_event_id <= ' . (int)$this->lastEvent ] );
 		}
+		$iterator->setCaller( __METHOD__ );
+
 		foreach ( $iterator as $batch ) {
 			$eventIds = [];
 			foreach ( $batch as $row ) {
@@ -289,7 +310,9 @@ class MWEchoEmailBatch {
 	public function sendEmail() {
 		global $wgPasswordSender, $wgNoReplyAddress;
 
-		if ( $this->mUser->getOption( 'echo-email-frequency' ) == EchoEmailFrequency::WEEKLY_DIGEST ) {
+		if ( $this->userOptionsManager->getOption( $this->mUser, 'echo-email-frequency' )
+			== EchoEmailFrequency::WEEKLY_DIGEST
+		) {
 			$frequency = 'weekly';
 			$emailDeliveryMode = 'weekly_digest';
 		} else {
@@ -341,7 +364,7 @@ class MWEchoEmailBatch {
 			return;
 		}
 
-		$dbw = MWEchoDbFactory::newFromDefault()->getEchoDb( DB_MASTER );
+		$dbw = MWEchoDbFactory::newFromDefault()->getEchoDb( DB_PRIMARY );
 
 		$row = [
 			'eeb_user_id' => $userId,

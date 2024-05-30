@@ -2,10 +2,10 @@
 	"@metadata": {
 		"authors": [
 			"Euriditi",
+			"Klein Muçi",
 			"Kosovastar",
 			"Liridon",
-			"Olsi",
-			"Klein Muçi"
+			"Olsi"
 		]
 	},
 	"echo-desc": "Sistemi i njoftimeve",
@@ -24,14 +24,14 @@
 	"echo-pref-email-format-html": "HTML",
 	"echo-pref-email-format-plain-text": "Tekst normal",
 	"echo-learn-more": "Mëso më tepër",
-	"echo-new-messages": "Keni mesazhe të reja",
-	"echo-category-title-edit-user-talk": "{{PLURAL:$1|mesazh|mesazhe}} në faqen e diskutimeve",
+	"echo-new-messages": "Ke mesazhe të reja",
+	"echo-category-title-edit-user-talk": "{{PLURAL:$1|Mesazh|Mesazhe}} në faqen vetjake të diskutimeve",
 	"echo-category-title-article-linked": "{{PLURAL:$1|Lidhje|Lidhje}} në një faqe",
 	"echo-category-title-reverted": "{{PLURAL:$1|Redaktim i kthyer|Redaktime të kthyera}}",
 	"echo-category-title-mention": "{{PLURAL:$1|Përmëndje|Përmëndje}}",
 	"echo-category-title-other": "{{PLURAL:$1|Të tjera}}",
 	"echo-category-title-system": "{{PLURAL:$1|Sistemi}}",
-	"echo-pref-tooltip-edit-user-talk": "Më njofto kur dikush poston një mesazh të ri ose përgjigjet në faqet time të diskutimit.",
+	"echo-pref-tooltip-edit-user-talk": "Më njofto kur dikush redakton faqen time të diskutimit.",
 	"echo-pref-tooltip-article-linked": "Më njofto kur dikush lidh një faqe me një faqe që kam krijuar unë.",
 	"echo-pref-tooltip-reverted": "Më njofto kur dikush kthen një ndryshim që kam bërë unë duke përdorur butonat e zhbërjes ose të rikthimit.",
 	"echo-pref-tooltip-mention": "Më njofto kur dikush lidh një faqe me faqen time të përdoruesit.",

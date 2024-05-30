@@ -1,11 +1,10 @@
 <?php
 
-namespace EchoPush;
+namespace MediaWiki\Extension\Notifications\Push;
 
-use CentralIdLookup;
-use EchoAttributeManager;
 use EchoEvent;
-use JobQueueGroup;
+use EchoServices;
+use MediaWiki\MediaWikiServices;
 use User;
 
 class PushNotifier {
@@ -17,10 +16,10 @@ class PushNotifier {
 	 * @param EchoEvent $event
 	 */
 	public static function notifyWithPush( User $user, EchoEvent $event ): void {
-		$attributeManager = EchoAttributeManager::newFromGlobalVars();
+		$attributeManager = EchoServices::getInstance()->getAttributeManager();
 		$userEnabledEvents = $attributeManager->getUserEnabledEvents( $user, 'push' );
 		if ( in_array( $event->getType(), $userEnabledEvents ) ) {
-			JobQueueGroup::singleton()->push( self::createJob( $user, $event ) );
+			MediaWikiServices::getInstance()->getJobQueueGroup()->push( self::createJob( $user, $event ) );
 		}
 	}
 
@@ -29,9 +28,8 @@ class PushNotifier {
 	 * @param EchoEvent|null $event
 	 * @return NotificationRequestJob
 	 */
-	private static function createJob( User $user, EchoEvent $event = null ):
-	NotificationRequestJob {
-		$centralId = CentralIdLookup::factory()->centralIdFromLocalUser( $user );
+	private static function createJob( User $user, EchoEvent $event = null ): NotificationRequestJob {
+		$centralId = Utils::getPushUserId( $user );
 		$params = [ 'centralId' => $centralId ];
 		// below params are only needed for debug logging (T255068)
 		if ( $event !== null ) {
@@ -45,3 +43,5 @@ class PushNotifier {
 	}
 
 }
+
+class_alias( PushNotifier::class, 'EchoPush\\PushNotifier' );

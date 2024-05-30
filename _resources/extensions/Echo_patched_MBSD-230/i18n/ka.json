@@ -75,7 +75,7 @@
 	"echo-notification-markasread": "მონიშნეთ როგორც წაკითხული",
 	"echo-notification-markasunread": "მონიშნეთ როგორც წაუკითხავი",
 	"echo-notification-markasread-tooltip": "მონიშნეთ როგორც წაკითხული",
-	"echo-notification-more-options-tooltip": "მეტი პარამეტრები",
+	"echo-notification-more-options-tooltip": "მეტი შესაძლებლობა",
 	"notification-link-text-expand-all": "განვრცობა",
 	"notification-link-text-expand-all-count": "იხილე {{PLURAL:$1|$1 შეტყობინება|$1 შეტყობინებები}}",
 	"notification-link-text-collapse-all": "ჩაკეცვა",
@@ -123,5 +123,8 @@
 	"echo-date-today": "დღეს",
 	"echo-date-yesterday": "გუშინ",
 	"echo-email-batch-bullet": "•",
-	"echo-email-batch-link-text-view-all-notifications": "ყველა შეტყობინების ნახვა"
+	"echo-email-batch-link-text-view-all-notifications": "ყველა შეტყობინების ნახვა",
+	"group-push-subscription-manager": "push-შეტყობინების მმართველები",
+	"group-push-subscription-manager-member": "{{GENDER:$1|push-შეტყობინების მმართველი}}",
+	"grouppage-push-subscription-manager": "{{ns:project}}:push-შეტყობინების მმართველები"
 }

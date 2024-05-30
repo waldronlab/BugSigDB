@@ -13,3 +13,4 @@ cscope.out
 
 # Contains private data
 /.env
+/.env.secret*

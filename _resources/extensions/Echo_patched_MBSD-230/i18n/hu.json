@@ -44,8 +44,8 @@
 	"echo-pref-dont-email-read-notifications": "Az összefoglaló e-mailek ne tartalmazzák a már olvasott értesítéseket",
 	"echo-learn-more": "Tudj meg többet",
 	"echo-log": "Nyilvános napló",
-	"echo-new-messages": "Új üzeneted van",
-	"echo-category-title-edit-user-talk": "vitalapi {{PLURAL:$1|üzenet|üzenetek}}",
+	"echo-new-messages": "Új vitalapi üzeneted van",
+	"echo-category-title-edit-user-talk": "{{PLURAL:$1|Üzenet|Üzenetek}} a saját vitalapomon",
 	"echo-category-title-article-linked": "hivatkozott {{PLURAL:$1|lap|lapok}}",
 	"echo-category-title-reverted": "visszaállított {{PLURAL:$1|szerkesztés|szerkesztések}}",
 	"echo-category-title-mention": "{{PLURAL:$1|említés|említések}}",
@@ -61,7 +61,7 @@
 	"echo-category-title-thank-you-edit": "Szerkesztési {{PLURAL:$1|mérföldkő|mérföldkövek}}",
 	"echo-category-title-watchlist": "Szerkesztés egy általam figyelt lapon",
 	"echo-category-title-minor-watchlist": "Apró szerkesztés egy általam figyelt lapon",
-	"echo-pref-tooltip-edit-user-talk": "Értesítést kérek, ha valaki üzen vagy válaszol a vitalapomon.",
+	"echo-pref-tooltip-edit-user-talk": "Értesítést kérek, ha valaki üzen vagy válaszol az én szerkesztővita-lapomon.",
 	"echo-pref-tooltip-article-linked": "Értesítést kérek, ha valaki hivatkozik egy általam írt szócikkre egy másik cikkben.",
 	"echo-pref-tooltip-reverted": "Értesítést kérek, ha valaki visszaállítja egy szerkesztésemet a visszavonás vagy a visszaállítás eszközzel.",
 	"echo-pref-tooltip-mention": "Értesítést kérek, ha valaki hivatkozik a felhasználói lapomra.",
@@ -227,5 +227,10 @@
 	"echo-email-batch-link-text-view-all-notifications": "Nézd meg az összes értesítést",
 	"notification-header-foreign-alert": "További figyelmeztetések {{PLURAL:$5|egy|$5}} másik wikiről",
 	"notification-header-foreign-notice": "További értesítések {{PLURAL:$5|egy|$5}} másik wikiről",
-	"notification-header-foreign-all": "További értesítések {{PLURAL:$5|egy|$5}} másik wikiről"
+	"notification-header-foreign-all": "További értesítések {{PLURAL:$5|egy|$5}} másik wikiről",
+	"right-manage-all-push-subscriptions": "összes leküldéses feliratkozás kezelése",
+	"action-manage-all-push-subscriptions": "összes leküldéses feliratkozás kezelése",
+	"group-push-subscription-manager": "leküldésesfeliratkozás-kezelők",
+	"group-push-subscription-manager-member": "{{GENDER:$1|leküldésesfeliratkozás-kezelő}}",
+	"grouppage-push-subscription-manager": "{{ns:project}}:Leküldésesfeliratkozás-kezelők"
 }

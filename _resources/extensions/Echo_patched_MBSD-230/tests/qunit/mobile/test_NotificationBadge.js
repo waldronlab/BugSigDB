@@ -1,32 +1,22 @@
-( function ( M ) {
-	var OverlayManager = M.require( 'mobile.startup' ).OverlayManager,
-		NotificationBadge = require( '../../../modules/mobile/NotificationBadge.js' );
+QUnit.module( 'ext.echo.mobile - NotificationBadge', function () {
+	var NotificationBadge = require( 'ext.echo.mobile' ).NotificationBadge;
 
-	QUnit.module( 'ext.echo.mobile - NotificationBadge', {
-		beforeEach: function () {
-			this.OverlayManager = OverlayManager.getSingleton();
-		}
-	} );
-
-	QUnit.test( '#setCount', function ( assert ) {
-		var initialClassExpectationsMet,
+	QUnit.test( '.setCount()', function ( assert ) {
+		var initialExpectationsMet,
 			badge = new NotificationBadge( {
-				overlayManager: this.OverlayManager,
 				hasNotifications: true,
 				hasUnseenNotifications: true,
 				notificationCountRaw: 5
 			} );
-		initialClassExpectationsMet = badge.$el.find( '.mw-ui-icon' ).length === 0 &&
-			badge.$el.find( '.zero' ).length === 0;
+		initialExpectationsMet = badge.$el.find( '.mw-ui-icon' ).length === 0;
 
 		badge.setCount( 0 );
-		assert.ok( initialClassExpectationsMet, 'No icon and no zero class' );
-		assert.strictEqual( badge.$el.find( '.zero' ).length, 1, 'A zero class is present on the badge' );
+		assert.true( initialExpectationsMet, 'No icon.' );
 		badge.setCount( 105 );
 		assert.strictEqual( badge.options.notificationCountRaw, 100, 'Number is capped to 100.' );
 	} );
 
-	QUnit.test( '#setCount (Eastern Arabic numerals)', function ( assert ) {
+	QUnit.test( '.setCount() Eastern Arabic numerals', function ( assert ) {
 		var badge;
 
 		this.sandbox.stub( mw.language, 'convertNumber' )
@@ -37,7 +27,6 @@
 			.withArgs( 'echo-badge-count', '۲' ).returns( { text: function () { return '۲'; } } );
 
 		badge = new NotificationBadge( {
-			overlayManager: this.OverlayManager,
 			el: $( '<div><a title="n" href="/" class="notification-unseen"><div class="circle" ><span data-notification-count="2">۲</span></div></a></div>' )
 		} );
 		assert.strictEqual( badge.options.notificationCountRaw, 2,
@@ -49,20 +38,18 @@
 			'Number will be rendered in Eastern Arabic numerals' );
 	} );
 
-	QUnit.test( '#render [hasUnseenNotifications]', function ( assert ) {
+	QUnit.test( '.render() [hasUnseenNotifications]', function ( assert ) {
 		var badge = new NotificationBadge( {
 			notificationCountRaw: 0,
-			overlayManager: this.OverlayManager,
 			hasNotifications: false,
 			hasUnseenNotifications: false
 		} );
 		assert.strictEqual( badge.$el.find( '.mw-ui-icon' ).length, 1, 'A bell icon is visible' );
 	} );
 
-	QUnit.test( '#markAsSeen', function ( assert ) {
+	QUnit.test( '.markAsSeen()', function ( assert ) {
 		var badge = new NotificationBadge( {
 			notificationCountRaw: 2,
-			overlayManager: this.OverlayManager,
 			hasNotifications: true,
 			hasUnseenNotifications: true
 		} );
@@ -73,4 +60,4 @@
 		assert.strictEqual( badge.$el.find( '.notification-unseen' ).length, 0,
 			'Unseen class disappears after markAsSeen called.' );
 	} );
-}( mw.mobileFrontend ) );
+} );

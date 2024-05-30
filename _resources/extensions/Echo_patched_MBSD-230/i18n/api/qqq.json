@@ -36,9 +36,11 @@
 	"apihelp-echopushsubscriptions+create-summary": "{{doc-apihelp-summary|echopushsubscriptions+create}}",
 	"apihelp-echopushsubscriptions+create-param-provider": "{{doc-apihelp-param|echopushsubscriptions+create|provider}}",
 	"apihelp-echopushsubscriptions+create-param-providertoken": "{{doc-apihelp-param|echopushsubscriptions+create|providertoken}}",
+	"apihelp-echopushsubscriptions+create-param-topic": "{{doc-apihelp-param|echopushsubscriptions+create|topic}}",
 	"apihelp-echopushsubscriptions+create-example": "{{doc-apihelp-example|echopushsubscriptions+create}}",
 	"apihelp-echopushsubscriptions+delete-summary": "{{doc-apihelp-summary|echopushsubscriptions+delete}}",
 	"apihelp-echopushsubscriptions+delete-param-providertoken": "{{doc-apihelp-param|echopushsubscriptions+delete|providertoken}}",
+	"apihelp-echopushsubscriptions+delete-param-centraluserid": "{{doc-apihelp-param|echopushsubscriptions+delete|centraluserid}}",
 	"apihelp-echopushsubscriptions+delete-example": "{{doc-apihelp-example|echopushsubscriptions+delete}}",
 	"apihelp-query+notifications-description": "{{doc-apihelp-description|query+notifications}}",
 	"apihelp-query+notifications-summary": "{{doc-apihelp-summary|query+notifications}}",
@@ -61,8 +63,10 @@
 	"apihelp-query+notifications-param-messageunreadfirst": "{{doc-apihelp-param|query+notifications|messageunreadfirst}}",
 	"apihelp-query+notifications-param-titles": "{{doc-apihelp-param|query+notifications|titles}}",
 	"apihelp-query+notifications-param-bundle": "{{doc-apihelp-param|query+notifications|bundle}}",
+	"apihelp-query+notifications-param-notifiertypes": "{{doc-apihelp-param|query+notifications|notifiertypes}}",
 	"apihelp-query+notifications-example-1": "{{doc-apihelp-example|query+notifications}}",
 	"apihelp-query+notifications-example-2": "{{doc-apihelp-example|query+notifications}}",
+	"apihelp-query+notifications-example-3": "{{doc-apihelp-example|query+notifications}}",
 	"apihelp-query+unreadnotificationpages-description": "{{doc-apihelp-description|query+unreadnotificationpages}}",
 	"apihelp-query+unreadnotificationpages-summary": "{{doc-apihelp-summary|query+unreadnotificationpages}}",
 	"apihelp-query+unreadnotificationpages-param-grouppages": "{{doc-apihelp-param|query+unreadnotificationpages|grouppages}}",
@@ -81,5 +85,7 @@
 	"apiwarn-echo-deprecation-html": "{{doc-apierror}}",
 	"apierror-echo-event-creation-failed": "{{doc-apierror}}",
 	"apierror-echo-push-token-exists": "{{doc-apierror}}",
-	"apierror-echo-push-token-not-found": "{{doc-apierror}}"
+	"apierror-echo-push-token-not-found": "{{doc-apierror}}",
+	"apierror-echo-push-too-many-subscriptions": "{{doc-apierror}}",
+	"apierror-echo-push-topic-required": "{{doc-apierror}}"
 }

@@ -6,9 +6,9 @@ use Wikimedia\Rdbms\IDatabase;
  * @group Database
  * @covers \EchoEventMapper
  */
-class EchoEventMapperTest extends MediaWikiTestCase {
+class EchoEventMapperTest extends MediaWikiIntegrationTestCase {
 
-	protected function setUp() : void {
+	protected function setUp(): void {
 		parent::setUp();
 		$this->tablesUsed[] = 'echo_event';
 		$this->tablesUsed[] = 'echo_notification';
@@ -90,6 +90,7 @@ class EchoEventMapperTest extends MediaWikiTestCase {
 	}
 
 	/**
+	 * @param array $dbResult
 	 * @return MWEchoDbFactory
 	 */
 	protected function mockMWEchoDbFactory( $dbResult ) {
@@ -104,6 +105,7 @@ class EchoEventMapperTest extends MediaWikiTestCase {
 	}
 
 	/**
+	 * @param array $dbResult
 	 * @return IDatabase
 	 */
 	protected function mockDb( array $dbResult ) {

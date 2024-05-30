@@ -1,7 +1,7 @@
 <?php
 
-use EchoPush\NotificationServiceClient;
-use EchoPush\SubscriptionManager;
+use MediaWiki\Extension\Notifications\Push\NotificationServiceClient;
+use MediaWiki\Extension\Notifications\Push\SubscriptionManager;
 use MediaWiki\MediaWikiServices;
 
 /** @covers EchoServices */
@@ -28,6 +28,11 @@ class EchoServicesTest extends MediaWikiIntegrationTestCase {
 	public function testGetPushSubscriptionManager(): void {
 		$subscriptionManager = $this->echoServices->getPushSubscriptionManager();
 		$this->assertInstanceOf( SubscriptionManager::class, $subscriptionManager );
+	}
+
+	public function testGetAttributeManager(): void {
+		$attributeManager = $this->echoServices->getAttributeManager();
+		$this->assertInstanceOf( EchoAttributeManager::class, $attributeManager );
 	}
 
 }

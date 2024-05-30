@@ -3,16 +3,34 @@
 @import '../echo.mixins.less';
 
 .mw-echo-ui-notificationItemWidget {
+	display: block;
 	background-color: @notification-item-background-read;
 	position: relative;
 	white-space: normal;
 	padding: 0.8em 1em 0.5em 1em;
-	.box-sizing( border-box );
+	box-sizing: border-box;
 	border: 1px solid #c8ccd1;
 	border-bottom: 0;
 
+	&:not( [ href ] ) {
+		// Items without a primary URL are not clickable
+		cursor: default;
+	}
+
+	label {
+		// Reset browser default of cursor:default;
+		cursor: inherit;
+	}
+
 	&:hover {
+		text-decoration: none;
 		background-color: #ececec;
+	}
+
+	&:focus {
+		text-decoration: none;
+		box-shadow: inset 0 0 0 2px @color-primary;
+		outline: 0;
 	}
 
 	&:last-child {
@@ -36,12 +54,6 @@
 	&-notify {
 		&-title {
 			font-weight: bold;
-			font-size: 1.2em;
-		}
-
-		&-description {
-			font-size: 1em;
-			color: @grey-medium;
 		}
 	}
 
@@ -56,10 +68,10 @@
 
 	&-content {
 		display: block;
+		box-sizing: border-box;
 		// The icon is 30px
 		margin-left: 30px;
 		padding-left: 0.8em;
-		.box-sizing( border-box );
 
 		&-message {
 			line-height: 1.3em;
@@ -91,20 +103,26 @@
 			}
 		}
 
-		&-table {
-			display: table;
-			width: 100%;
-			margin-top: 0.8em;
-		}
-
 		&-actions {
-			display: table-row;
+			display: flex;
+			align-items: flex-end;
 			font-size: 0.9em;
+			margin-top: 0.8em;
 
 			& > &-buttons.oo-ui-buttonSelectWidget {
-				display: table-cell;
-				white-space: nowrap;
-				vertical-align: bottom;
+				display: flex;
+				overflow: hidden;
+
+				> .oo-ui-buttonOptionWidget {
+					min-width: 7em;
+					overflow: hidden;
+
+					.oo-ui-labelElement-label {
+						text-overflow: ellipsis;
+						overflow: hidden;
+						display: inline-block;
+					}
+				}
 			}
 
 			&-button {
@@ -118,19 +136,17 @@
 
 			&-menu {
 				.mw-echo-ui-mixin-hover-opacity();
-				display: table-cell;
 				vertical-align: bottom;
 				padding: 0;
 			}
 
 			&-timestamp {
-				display: table-cell;
-				vertical-align: bottom;
+				flex-grow: 1;
 				text-align: right;
+				vertical-align: bottom;
 				color: @color-base--emphasized;
 				opacity: @opacity-low;
 				white-space: nowrap;
-				width: 100%;
 			}
 		}
 	}
@@ -174,8 +190,8 @@
 					padding-right: 0.5em;
 
 					img {
-						height: 1.5em;
-						width: 1.5em;
+						height: 20px;
+						width: 20px;
 					}
 				}
 

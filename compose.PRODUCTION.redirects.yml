@@ -1,0 +1,18 @@
+version: '3.7'
+services:
+  web:
+    labels:
+      #### Redirect www.bugsigdb.org to non www
+      # web
+      - traefik.http.routers.web-www_bugsigdb.rule=Host(`www.bugsigdb.org`)
+      - traefik.http.routers.web-www_bugsigdb.entrypoints=web
+      - traefik.http.routers.web-www_bugsigdb.middlewares=www_bugsigdb_redirect
+      - traefik.http.routers.web-www_bugsigdb.priority=100
+      # websecure
+      - traefik.http.routers.websecure-www_bugsigdb.rule=Host(`www.bugsigdb.org`)
+      - traefik.http.routers.websecure-www_bugsigdb.entrypoints=websecure
+      - traefik.http.routers.websecure-www_bugsigdb.tls.certresolver=le
+      - traefik.http.routers.websecure-www_bugsigdb.middlewares=www_bugsigdb_redirect
+      # middlewares
+      - traefik.http.middlewares.www_bugsigdb_redirect.redirectregex.regex=^https?://www\.bugsigdb\.org/(.*)
+      - traefik.http.middlewares.www_bugsigdb_redirect.redirectregex.replacement=https://bugsigdb.org/$${1}

@@ -3,8 +3,9 @@
 		"authors": [
 			"Ainali",
 			"Lokal Profil",
+			"Sabelöga",
 			"WikiPhoenix",
-			"Sabelöga"
+			"Amire80"
 		]
 	},
 	"apihelp-echomarkread-description": "Markera aviseringar som lästa för den aktuella användaren.",
@@ -32,8 +33,11 @@
 	"apihelp-echopushsubscriptions+create-summary": "Registrera push-prenumerationer för nuvarande användare.",
 	"apihelp-echopushsubscriptions+create-param-provider": "Push-tjänstleverantör som en nyckel ska registreras till.",
 	"apihelp-echopushsubscriptions+create-param-providertoken": "Nyckeln att registrera.",
+	"apihelp-echopushsubscriptions+create-param-topic": "APNS-ämnet (appakets-ID) att skicka aviseringen till.",
 	"apihelp-echopushsubscriptions+create-example": "Registrera en push-prenumeration för nuvarande användare.",
+	"apihelp-echopushsubscriptions+delete-summary": "Avregistrera push-prenumerationer för nuvarande användare eller annan vald användare.",
 	"apihelp-echopushsubscriptions+delete-param-providertoken": "Nyckeln som associeras med den utgivarinitierade prenumerationen att avregistrera.",
+	"apihelp-echopushsubscriptions+delete-param-centraluserid": "Det centrala användar-ID som associeras med prenumerationen att avregistrera.",
 	"apihelp-echopushsubscriptions+delete-example": "Avregistrera en utgivarinitierad prenumeration för nuvarande användare.",
 	"apihelp-query+notifications-description": "Hämta aviseringar som väntar på aktuell användare.",
 	"apihelp-query+notifications-summary": "Hämta aviseringar som väntar på aktuell användare.",
@@ -56,8 +60,10 @@
 	"apihelp-query+notifications-param-messageunreadfirst": "Om du vill visa olästa systemmeddelandeaviseringar först (används endast om groupbysection inte är inställd).",
 	"apihelp-query+notifications-param-titles": "Returnera endast aviseringar för dessa sidor. Använd [] som en titel för att få aviseringar som inte associeras med någon sida.",
 	"apihelp-query+notifications-param-bundle": "Om olästa aviseringar ska grupperas enligt reglerna för grupperade aviseringstyper.",
-	"apihelp-query+notifications-example-1": "Lista aviseringar",
-	"apihelp-query+notifications-example-2": "Listan aviseringar grupperade efter avsnitt, med antal",
+	"apihelp-query+notifications-param-notifiertypes": "Aviseringstyper som ska returnera aviseringar.",
+	"apihelp-query+notifications-example-1": "Lista webbaviseringar",
+	"apihelp-query+notifications-example-2": "Lista webbaviseringar grupperade efter avsnitt, med antal",
+	"apihelp-query+notifications-example-3": "Lista e-postaviseringar",
 	"apihelp-query+unreadnotificationpages-description": "Hämta sidor där det finns olästa aviseringar för aktuell användare.",
 	"apihelp-query+unreadnotificationpages-summary": "Hämta sidor där det finns olästa aviseringar för aktuell användare.",
 	"apihelp-query+unreadnotificationpages-param-grouppages": "Gruppera diskussionssidor tillsammans med dess ämnessidor och gruppera aviseringar som inte är associerade med en sida tillsammans med den aktuella användarens användarsida.",
@@ -71,10 +77,12 @@
 	"apihelp-echoarticlereminder-param-comment": "Valfri användarkommentar att inkludera i påminnelsen",
 	"apihelp-echoarticlereminder-example-1": "Skapa en artikelpåminnelse via en avisering för imorgon med en kommentar",
 	"apihelp-echoarticlereminder-example-2": "Skapa en artikelpåminnelse via en avisering för imorgon utan en kommentar",
-	"apiwarn-echo-deprecation-timestampformat": "MW-tidsstämpelns utmatningsformat är föråldrat här. I framtiden kommer ISO 8601 alltid att användas för utmatningens tidstämpelsformat.  Justera din klient och ändra <var>timestampFormat</var> till <kbd>ISO_8601</kbd>.",
+	"apiwarn-echo-deprecation-timestampformat": "MW-tidsstämpelns utmatningsformat är föråldrat här. I framtiden kommer ISO 8601 alltid att användas för utmatningens tidstämpelsformat. Justera din klient och ändra <var>timestampFormat</var> till <kbd>ISO_8601</kbd>.",
 	"apiwarn-echo-deprecation-flyout": "<kbd>notformat=flyout</kbd> har blivit föråldrat och kommer att tas bort snart. Använd <kbd>notformat=model</kbd> för att få rå data eller <kbd>notformat=special</kbd> för förrenderad HTML.",
 	"apiwarn-echo-deprecation-html": "<kbd>notformat=html</kbd> har blivit föråldrat och kommer snart att tas bort. Använd <kbd>notformat=special</kbd> istället.",
 	"apierror-echo-event-creation-failed": "Kunde inte skapa Echo-händelse",
 	"apierror-echo-push-token-exists": "Den angivna nyckeln finns redan i databasen.",
-	"apierror-echo-push-token-not-found": "Den angivna nyckeln finns inte i databasen."
+	"apierror-echo-push-token-not-found": "Den angivna nyckeln finns inte i databasen.",
+	"apierror-echo-push-too-many-subscriptions": "Den nuvarande användaren har redan registrerat det maximalt tillåtna antalet push-prenumerationer ($1).",
+	"apierror-echo-push-topic-required": "Ämnesfältet krävs för denna tillhandahållare."
 }

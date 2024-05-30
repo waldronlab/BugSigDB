@@ -2,8 +2,8 @@
 	"@metadata": {
 		"authors": [
 			"Gitartha.bordoloi",
-			"Simbu123",
-			"Paradox"
+			"Paradox",
+			"Simbu123"
 		]
 	},
 	"echo-desc": "ঘটনা আৰু বাৰ্তাৰ বিষয়ে সদস্যক জাননী দিয়াৰ ব্যৱস্থা",
@@ -35,7 +35,8 @@
 	"echo-pref-dont-email-read-notifications": "সাৰাংশ ই-মেইলত পঠিত জাননীসমূহ অন্তৰ্ভুক্ত নকৰিব",
 	"echo-learn-more": "অধিক শিকক",
 	"echo-log": "ৰাজহুৱা লগ",
-	"echo-new-messages": "আপোনালৈ নতুন বাৰ্তা আহিছে",
+	"echo-new-messages": "আপোনাৰ আলোচনা পৃষ্ঠাত এটা নতুন বাৰ্তা আহিছে",
+	"echo-category-title-edit-user-talk": "আলোচনা পৃষ্ঠাৰ {{PLURAL:$1|বাৰ্তা|বাৰ্তাসমূহ}}",
 	"echo-category-title-article-linked": "পৃষ্ঠাৰ {{PLURAL:$1|সংযোগ|সংযোগসমূহ}}",
 	"echo-category-title-reverted": "{{PLURAL:$1|পূৰ্ববত হোৱা}} সম্পাদনা",
 	"echo-category-title-mention": "{{PLURAL:$1|উল্লেখ|উল্লেখসমূহ}}",
@@ -51,6 +52,7 @@
 	"echo-category-title-thank-you-edit": "সম্পাদনাৰ {{PLURAL:$1|মাইলৰ খুঁটি}}",
 	"echo-category-title-watchlist": "লক্ষ্য-তালিকাৰ পৃষ্ঠাৰ সম্পাদনা",
 	"echo-category-title-minor-watchlist": "লক্ষ্য-তালিকাৰ পৃষ্ঠাৰ অগুৰুত্বপূৰ্ণ সম্পাদনা",
+	"echo-pref-tooltip-edit-user-talk": "কোনোবাই মোৰ আলোচনা পৃষ্ঠাত বাৰ্তা এটা দিলে বা উত্তৰ দিলে মোক জাননী দিয়ক।",
 	"echo-pref-tooltip-article-linked": "কোনোবাই মই আন পৃষ্ঠাৰ পৰা সৃষ্টি কৰা পৃষ্ঠা এটাৰ লিংক প্ৰদান কৰিলে মোক জাননী দিয়ক।",
 	"echo-pref-tooltip-reverted": "কোনোবাই মই কৰা সম্পাদনা এটা আনডু বা ৰ'লবেক সঁজুলিৰে পূৰ্ববত কৰিলে মোক জাননী দিয়ক।",
 	"echo-pref-tooltip-mention": "কোনোবাই মোৰ সদস্য পৃষ্ঠালৈ লিংক প্ৰদান কৰিলে মোক জাননী দিয়ক।",
@@ -217,5 +219,10 @@
 	"echo-email-batch-link-text-view-all-notifications": "সকলো জাননী চাওক",
 	"notification-header-foreign-alert": "{{PLURAL:$5|আন ৱিকিৰ|$5টা আন ৱিকিৰ}} পৰা অধিক বাৰ্তা",
 	"notification-header-foreign-notice": "{{PLURAL:$5|আন ৱিকিৰ|$5টা আন ৱিকিৰ}} পৰা অধিক জাননী",
-	"notification-header-foreign-all": "{{PLURAL:$5|আন ৱিকিৰ|$5টা আন ৱিকিৰ}} পৰা অধিক জাননী"
+	"notification-header-foreign-all": "{{PLURAL:$5|আন ৱিকিৰ|$5টা আন ৱিকিৰ}} পৰা অধিক জাননী",
+	"right-manage-all-push-subscriptions": "সকলো পুছ চাবস্ক্ৰিপশ্বন ব্যৱস্থাপনা কৰক",
+	"action-manage-all-push-subscriptions": "সকলো পুছ চাবস্ক্ৰিপশ্বন ব্যৱস্থাপনা কৰক",
+	"group-push-subscription-manager": "পুছ চাবস্ক্ৰিপশ্বন ব্যৱস্থাপক",
+	"group-push-subscription-manager-member": "{{GENDER:$1|পুছ চাবস্ক্ৰিপশ্বন ব্যৱস্থাপক}}",
+	"grouppage-push-subscription-manager": "{{ns:project}}:পুছ চাবস্ক্ৰিপশ্বন ব্যৱস্থাপক"
 }

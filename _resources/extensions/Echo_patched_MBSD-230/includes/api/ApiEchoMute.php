@@ -1,11 +1,18 @@
 <?php
 
 use MediaWiki\MediaWikiServices;
+use MediaWiki\User\UserOptionsManager;
+use Wikimedia\ParamValidator\ParamValidator;
 
 class ApiEchoMute extends ApiBase {
 
-	private $centralIdLookup = null;
+	/** @var CentralIdLookup */
+	private $centralIdLookup;
 
+	/** @var UserOptionsManager */
+	private $userOptionsManager;
+
+	/** @var string[][] */
 	private static $muteLists = [
 		'user' => [
 			'pref' => 'echo-notifications-blacklist',
@@ -17,9 +24,27 @@ class ApiEchoMute extends ApiBase {
 		],
 	];
 
+	/**
+	 * @param ApiMain $main
+	 * @param string $action
+	 * @param CentralIdLookup $centralIdLookup
+	 * @param UserOptionsManager $userOptionsManager
+	 */
+	public function __construct(
+		ApiMain $main,
+		$action,
+		CentralIdLookup $centralIdLookup,
+		UserOptionsManager $userOptionsManager
+	) {
+		parent::__construct( $main, $action );
+
+		$this->centralIdLookup = $centralIdLookup;
+		$this->userOptionsManager = $userOptionsManager;
+	}
+
 	public function execute() {
 		$user = $this->getUser()->getInstanceForUpdate();
-		if ( !$user || $user->isAnon() ) {
+		if ( !$user || !$user->isRegistered() ) {
 			$this->dieWithError(
 				[ 'apierror-mustbeloggedin', $this->msg( 'action-editmyoptions' ) ],
 				'notloggedin'
@@ -30,8 +55,8 @@ class ApiEchoMute extends ApiBase {
 
 		$params = $this->extractRequestParams();
 		$mutelistInfo = self::$muteLists[ $params['type'] ];
-		$prefValue = $user->getOption( $mutelistInfo['pref'] );
-		$ids = $this->parsePref( $prefValue, $mutelistInfo['type'] );
+		$prefValue = $this->userOptionsManager->getOption( $user, $mutelistInfo['pref'] );
+		$ids = $this->parsePref( $prefValue );
 		$targetsToMute = $params['mute'] ?? [];
 		$targetsToUnmute = $params['unmute'] ?? [];
 
@@ -53,18 +78,15 @@ class ApiEchoMute extends ApiBase {
 		}
 
 		if ( $changed ) {
-			$user->setOption( $mutelistInfo['pref'], $this->serializePref( $ids, $mutelistInfo['type'] ) );
+			$this->userOptionsManager->setOption(
+				$user,
+				$mutelistInfo['pref'],
+				$this->serializePref( $ids )
+			);
 			$user->saveSettings();
 		}
 
 		$this->getResult()->addValue( null, $this->getModuleName(), 'success' );
-	}
-
-	private function getCentralIdLookup() {
-		if ( $this->centralIdLookup === null ) {
-			$this->centralIdLookup = CentralIdLookup::factory();
-		}
-		return $this->centralIdLookup;
 	}
 
 	private function lookupIds( $names, $type ) {
@@ -84,39 +106,35 @@ class ApiEchoMute extends ApiBase {
 			}
 			return $ids;
 		} elseif ( $type === 'user' ) {
-			return $this->getCentralIdLookup()->centralIdsFromNames( $names, CentralIdLookup::AUDIENCE_PUBLIC );
+			return $this->centralIdLookup->centralIdsFromNames( $names, CentralIdLookup::AUDIENCE_PUBLIC );
 		}
 	}
 
-	private function parsePref( $prefValue, $type ) {
+	private function parsePref( $prefValue ) {
 		return preg_split( '/\n/', $prefValue, -1, PREG_SPLIT_NO_EMPTY );
 	}
 
-	private function serializePref( $ids, $type ) {
+	private function serializePref( $ids ) {
 		return implode( "\n", $ids );
 	}
 
 	public function getAllowedParams( $flags = 0 ) {
 		return [
 			'type' => [
-				ApiBase::PARAM_REQUIRED => true,
-				ApiBase::PARAM_TYPE => array_keys( self::$muteLists ),
+				ParamValidator::PARAM_REQUIRED => true,
+				ParamValidator::PARAM_TYPE => array_keys( self::$muteLists ),
 			],
 			'mute' => [
-				ApiBase::PARAM_ISMULTI => true,
+				ParamValidator::PARAM_ISMULTI => true,
 			],
 			'unmute' => [
-				ApiBase::PARAM_ISMULTI => true,
+				ParamValidator::PARAM_ISMULTI => true,
 			]
 		];
 	}
 
 	public function needsToken() {
 		return 'csrf';
-	}
-
-	public function getTokenSalt() {
-		return '';
 	}
 
 	public function mustBePosted() {

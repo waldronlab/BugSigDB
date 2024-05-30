@@ -2,9 +2,13 @@
 
 // `!important` rules override the inline styles provides by clippable.
 @media all and ( max-width: @width-breakpoint-tablet ) {
-	.mw-echo-ui-overlay {
+	.skin-minerva .mw-echo-ui-overlay {
 		.oo-ui-clippableElement-clippable {
 			width: 100% !important;
+		}
+
+		.mw-echo-ui-specialHelpMenuWidget-menu {
+			max-width: 70% !important;
 		}
 
 		.oo-ui-popupWidget-popup {

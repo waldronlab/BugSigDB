@@ -1,5 +1,7 @@
 <?php
 
+use MediaWiki\MediaWikiServices;
+
 $IP = getenv( 'MW_INSTALL_PATH' );
 if ( $IP === false ) {
 	$IP = __DIR__ . '/../../..';
@@ -18,7 +20,7 @@ class BackfillUnreadWikis extends Maintenance {
 
 	public function execute() {
 		$dbFactory = MWEchoDbFactory::newFromDefault();
-		$lookup = CentralIdLookup::factory();
+		$lookup = MediaWikiServices::getInstance()->getCentralIdLookup();
 
 		$rebuild = $this->hasOption( 'rebuild' );
 		if ( $rebuild ) {
@@ -26,28 +28,33 @@ class BackfillUnreadWikis extends Maintenance {
 				$dbFactory->getSharedDb( DB_REPLICA ),
 				'echo_unread_wikis',
 				'euw_user',
-				$this->mBatchSize
+				$this->getBatchSize()
 			);
-			$iterator->addConditions( [ 'euw_wiki' => wfWikiID() ] );
+			$iterator->addConditions( [ 'euw_wiki' => WikiMap::getCurrentWikiId() ] );
 		} else {
 			$userQuery = User::getQueryInfo();
 			$iterator = new BatchRowIterator(
-				wfGetDB( DB_REPLICA ), $userQuery['tables'], 'user_id', $this->mBatchSize
+				wfGetDB( DB_REPLICA ), $userQuery['tables'], 'user_id', $this->getBatchSize()
 			);
 			$iterator->setFetchColumns( $userQuery['fields'] );
 			$iterator->addJoinConditions( $userQuery['joins'] );
 		}
 
+		$iterator->setCaller( __METHOD__ );
+
 		$processed = 0;
 		foreach ( $iterator as $batch ) {
 			foreach ( $batch as $row ) {
 				if ( $rebuild ) {
-					$user = $lookup->localUserFromCentralId( $row->euw_user, CentralIdLookup::AUDIENCE_RAW );
+					$user = $lookup->localUserFromCentralId(
+						$row->euw_user,
+						CentralIdLookup::AUDIENCE_RAW
+					);
+					if ( !$user ) {
+						continue;
+					}
 				} else {
 					$user = User::newFromRow( $row );
-				}
-				if ( !$user ) {
-					continue;
 				}
 
 				$notifUser = MWEchoNotifUser::newFromUser( $user );
@@ -69,7 +76,7 @@ class BackfillUnreadWikis extends Maintenance {
 						continue;
 					}
 
-					$uw->updateCount( wfWikiID(), $alertCount, $alertUnread, $msgCount, $msgUnread );
+					$uw->updateCount( WikiMap::getCurrentWikiId(), $alertCount, $alertUnread, $msgCount, $msgUnread );
 				}
 			}
 

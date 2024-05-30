@@ -4,8 +4,9 @@
  * @group Database
  * @covers \EchoUserLocator
  */
-class EchoUserLocatorTest extends MediaWikiTestCase {
+class EchoUserLocatorTest extends MediaWikiIntegrationTestCase {
 
+	/** @inheritDoc */
 	protected $tablesUsed = [ 'user', 'watchlist' ];
 
 	public function testLocateUsersWatchingTitle() {
@@ -19,7 +20,7 @@ class EchoUserLocatorTest extends MediaWikiTestCase {
 				'wl_title' => $key
 			];
 		}
-		wfGetDB( DB_MASTER )->insert( 'watchlist', $rows, __METHOD__ );
+		wfGetDB( DB_PRIMARY )->insert( 'watchlist', $rows, __METHOD__ );
 
 		$event = $this->getMockBuilder( EchoEvent::class )
 			->disableOriginalConstructor()
@@ -56,7 +57,7 @@ class EchoUserLocatorTest extends MediaWikiTestCase {
 				// callback returning expected user ids and event title.
 				// required because database insert must be inside test.
 				function () {
-					$user = User::newFromName( 'UTUser' );
+					$user = $this->getTestUser()->getUser();
 					$user->addToDatabase();
 
 					return [
@@ -89,7 +90,7 @@ class EchoUserLocatorTest extends MediaWikiTestCase {
 			[
 				'Something',
 				function () {
-					$user = User::newFromName( 'UTUser' );
+					$user = $this->getTestUser()->getUser();
 					$user->addToDatabase();
 
 					return [
@@ -107,12 +108,10 @@ class EchoUserLocatorTest extends MediaWikiTestCase {
 	 */
 	public function testLocateArticleCreator( $message, $initialize ) {
 		list( $expect, $title, $user ) = $initialize();
-		WikiPage::factory( $title )->doEditContent(
+		$this->getServiceContainer()->getWikiPageFactory()->newFromTitle( $title )->doUserEditContent(
 			/* $content = */ ContentHandler::makeContent( 'content', $title ),
-			/* $summary = */ 'summary',
-			/* $flags = */ 0,
-			/* $baseRevId = */ false,
-			/* $user = */ $user
+			/* $user = */ $user,
+			/* $summary = */ 'summary'
 		);
 
 		$event = $this->mockEchoEvent();

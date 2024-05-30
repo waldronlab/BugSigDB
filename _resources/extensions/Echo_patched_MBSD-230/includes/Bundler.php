@@ -3,15 +3,9 @@
 class Bundler {
 
 	private function sort( &$array ) {
-		// We have to ignore the error here (use @usort)
-		// otherwise this code fails when executed by unit tests
-		// See: https://bugs.php.net/bug.php?id=50688
-
-		// @codingStandardsIgnoreStart
-		@usort( $array, function( Bundleable $a, Bundleable $b ) {
+		usort( $array, static function ( Bundleable $a, Bundleable $b ) {
 			return strcmp( $b->getSortingKey(), $a->getSortingKey() );
 		} );
-		// @codingStandardsIgnoreEnd
 	}
 
 	/**

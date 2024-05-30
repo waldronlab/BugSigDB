@@ -1,6 +1,7 @@
 {
 	"@metadata": {
 		"authors": [
+			"Albertoleoncio",
 			"Almondega",
 			"Anderson Costa",
 			"Cainamarques",
@@ -8,6 +9,7 @@
 			"Cristofer Alves",
 			"Dianakc",
 			"Eduardo Addad de Oliveira",
+			"Eduardoaddad",
 			"Felipe L. Ewald",
 			"Hamilton Abreu",
 			"He7d3r",
@@ -24,9 +26,9 @@
 			"Rodrigo codignoli",
 			"TheEduGobi",
 			"TheGabrielZaum",
-			"Albertoleoncio",
-			"Eduardoaddad",
-			"Vonil55"
+			"Vonil55",
+			"YuriNikolai",
+			"Fúlvio"
 		]
 	},
 	"echo-desc": "Sistema para notificar usuários sobre eventos e mensagens",
@@ -59,7 +61,7 @@
 	"echo-learn-more": "Saiba mais",
 	"echo-log": "Registo público",
 	"echo-new-messages": "Você tem novas mensagens",
-	"echo-category-title-edit-user-talk": "{{PLURAL:$1|Mensagem|Mensagens}} na página de discussão",
+	"echo-category-title-edit-user-talk": "{{PLURAL:$1|Edição|Edições}} na minha página de discussão do usuário",
 	"echo-category-title-article-linked": "{{PLURAL:$1|Ligação|Ligações}} para a página",
 	"echo-category-title-reverted": "{{PLURAL:$1|Edição revertida|Edições revertidas}}",
 	"echo-category-title-mention": "{{PLURAL:$1|Menção|Menções}}",
@@ -72,10 +74,10 @@
 	"echo-category-title-user-rights": "{{PLURAL:$1|Alteração de permissões de usuário|Alterações de permissões de usuário}}",
 	"echo-category-title-emailuser": "{{PLURAL:$1|E-mail de outro usuário|E-mails de outros usuários}}",
 	"echo-category-title-article-reminder": "{{PLURAL:$1|Lembrete|Lembretes}} de página",
-	"echo-category-title-thank-you-edit": "{{PLURAL:$1|marco|marcos}} de edição",
+	"echo-category-title-thank-you-edit": "{{PLURAL:$1|Marco|Marcos}} de edição",
 	"echo-category-title-watchlist": "Editar na página vigiadas",
 	"echo-category-title-minor-watchlist": "Edição menores na página vigiadas",
-	"echo-pref-tooltip-edit-user-talk": "Notifique-me quando alguém publicar uma mensagem ou respostas na minha página de discussão.",
+	"echo-pref-tooltip-edit-user-talk": "Notifique-me quando alguém editar a minha página de discussão de usuário.",
 	"echo-pref-tooltip-article-linked": "Notifique-me quando alguém criar um link para uma página que criei a partir de uma página de artigo.",
 	"echo-pref-tooltip-reverted": "Notifique-me quando alguém reverter uma edição que fiz usando desfazer ou a ferramenta de reversão.",
 	"echo-pref-tooltip-mention": "Notificar-me quando alguém criar links para a minha página de usuário.",
@@ -190,6 +192,7 @@
 	"notification-header-watchlist-multiuser-deleted": "<strong>$1</strong>, uma página na {{GENDER:$2|sua}} lista de páginas vigiadas, foi excluída em $3 {{PLURAL:$3|veze|vezes}}.",
 	"notification-header-watchlist-multiuser-moved": "<strong>$1</strong>, uma página na {{GENDER:$2|sua}} lista de páginas vigiadas, foi movida em $3 {{PLURAL:$3|veze|vezes}}.",
 	"notification-header-watchlist-multiuser-restored": "<strong>$1</strong>, uma página na {{GENDER:$2|sua}} lista de páginas vigiadas, foi restaurada em $3 {{PLURAL:$3|veze|vezes}}.",
+	"notification-body-watchlist-once": "Não haverá outras notificações por e-mail em caso de atividade adicional, a menos que {{GENDER:$1|você visite}} esta página enquanto estiver conectado.",
 	"notification-welcome-linktext": "Bem-vindo(a)",
 	"notification-header-thank-you-1-edit": "Você acaba de fazer sua primeira edição. Muito obrigado, e seja {{GENDER:$2|bem-vindo|bem-vinda}}!",
 	"notification-header-thank-you-10-edit": "{{GENDER:$2|Você}} acaba de fazer sua décima edição; obrigado e continue por aí!",
@@ -203,7 +206,6 @@
 	"notification-link-text-view-edit": "Ver edição",
 	"notification-link-article-reminder": "Ver página",
 	"notification-header-reverted": "{{PLURAL:$4|Sua edição em <strong>$3</strong> foi {{GENDER:$2|revertida}}|Suas edições em <strong>$3</strong> foram {{GENDER:$2|revertidas}}}}.",
-	"notification-body-reverted": "$1",
 	"notification-header-emailuser": "$1 {{GENDER:$2|enviou}} um e-mail para você.",
 	"notification-edit-talk-page-email-subject2": "$1 {{GENDER:$2|deixou}} uma mensagem para você em {{SITENAME}}",
 	"notification-page-linked-email-subject": "A pagina que {{GENDER:$3|você}} criou foi lincada em {{SITENAME}}",
@@ -248,5 +250,10 @@
 	"notification-header-foreign-notice": "Mais notificações de {{PLURAL:$5|outra wiki|$5 outras wikis}}",
 	"notification-header-foreign-all": "Mais notificações de {{PLURAL:$5|outra wiki|$5 outras wikis}}",
 	"echo-foreign-wiki-lang": "$1 - $2",
-	"echo-badge-count": "{{PLURAL:$1|$1|100={{formatnum:99}}+}}"
+	"echo-badge-count": "{{PLURAL:$1|$1|100={{formatnum:99}}+}}",
+	"right-manage-all-push-subscriptions": "Gerenciar todas as inscrições push",
+	"action-manage-all-push-subscriptions": "gerenciar todas as inscrições push",
+	"group-push-subscription-manager": "Gerenciar inscrições push",
+	"group-push-subscription-manager-member": "{{GENDER:$1|gerente de inscrições push}}",
+	"grouppage-push-subscription-manager": "{{ns:project}}:Gerenciar inscrições push"
 }
