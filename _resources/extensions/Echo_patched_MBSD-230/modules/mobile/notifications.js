@@ -1,3 +1,5 @@
+var NotificationBadge = require( './NotificationBadge.js' );
+
 var NOTIFICATIONS_PATH = '/notifications';
 
 /**
@@ -14,17 +16,16 @@ function onCloseNotificationsOverlay() {
 	mw.hook( 'echo.mobile' ).fire( false );
 }
 
-/*
+/**
  * This code loads the necessary modules for the notifications overlay, not to be confused
  * with the Toast notifications defined by common/toast.js.
  */
-module.exports = function () {
+function init() {
 	var badge,
 		notificationsFilterOverlay = require( './notificationsFilterOverlay.js' ),
 		notificationsOverlay = require( './overlay.js' ),
 		router = require( 'mediawiki.router' ),
 		overlayManager = mw.mobileFrontend.require( 'mobile.startup' ).OverlayManager.getSingleton(),
-		NotificationBadge = require( './NotificationBadge.js' ),
 		initialized = false;
 
 	function showNotificationOverlay() {
@@ -49,7 +50,7 @@ module.exports = function () {
 				ev.preventDefault();
 			},
 			// eslint-disable-next-line no-jquery/no-global-selector
-			el: $( '#user-notifications.user-button' ).parent()
+			el: $( '.minerva-user-notifications ul' ).parent()
 		} );
 		overlayManager.add( /^\/notifications$/, showNotificationOverlay );
 
@@ -114,4 +115,7 @@ module.exports = function () {
 		} );
 	} );
 
-};
+}
+
+module.exports.init = init;
+module.exports.NotificationBadge = NotificationBadge;

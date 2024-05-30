@@ -17,12 +17,13 @@ class NotificationPager extends ReverseChronologicalPager {
 	}
 
 	public function formatRow( $row ) {
+		// @phan-suppress-previous-line PhanPluginNeverReturnMethod LSP violation
 		throw new Exception( "This pager does not support row formatting. " .
 			"Use 'getNotifications()' to get a list of EchoNotification objects." );
 	}
 
 	public function getQueryInfo() {
-		$attributeManager = EchoAttributeManager::newFromGlobalVars();
+		$attributeManager = EchoServices::getInstance()->getAttributeManager();
 		$eventTypes = $attributeManager->getUserEnabledEvents( $this->getUser(), 'web' );
 
 		return [

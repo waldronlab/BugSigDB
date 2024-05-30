@@ -3,11 +3,13 @@
 		"authors": [
 			"Arystanbek",
 			"BaRaN6161 TURK",
+			"Hedda",
 			"KorkmazO",
 			"McAang",
+			"MuratTheTurkish",
 			"Sayginer",
-			"Hedda",
-			"MuratTheTurkish"
+			"Joseph",
+			"Amire80"
 		]
 	},
 	"apihelp-echomarkread-description": "Bildirimleri geçerli kullanıcı için okundu olarak işaretleyin.",
@@ -24,7 +26,7 @@
 	"apihelp-echomarkseen-summary": "Bildirimleri geçerli kullanıcı için göründüğü gibi işaretleyin.",
 	"apihelp-echomarkseen-example-1": "Her türden bildirimleri görüldüğü olarak işaretleyin",
 	"apihelp-echomarkseen-param-type": "Görüldüğü gibi işaretlenecek bildirim türleri: 'alert', 'message' veya 'all'.",
-	"apihelp-echomarkseen-param-timestampFormat": "'ISO_8601' veya 'MW' çıkışı için kullanılacak zaman damgası biçimi. 'MW' burada kullanımdan kaldırılmıştır, bu nedenle tüm istemciler 'ISO_8601' e geçmelidir. Bu parametre kaldırılacak ve 'ISO_8601' tek çıkış biçimi olacak.",
+	"apihelp-echomarkseen-param-timestampFormat": "'ISO_8601' veya 'MW' çıkışı için kullanılacak zaman damgası biçimi. 'MW' burada kullanımdan kaldırılmıştır, bu nedenle tüm istemciler 'ISO_8601' ile geçmelidir. Bu parametre kaldırılacak ve 'ISO_8601' tek çıkış biçimi olacak.",
 	"apihelp-echomute-description": "Belirli kullanıcılardan veya sayfalardan gelen bildirimlerin sesini kapatın veya açın.",
 	"apihelp-echomute-summary": "Belirli kullanıcılardan veya sayfalardan gelen bildirimlerin sesini kapatın veya açın.",
 	"apihelp-echomute-param-type": "Sessiz listesine eklenecek veya listeden kaldırılacağı",
@@ -35,9 +37,11 @@
 	"apihelp-echopushsubscriptions+create-summary": "Geçerli kullanıcı için push abonelikleri kaydedin.",
 	"apihelp-echopushsubscriptions+create-param-provider": "Anahtar kaydedilecek push servis sağlayıcısı.",
 	"apihelp-echopushsubscriptions+create-param-providertoken": "Kaydedilecek anahtar.",
+	"apihelp-echopushsubscriptions+create-param-topic": "Bildirimin gönderileceği APNS konusu (uygulama paketi kimliği).",
 	"apihelp-echopushsubscriptions+create-example": "Geçerli kullanıcı için push aboneliği kaydedin.",
-	"apihelp-echopushsubscriptions+delete-summary": "Geçerli kullanıcı için push aboneliklerin kaydını kaldırın.",
+	"apihelp-echopushsubscriptions+delete-summary": "Geçerli kullanıcı veya başka bir belirtilen kullanıcı için push aboneliklerinin kaydını kaldırın.",
 	"apihelp-echopushsubscriptions+delete-param-providertoken": "Kaydı silmek için push aboneliği ile ilişkili anahtar.",
+	"apihelp-echopushsubscriptions+delete-param-centraluserid": "Kaydı silme aboneliği ile ilişkili merkezi kullanıcı kimliği.",
 	"apihelp-echopushsubscriptions+delete-example": "Geçerli kullanıcı için push aboneliğinin kaydını kaldırın.",
 	"apihelp-query+notifications-description": "Mevcut kullanıcıyı bekleyen bildirimler alın.",
 	"apihelp-query+notifications-summary": "Mevcut kullanıcıyı bekleyen bildirimler alın.",
@@ -58,10 +62,12 @@
 	"apihelp-query+notifications-param-alertunreadfirst": "Önce okunmamış mesaj bildirimlerinin gösterilip gösterilmeyeceği (yalnızca groupbysection ayarlanmışsa kullanılır).",
 	"apihelp-query+notifications-param-messagecontinue": "Daha fazla mesaj sonucu mevcut olduğunda, devam etmek için bunu kullanın.",
 	"apihelp-query+notifications-param-messageunreadfirst": "Önce okunmamış uyarı bildirimlerinin gösterilip gösterilmeyeceği (yalnızca groupbysection ayarlanmışsa kullanılır).",
-	"apihelp-query+notifications-param-titles": "Yalnızca bu sayfalar için bildirim döndürün.  Herhangi bir sayfayla ilişkili olmayan bildirimleri almak için, başlık olarak [] kullanın.",
+	"apihelp-query+notifications-param-titles": "Yalnızca bu sayfalar için bildirim döndürün. Herhangi bir sayfayla ilişkili olmayan bildirimleri almak için, başlık olarak [] kullanın.",
 	"apihelp-query+notifications-param-bundle": "Bildirim türleri gruplama kurallarına göre paket uyumlu okunmamış bildirimlerin gösterilip gösterilmeyeceği.",
-	"apihelp-query+notifications-example-1": "Liste bildirimleri",
-	"apihelp-query+notifications-example-2": "Sayılarla birlikte bölümlere göre gruplandırılmış bildirimler listesi",
+	"apihelp-query+notifications-param-notifiertypes": "Bildirimlerin döndürüleceği bildirici türleri.",
+	"apihelp-query+notifications-example-1": "Web bildirimleri listeleyin",
+	"apihelp-query+notifications-example-2": "Sayımlarla birlikte bölümlere göre gruplandırılmış web bildirimleri listeleyin",
+	"apihelp-query+notifications-example-3": "E-posta bildirimlerini listele",
 	"apihelp-query+unreadnotificationpages-description": "Geçerli kullanıcı için okunmamış bildirimlerin bulunduğu sayfaları alın.",
 	"apihelp-query+unreadnotificationpages-summary": "Geçerli kullanıcı için okunmamış bildirimlerin bulunduğu sayfaları alın.",
 	"apihelp-query+unreadnotificationpages-param-grouppages": "Tartışma sayfalarını konu sayfalarıyla birlikte gruplandırın ve bir sayfayla ilişkili olmayan grup bildirimlerini geçerli kullanıcının kullanıcı sayfasıyla birlikte gruplandırın.",
@@ -80,5 +86,7 @@
 	"apiwarn-echo-deprecation-html": "<kbd>notformat=html</kbd> kullanımdan kaldırıldı ve yakında kaldırılacak. Bunun yerine <kbd>notformat=special</kbd> kullanın.",
 	"apierror-echo-event-creation-failed": "Echo etkinliği oluşturulamadı",
 	"apierror-echo-push-token-exists": "Sağlanan simge veritabanında zaten var.",
-	"apierror-echo-push-token-not-found": "Sağlanan anahtar veritabanında bulunamadı."
+	"apierror-echo-push-token-not-found": "Sağlanan anahtar veritabanında bulunamadı.",
+	"apierror-echo-push-too-many-subscriptions": "Mevcut kullanıcı, izin verilen maksimum push abonelik sayısını ($1) zaten kaydetti.",
+	"apierror-echo-push-topic-required": "Bu sağlayıcı için konu alanı gereklidir."
 }

@@ -108,6 +108,8 @@ $wgCategoryCollation = 'numeric';
 //# Add more configuration options below.
 
 ############# Custom core settings #############
+$wgFavicon = "$wgScriptPath/favicon.ico";
+
 $wgRestrictDisplayTitle = false;
 
 $wgNamespacesWithSubpages[NS_MAIN] = true;
@@ -138,9 +140,10 @@ $egChameleonLayoutFile = "$IP/skins/chameleon/custom/layouts/navhead.xml";
 
 ############# Extension settings #############
 # Semantic Mediawiki - keep this early
+wfLoadExtension( 'SemanticMediaWiki' );
 enableSemantics( 'bugsigdb.org' ); # Keep this first
 $smwgEntityCollation = $wgCategoryCollation;
-$wgNamespacesWithSubpages[SMW_NS_PROPERTY] = true;
+$wgNamespacesWithSubpages[102] = true; // SMW_NS_PROPERTY
 $smwgQMaxInlineLimit = 220000;
 # Enable embedded query updates, see MBSD-142
 $smwgEnabledQueryDependencyLinksStore = false;
@@ -223,7 +226,7 @@ $wgCaptchaTriggers['badlogin']      = true;
 
 //wfLoadExtension( 'SemanticResultFormats' );
 
-require_once "$IP/extensions/ConfirmAccount/ConfirmAccount.php";
+wfLoadExtension( 'ConfirmAccount' );
 $wgGroupPermissions['*']['createaccount'] = false;
 $wgConfirmAccountContact = "waldronlab@gmail.com";
 
@@ -320,12 +323,12 @@ wfLoadExtension( 'ContributionScores' );
 $wgContribScoreIgnoreBots = true;
 $wgContribScoreIgnoreBlockedUsers = true;
 $wgContribScoreIgnoreUsernames = [
-    'Wikiteq',
-    'WikiWorks',
-    'WikiWorks753',
-    'WikiWorks743',
-    'WikiWorks017',
-    'Admin'
+	'Wikiteq',
+	'WikiWorks',
+	'WikiWorks753',
+	'WikiWorks743',
+	'WikiWorks017',
+	'Admin'
 ];
 $wgContribScoreDisableCache = false;
 
@@ -369,8 +372,39 @@ wfLoadExtension( 'SemanticScribunto' );
 if ( !isset( $wgScribuntoEngineConf ) ) {
 	$wgScribuntoEngineConf = [ 'luasandbox' => [] ];
 }
-// WLDR-312
-$wgScribuntoEngineConf['luasandbox']['cpuLimit'] = 20;
+// WLDR-312, WLDR-362
+$wgScribuntoEngineConf['luasandbox']['cpuLimit'] = 200;
+
+// There is no nginx in front of varnish.
+$wgInternalServer = $wgServer;
+
+// Request from varnish after each links update.
+// This ensures that varnish is always populated but
+// doesn't get overloaded with requests like CdnCacheUpdate would.
+$wgHooks['LinksUpdateComplete'][] = function ( $linksUpdate ) {
+	global $wgCdnServers;
+	$url = $linksUpdate->getTitle()->getInternalURL();
+	// Adapted from CdnCacheUpdate::naivePurge.
+	foreach( $wgCdnServers as $server ) {
+		$urlInfo = wfParseUrl( $url );
+		$urlHost = strlen( $urlInfo['port'] ?? '' )
+			? IPUtils::combineHostAndPort( $urlInfo['host'], (int)$urlInfo['port'] )
+			: $urlInfo['host'];
+		$baseReq = [
+			'method' => 'GET',
+			'url' => $url,
+			'headers' => [
+				'Host' => $urlHost,
+				'Connection' => 'Keep-Alive',
+				'Proxy-Connection' => 'Keep-Alive',
+				'User-Agent' => 'MediaWiki/' . MW_VERSION . ' LinksUpdate',
+			],
+			'proxy' => $server
+		];
+		MediaWiki\MediaWikiServices::getInstance()->getHttpRequestFactory()
+			->createMultiClient()->runMulti( [ $baseReq ] );
+	}
+};
 
 wfLoadExtension( 'SemanticDependencyUpdater' );
 // MBSD-256
@@ -387,6 +421,8 @@ $wgPFStringLengthLimit = 10000;
 
 // MBSD-247
 wfLoadExtension( 'EmbedVideo' );
+
+wfLoadExtension( 'SimpleTippy' );
 
 // Disable options to change skins, MBSD-188
 $wgHiddenPrefs[] = 'skin';

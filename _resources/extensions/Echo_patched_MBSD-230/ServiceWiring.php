@@ -1,15 +1,34 @@
 <?php
 
-use EchoPush\NotificationServiceClient;
-use EchoPush\SubscriptionManager;
+use MediaWiki\Extension\Notifications\Push\NotificationServiceClient;
+use MediaWiki\Extension\Notifications\Push\SubscriptionManager;
 use MediaWiki\Logger\LoggerFactory;
 use MediaWiki\MediaWikiServices;
 use MediaWiki\Storage\NameTableStore;
 
 return [
 
-	'EchoPushNotificationServiceClient' => function ( MediaWikiServices $services ):
-	NotificationServiceClient {
+	'EchoAttributeManager' => static function ( MediaWikiServices $services ): EchoAttributeManager {
+		$userGroupManager = $services->getUserGroupManager();
+		$echoConfig = $services->getConfigFactory()->makeConfig( 'Echo' );
+		$notifications = $echoConfig->get( 'EchoNotifications' );
+		$categories = $echoConfig->get( 'EchoNotificationCategories' );
+		$typeAvailability = $echoConfig->get( 'DefaultNotifyTypeAvailability' );
+		$typeAvailabilityByCategory = $echoConfig->get( 'NotifyTypeAvailabilityByCategory' );
+
+		return new EchoAttributeManager(
+			$notifications,
+			$categories,
+			$typeAvailability,
+			$typeAvailabilityByCategory,
+			$userGroupManager,
+			$services->getUserOptionsLookup()
+		);
+	},
+
+	'EchoPushNotificationServiceClient' => static function (
+		MediaWikiServices $services
+	): NotificationServiceClient {
 		$echoConfig = $services->getConfigFactory()->makeConfig( 'Echo' );
 		$httpRequestFactory = $services->getHttpRequestFactory();
 		$url = $echoConfig->get( 'EchoPushServiceBaseUrl' );
@@ -18,7 +37,7 @@ return [
 		return $client;
 	},
 
-	'EchoPushSubscriptionManager' => function ( MediaWikiServices $services ): SubscriptionManager {
+	'EchoPushSubscriptionManager' => static function ( MediaWikiServices $services ): SubscriptionManager {
 		$echoConfig = $services->getConfigFactory()->makeConfig( 'Echo' );
 		// Use shared DB/cluster for push subscriptions
 		$cluster = $echoConfig->get( 'EchoSharedTrackingCluster' );
@@ -27,10 +46,8 @@ return [
 		$loadBalancer = $cluster
 			? $loadBalancerFactory->getExternalLB( $cluster )
 			: $loadBalancerFactory->getMainLB( $database );
-		$dbw = $loadBalancer->getLazyConnectionRef( DB_MASTER, [], $database );
-		$dbr = $loadBalancer->getLazyConnectionRef( DB_REPLICA, [], $database );
-
-		$centralIdLookup = CentralIdLookup::factory();
+		$dbw = $loadBalancer->getConnectionRef( DB_PRIMARY, [], $database );
+		$dbr = $loadBalancer->getConnectionRef( DB_REPLICA, [], $database );
 
 		$pushProviderStore = new NameTableStore(
 			$loadBalancer,
@@ -43,7 +60,26 @@ return [
 			$database
 		);
 
-		return new SubscriptionManager( $dbw, $dbr, $centralIdLookup, $pushProviderStore );
+		$pushTopicStore = new NameTableStore(
+			$loadBalancer,
+			$services->getMainWANObjectCache(),
+			LoggerFactory::getInstance( 'Echo' ),
+			'echo_push_topic',
+			'ept_id',
+			'ept_text',
+			null,
+			$database
+		);
+
+		$maxSubscriptionsPerUser = $echoConfig->get( 'EchoPushMaxSubscriptionsPerUser' );
+
+		return new SubscriptionManager(
+			$dbw,
+			$dbr,
+			$pushProviderStore,
+			$pushTopicStore,
+			$maxSubscriptionsPerUser
+		);
 	}
 
 ];

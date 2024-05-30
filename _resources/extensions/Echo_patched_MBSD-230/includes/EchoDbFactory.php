@@ -1,7 +1,7 @@
 <?php
 
 use MediaWiki\MediaWikiServices;
-use Wikimedia\Rdbms\LoadBalancer;
+use Wikimedia\Rdbms\ILoadBalancer;
 
 /**
  * Database factory class, this will determine whether to use the main database
@@ -15,8 +15,10 @@ class MWEchoDbFactory {
 	 */
 	private $cluster;
 
+	/** @var string|false */
 	private $shared;
 
+	/** @var string|false */
 	private $sharedCluster;
 
 	/**
@@ -52,7 +54,7 @@ class MWEchoDbFactory {
 
 	/**
 	 * Get the database load balancer
-	 * @return LoadBalancer
+	 * @return ILoadBalancer
 	 */
 	protected function getLB() {
 		// Use the external db defined for Echo
@@ -66,7 +68,7 @@ class MWEchoDbFactory {
 	}
 
 	/**
-	 * @return LoadBalancer
+	 * @return ILoadBalancer
 	 */
 	protected function getSharedLB() {
 		if ( $this->sharedCluster ) {
@@ -136,29 +138,29 @@ class MWEchoDbFactory {
 	 * Wait for the replicas of the database
 	 */
 	public function waitForReplicas() {
-		$this->waitFor( $this->getMasterPosition() );
+		$this->waitFor( $this->getPrimaryPosition() );
 	}
 
 	/**
-	 * Get the current master position for the wiki and echo
+	 * Get the current primary database position for the wiki and echo
 	 * db when they have at least one replica in their cluster.
 	 *
 	 * @return array
 	 */
-	public function getMasterPosition() {
+	public function getPrimaryPosition() {
 		$position = [
 			'wikiDb' => false,
 			'echoDb' => false,
 		];
 		$lb = MediaWikiServices::getInstance()->getDBLoadBalancer();
 		if ( $lb->getServerCount() > 1 ) {
-			$position['wikiDb'] = $lb->getMasterPos();
+			$position['wikiDb'] = $lb->getPrimaryPos();
 		}
 
 		if ( $this->cluster ) {
 			$lb = $this->getLB();
 			if ( $lb->getServerCount() > 1 ) {
-				$position['echoDb'] = $lb->getMasterPos();
+				$position['echoDb'] = $lb->getPrimaryPos();
 			}
 		}
 
@@ -166,8 +168,8 @@ class MWEchoDbFactory {
 	}
 
 	/**
-	 * Receives the output of self::getMasterPosition. Waits
-	 * for replicas to catch up to the master position at that
+	 * Receives the output of self::getPrimaryPosition. Waits
+	 * for replicas to catch up to the primary database position at that
 	 * point.
 	 *
 	 * @param array $position
@@ -182,10 +184,10 @@ class MWEchoDbFactory {
 	}
 
 	/**
-	 * Check whether it makes sense to retry a failed lookup on the master.
+	 * Check whether it makes sense to retry a failed lookup on the primary database.
 	 * @return bool True if there are multiple servers and changes were made in this request; false otherwise
 	 */
-	public function canRetryMaster() {
-		return $this->getLB()->getServerCount() > 1 && $this->getLB()->hasOrMadeRecentMasterChanges();
+	public function canRetryPrimary() {
+		return $this->getLB()->getServerCount() > 1 && $this->getLB()->hasOrMadeRecentPrimaryChanges();
 	}
 }

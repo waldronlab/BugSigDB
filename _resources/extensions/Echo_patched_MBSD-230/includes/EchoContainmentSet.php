@@ -1,5 +1,6 @@
 <?php
 
+use MediaWiki\MediaWikiServices;
 use MediaWiki\Preferences\MultiUsernameFilter;
 
 /**
@@ -7,7 +8,7 @@ use MediaWiki\Preferences\MultiUsernameFilter;
  * from multiple sources like global variables, wiki pages, etc.
  *
  * Initialize:
- *   $cache = ObjectCache::getLocalClusterIntance();
+ *   $cache = ObjectCache::getLocalClusterInstance();
  *   $set = new EchoContainmentSet;
  *   $set->addArray( $wgSomeGlobalParameter );
  *   $set->addOnWiki( NS_USER, 'Foo/bar-baz', $cache, 'some_user_specific_cache_key' );
@@ -28,6 +29,9 @@ class EchoContainmentSet {
 	 */
 	protected $recipient;
 
+	/**
+	 * @param User $recipient
+	 */
 	public function __construct( User $recipient ) {
 		$this->recipient = $recipient;
 	}
@@ -55,13 +59,14 @@ class EchoContainmentSet {
 	 *
 	 * @param string $preferenceName
 	 */
-	public function addFromUserOption( $preferenceName ) {
-		$preference = $this->recipient->getOption( $preferenceName, [] );
-
+	public function addFromUserOption( string $preferenceName ) {
+		$userOptionsLookup = MediaWikiServices::getInstance()->getUserOptionsLookup();
+		$preference = $userOptionsLookup->getOption( $this->recipient, $preferenceName, [] );
 		if ( $preference ) {
 			$ids = MultiUsernameFilter::splitIds( $preference );
-			$lookup = CentralIdLookup::factory();
-			$names = $lookup->namesFromCentralIds( $ids, $this->recipient );
+			$names = MediaWikiServices::getInstance()
+				->getCentralIdLookup()
+				->namesFromCentralIds( $ids, $this->recipient );
 			$this->addArray( $names );
 		}
 	}
@@ -72,8 +77,9 @@ class EchoContainmentSet {
 	 *
 	 * @param string $preferenceName
 	 */
-	public function addTitleIDsFromUserOption( string $preferenceName ) :void {
-		$preference = $this->recipient->getOption( $preferenceName, [] );
+	public function addTitleIDsFromUserOption( string $preferenceName ): void {
+		$userOptionsLookup = MediaWikiServices::getInstance()->getUserOptionsLookup();
+		$preference = $userOptionsLookup->getOption( $this->recipient, $preferenceName, [] );
 		if ( !is_string( $preference ) ) {
 			// We expect the preference data to be saved as a string via the
 			// preferences form; if the user modified their data so it's no
@@ -118,7 +124,7 @@ class EchoContainmentSet {
 	public function contains( $value ) {
 		foreach ( $this->lists as $list ) {
 			// Use strict comparison to prevent the number 0 from matching all strings (T177825)
-			if ( array_search( $value, $list->getValues(), true ) !== false ) {
+			if ( in_array( $value, $list->getValues(), true ) ) {
 				return true;
 			}
 		}

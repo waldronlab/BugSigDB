@@ -1,22 +1,38 @@
 <?php
 
+use MediaWiki\Extension\Notifications\Push\Utils;
+
 /**
  * @group medium
  * @group API
  * @group Database
- * @covers \EchoPush\Api\ApiEchoPushSubscriptionsDelete
+ * @covers \MediaWiki\Extension\Notifications\Push\Api\ApiEchoPushSubscriptionsDelete
  */
 class ApiEchoPushSubscriptionsDeleteTest extends ApiTestCase {
 
 	/** @var User */
 	private $user;
 
+	/** @var User */
+	private $subscriptionManager;
+
+	/** @var User */
+	private $otherUser;
+
 	public function setUp(): void {
 		parent::setUp();
-		$this->setMwGlobals( 'wgEchoEnablePush', true );
+		$this->setMwGlobals( [
+			'wgEchoEnablePush' => true,
+			'wgEchoPushMaxSubscriptionsPerUser' => 3
+		] );
 		$this->tablesUsed[] = 'echo_push_subscription';
 		$this->tablesUsed[] = 'echo_push_provider';
-		$this->user = $this->getTestUser()->getUser();
+
+		// Use mutable users for our generic users so we don't get two references to the same User
+		$this->user = $this->getMutableTestUser()->getUser();
+		$this->otherUser = $this->getMutableTestUser()->getUser();
+		$this->subscriptionManager = $this->getTestUser( 'push-subscription-manager' )->getUser();
+
 		$this->createTestData();
 	}
 
@@ -24,7 +40,7 @@ class ApiEchoPushSubscriptionsDeleteTest extends ApiTestCase {
 		$params = [
 			'action' => 'echopushsubscriptions',
 			'command' => 'delete',
-			'providertoken' => 'XYZ789',
+			'providertoken' => 'ABC',
 		];
 		$result = $this->doApiRequestWithToken( $params, null, $this->user );
 		$this->assertEquals( 'Success', $result[0]['delete']['result'] );
@@ -34,15 +50,58 @@ class ApiEchoPushSubscriptionsDeleteTest extends ApiTestCase {
 		$params = [
 			'action' => 'echopushsubscriptions',
 			'command' => 'delete',
-			'providertoken' => 'ABC123',
+			'providertoken' => 'XYZ',
 		];
 		$this->expectException( ApiUsageException::class );
 		$this->doApiRequestWithToken( $params, null, $this->user );
 	}
 
+	public function testApiDeleteSubscriptionWithOwnCentralId(): void {
+		$params = [
+			'action' => 'echopushsubscriptions',
+			'command' => 'delete',
+			'providertoken' => 'ABC',
+			'centraluserid' => Utils::getPushUserId( $this->user ),
+		];
+		$result = $this->doApiRequestWithToken( $params, null, $this->user );
+		$this->assertEquals( 'Success', $result[0]['delete']['result'] );
+	}
+
+	public function testApiDeleteSubscriptionWithOtherNonSubscriptionManagerUser(): void {
+		$params = [
+			'action' => 'echopushsubscriptions',
+			'command' => 'delete',
+			'providertoken' => 'ABC',
+			'centraluserid' => Utils::getPushUserId( $this->user ),
+		];
+		$this->expectException( ApiUsageException::class );
+		$this->doApiRequestWithToken( $params, null, $this->otherUser );
+	}
+
+	public function testApiDeleteSubscriptionWithPushSubscriptionManager(): void {
+		$params = [
+			'action' => 'echopushsubscriptions',
+			'command' => 'delete',
+			'providertoken' => 'ABC',
+		];
+		$result = $this->doApiRequestWithToken( $params, null, $this->subscriptionManager );
+		$this->assertEquals( 'Success', $result[0]['delete']['result'] );
+	}
+
+	public function testApiDeleteSubscriptionProviderTokenEmpty(): void {
+		$params = [
+			'action' => 'echopushsubscriptions',
+			'command' => 'delete',
+			'providertoken' => ''
+		];
+		$this->expectException( ApiUsageException::class );
+		$result = $this->doApiRequestWithToken( $params, null, $this->user );
+	}
+
 	private function createTestData(): void {
 		$subscriptionManager = EchoServices::getInstance()->getPushSubscriptionManager();
-		$subscriptionManager->create( $this->user, 'fcm', 'XYZ789' );
+		$userId = Utils::getPushUserId( $this->user );
+		$subscriptionManager->create( 'fcm', 'ABC', $userId );
 	}
 
 }

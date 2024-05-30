@@ -1,5 +1,7 @@
 <?php
 
+use MediaWiki\MediaWikiServices;
+
 // @todo Fill in
 class EchoNotifier {
 	/**
@@ -12,15 +14,13 @@ class EchoNotifier {
 	public static function notifyWithNotification( $user, $event ) {
 		// Only create the notification if the user wants to receive that type
 		// of notification and they are eligible to receive it. See bug 47664.
-		$attributeManager = EchoAttributeManager::newFromGlobalVars();
+		$attributeManager = EchoServices::getInstance()->getAttributeManager();
 		$userWebNotifications = $attributeManager->getUserEnabledEvents( $user, 'web' );
 		if ( !in_array( $event->getType(), $userWebNotifications ) ) {
 			return;
 		}
 
 		EchoNotification::create( [ 'user' => $user, 'event' => $event ] );
-
-		MWEchoEventLogging::logSchemaEcho( $user, $event, 'web' );
 	}
 
 	/**
@@ -32,6 +32,7 @@ class EchoNotifier {
 	 */
 	public static function notifyWithEmail( $user, $event ) {
 		global $wgEnableEmail, $wgBlockDisablesLogin;
+		$userOptionsLookup = MediaWikiServices::getInstance()->getUserOptionsLookup();
 
 		if (
 			// Email is globally disabled
@@ -39,9 +40,9 @@ class EchoNotifier {
 			// User does not have a valid and confirmed email address
 			!$user->isEmailConfirmed() ||
 			// User has disabled Echo emails
-			$user->getOption( 'echo-email-frequency' ) < 0 ||
+			$userOptionsLookup->getOption( $user, 'echo-email-frequency' ) < 0 ||
 			// User is blocked and cannot log in (T199993)
-			( $wgBlockDisablesLogin && $user->isBlocked() )
+			( $wgBlockDisablesLogin && $user->getBlock() )
 		) {
 			return false;
 		}
@@ -51,7 +52,7 @@ class EchoNotifier {
 			return false;
 		}
 
-		$attributeManager = EchoAttributeManager::newFromGlobalVars();
+		$attributeManager = EchoServices::getInstance()->getAttributeManager();
 		$userEmailNotifications = $attributeManager->getUserEnabledEvents( $user, 'email' );
 		// See if the user wants to receive emails for this category or the user is eligible to receive this email
 		if ( in_array( $event->getType(), $userEmailNotifications ) ) {
@@ -74,10 +75,8 @@ class EchoNotifier {
 				$bundleHash = md5( $bundleString );
 			}
 
-			MWEchoEventLogging::logSchemaEcho( $user, $event, 'email' );
-
 			// email digest notification ( weekly or daily )
-			if ( $wgEchoEnableEmailBatch && $user->getOption( 'echo-email-frequency' ) > 0 ) {
+			if ( $wgEchoEnableEmailBatch && $userOptionsLookup->getOption( $user, 'echo-email-frequency' ) > 0 ) {
 				// always create a unique event hash for those events don't support bundling
 				// this is mainly for group by
 				if ( !$bundleHash ) {
@@ -120,16 +119,17 @@ class EchoNotifier {
 	 */
 	private static function generateEmail( EchoEvent $event, User $user ) {
 		$emailFormat = MWEchoNotifUser::newFromUser( $user )->getEmailFormat();
-		$lang = Language::factory( $user->getOption( 'language' ) );
+		$userOptionsLookup = MediaWikiServices::getInstance()->getUserOptionsLookup();
+		$lang = Language::factory( $userOptionsLookup->getOption( $user, 'language' ) );
 		$formatter = new EchoPlainTextEmailFormatter( $user, $lang );
-		$content = $formatter->format( $event );
+		$content = $formatter->format( $event, 'email' );
 		if ( !$content ) {
 			return false;
 		}
 
 		if ( $emailFormat === EchoEmailFormat::HTML ) {
 			$htmlEmailFormatter = new EchoHtmlEmailFormatter( $user, $lang );
-			$htmlContent = $htmlEmailFormatter->format( $event );
+			$htmlContent = $htmlEmailFormatter->format( $event, 'email' );
 			$multipartBody = [
 				'text' => $content['body'],
 				'html' => $htmlContent['body']

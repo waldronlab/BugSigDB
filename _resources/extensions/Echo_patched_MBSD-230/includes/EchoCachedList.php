@@ -5,8 +5,7 @@
  * to load the nested list from a potentially slow source (mysql, etc).
  */
 class EchoCachedList implements EchoContainmentList {
-	const ONE_WEEK = 4233600;
-	const ONE_DAY = 86400;
+	private const ONE_WEEK = 4233600;
 
 	/** @var WANObjectCache */
 	protected $cache;

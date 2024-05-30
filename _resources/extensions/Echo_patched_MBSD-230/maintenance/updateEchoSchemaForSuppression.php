@@ -41,23 +41,28 @@ class UpdateEchoSchemaForSuppression extends LoggedUpdateMaintenance {
 		$lbFactory = MWEchoDbFactory::newFromDefault();
 
 		$dbr = $lbFactory->getEchoDb( DB_REPLICA );
-		$dbw = $lbFactory->getEchoDb( DB_MASTER );
+		$dbw = $lbFactory->getEchoDb( DB_PRIMARY );
+		'@phan-var \Wikimedia\Rdbms\IMaintainableDatabase $dbw';
 
 		if ( !$dbw->fieldExists( 'echo_event', 'event_page_title', __METHOD__ ) ) {
 			$this->output( "No event_page_title field, skipping migration from event_page_title to event_page_id\n" );
 			return true;
 		}
 
-		$reader = new BatchRowIterator( $dbr, $this->table, $this->idField, $this->mBatchSize );
+		$reader = new BatchRowIterator( $dbr, $this->table, $this->idField, $this->getBatchSize() );
 		$reader->addConditions( [
 			"event_page_title IS NOT NULL",
 			"event_page_id" => null,
 		] );
 		$reader->setFetchColumns( [ 'event_page_namespace', 'event_page_title', 'event_extra', 'event_type' ] );
+		$reader->setCaller( __METHOD__ );
+
+		$writer = new BatchRowWriter( $dbw, $this->table, $wgEchoCluster );
+		$writer->setCaller( __METHOD__ );
 
 		$updater = new BatchRowUpdate(
 			$reader,
-			new BatchRowWriter( $dbw, $this->table, $wgEchoCluster ),
+			$writer,
 			new EchoSuppressionRowUpdateGenerator
 		);
 		$updater->setOutput( function ( $text ) {

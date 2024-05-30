@@ -3,6 +3,7 @@
 use MediaWiki\Logger\LoggerFactory;
 use MediaWiki\MediaWikiServices;
 use MediaWiki\Session\SessionManager;
+use MediaWiki\User\UserIdentity;
 
 class EchoForeignWikiRequest {
 
@@ -15,7 +16,7 @@ class EchoForeignWikiRequest {
 	/** @var array */
 	protected $wikis;
 
-	/** @varstring|null */
+	/** @var string|null */
 	protected $wikiParam;
 
 	/** @var string */
@@ -48,28 +49,39 @@ class EchoForeignWikiRequest {
 
 	/**
 	 * Execute the request
+	 * @param WebRequest|null $originalRequest Original request data to be sent with these requests
 	 * @return array[] [ wiki => result ]
 	 */
-	public function execute() {
+	public function execute( ?WebRequest $originalRequest = null ) {
 		if ( !$this->canUseCentralAuth() ) {
 			return [];
 		}
 
-		$reqs = $this->getRequestParams( $this->method, [ $this, 'getQueryParams' ] );
+		$reqs = $this->getRequestParams(
+			$this->method,
+			function ( string $wiki ) use ( $originalRequest ) {
+				return $this->getQueryParams( $wiki, $originalRequest );
+			},
+			$originalRequest
+		);
 		return $this->doRequests( $reqs );
 	}
 
+	/**
+	 * @param UserIdentity $user
+	 * @return int
+	 */
 	protected function getCentralId( $user ) {
-		$lookup = CentralIdLookup::factory();
-		$id = $lookup->centralIdFromLocalUser( $user, CentralIdLookup::AUDIENCE_RAW );
-		return $id;
+		return MediaWikiServices::getInstance()
+			->getCentralIdLookup()
+			->centralIdFromLocalUser( $user, CentralIdLookup::AUDIENCE_RAW );
 	}
 
 	protected function canUseCentralAuth() {
-		global $wgFullyInitialised, $wgUser;
+		global $wgFullyInitialised;
 
 		return $wgFullyInitialised &&
-			$wgUser->isSafeToLoad() &&
+			RequestContext::getMain()->getUser()->isSafeToLoad() &&
 			$this->user->isSafeToLoad() &&
 			SessionManager::getGlobalSession()->getProvider() instanceof CentralAuthSessionProvider &&
 			$this->getCentralId( $this->user ) !== 0;
@@ -97,7 +109,7 @@ class EchoForeignWikiRequest {
 				'Exception when fetching CentralAuth token: wiki: {wiki}, userName: {userName}, ' .
 					'userId: {userId}, centralId: {centralId}, exception: {exception}',
 				[
-					'wiki' => wfWikiID(),
+					'wiki' => WikiMap::getCurrentWikiId(),
 					'userName' => $user->getName(),
 					'userId' => $user->getId(),
 					'centralId' => $this->getCentralId( $user ),
@@ -116,10 +128,11 @@ class EchoForeignWikiRequest {
 	 * This method fetches the tokens for all requested wikis at once and caches the result.
 	 *
 	 * @param string $wiki Name of the wiki to get a token for
+	 * @param WebRequest|null $originalRequest Original request data to be sent with these requests
 	 * @suppress PhanTypeInvalidCallableArraySize getRequestParams can take an array, too (phan bug)
-	 * @return string Token
+	 * @return string Token, or empty string if an unable to retrieve the token.
 	 */
-	protected function getCsrfToken( $wiki ) {
+	protected function getCsrfToken( $wiki, ?WebRequest $originalRequest ) {
 		if ( $this->csrfTokens === null ) {
 			$this->csrfTokens = [];
 			$reqs = $this->getRequestParams( 'GET', [
@@ -128,22 +141,33 @@ class EchoForeignWikiRequest {
 				'type' => $this->tokenType,
 				'format' => 'json',
 				'centralauthtoken' => $this->getCentralAuthToken( $this->user ),
-			] );
+			], $originalRequest );
 			$responses = $this->doRequests( $reqs );
 			foreach ( $responses as $w => $response ) {
-				$this->csrfTokens[$w] = $response['query']['tokens']['csrftoken'];
+				if ( isset( $response['query']['tokens']['csrftoken'] ) ) {
+					$this->csrfTokens[$w] = $response['query']['tokens']['csrftoken'];
+				} else {
+					LoggerFactory::getInstance( 'Echo' )->warning(
+						__METHOD__ . ': Unexpected CSRF token API response from {wiki}',
+						[
+							'wiki' => $wiki,
+							'response' => $response,
+						]
+					);
+				}
 			}
 		}
-		return $this->csrfTokens[$wiki];
+		return $this->csrfTokens[$wiki] ?? '';
 	}
 
 	/**
 	 * @param string $method 'GET' or 'POST'
 	 * @param array|callable $params Associative array of query string / POST parameters,
 	 *  or a callback that takes a wiki name and returns such an array
+	 * @param WebRequest|null $originalRequest Original request data to be sent with these requests
 	 * @return array[] Array of request parameters to pass to doRequests(), keyed by wiki name
 	 */
-	protected function getRequestParams( $method, $params ) {
+	protected function getRequestParams( $method, $params, ?WebRequest $originalRequest ) {
 		$apis = EchoForeignNotifications::getApiEndpoints( $this->wikis );
 		if ( !$apis ) {
 			return [];
@@ -157,6 +181,16 @@ class EchoForeignWikiRequest {
 				'url' => $api['url'],
 				$queryKey => is_callable( $params ) ? $params( $wiki ) : $params
 			];
+
+			if ( $originalRequest ) {
+				$reqs[$wiki]['headers'] = [
+					'X-Forwarded-For' => $originalRequest->getIP(),
+					'User-Agent' => (
+						$originalRequest->getHeader( 'User-Agent' )
+						. ' (via EchoForeignWikiRequest MediaWiki/' . MW_VERSION . ')'
+					),
+				];
+			}
 		}
 
 		return $reqs;
@@ -164,9 +198,10 @@ class EchoForeignWikiRequest {
 
 	/**
 	 * @param string $wiki Wiki name
+	 * @param WebRequest|null $originalRequest Original request data to be sent with these requests
 	 * @return array
 	 */
-	protected function getQueryParams( $wiki ) {
+	protected function getQueryParams( $wiki, ?WebRequest $originalRequest ) {
 		$extraParams = [];
 		if ( $this->wikiParam ) {
 			// Only request data from that specific wiki, or they'd all spawn
@@ -174,7 +209,7 @@ class EchoForeignWikiRequest {
 			$extraParams[$this->wikiParam] = $wiki;
 		}
 		if ( $this->method === 'POST' ) {
-			$extraParams['token'] = $this->getCsrfToken( $wiki );
+			$extraParams['token'] = $this->getCsrfToken( $wiki, $originalRequest );
 		}
 
 		return [
@@ -213,8 +248,7 @@ class EchoForeignWikiRequest {
 					'Failed to fetch API response from {wiki}. Error code {code}',
 					[
 						'wiki' => $wiki,
-						'code' => $response['response']['code'],
-						'response' => $response['response']['body'],
+						'response' => $response['response'],
 						'request' => $reqs[$wiki],
 					]
 				);

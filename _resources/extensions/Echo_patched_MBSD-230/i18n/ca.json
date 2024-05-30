@@ -3,18 +3,19 @@
 		"authors": [
 			"Arnaugir",
 			"Fitoschido",
+			"Galactic Thrasher",
 			"Lluis tgn",
+			"Mguix",
 			"Nemo bis",
 			"Papapep",
+			"Paucabot",
 			"Pitort",
 			"QuimGil",
 			"Ssola",
 			"Toniher",
 			"Vriullop",
 			"පසිඳු කාවින්ද",
-			"Galactic Thrasher",
-			"Mguix",
-			"Paucabot"
+			"SMP"
 		]
 	},
 	"echo-desc": "Sistema per notificar als usuaris sobre esdeveniments i missatges",
@@ -41,7 +42,7 @@
 	"echo-learn-more": "Més informació",
 	"echo-log": "Registre públic",
 	"echo-new-messages": "Teniu nous missatges",
-	"echo-category-title-edit-user-talk": "{{PLURAL:$1|Missatge|Missatges}} de discussió",
+	"echo-category-title-edit-user-talk": "{{PLURAL:$1|Modificació|Modificacions}} a la meva pàgina de discussió d'usuari",
 	"echo-category-title-article-linked": "{{PLURAL:$1|Enllaç|Enllaços}} de pàgina",
 	"echo-category-title-reverted": "{{PLURAL:$1|Reversió d'edició|Reversions d'edicions}}",
 	"echo-category-title-mention": "{{PLURAL:$1|Menció|Mencions}}",
@@ -53,7 +54,7 @@
 	"echo-category-title-emailuser": "{{PLURAL:$1|Correu electrònic d'un altre usuari|Correus electrònics d'altres usuaris}}",
 	"echo-category-title-article-reminder": "{{PLURAL:$1|Recordatori|Recordatoris}} de pàgina",
 	"echo-category-title-thank-you-edit": "{{PLURAL:$1|Fita|Fites}} d'edició",
-	"echo-pref-tooltip-edit-user-talk": "Avisa'm quan algú envia un missatge o respon a la meva pàgina de discussió.",
+	"echo-pref-tooltip-edit-user-talk": "Notifica'm quan algú modifiqui la meva pàgina de discussió d'usuari.",
 	"echo-pref-tooltip-article-linked": "Avisa'm quan algú enllaça des d'un article a una pàgina que he creat.",
 	"echo-pref-tooltip-reverted": "Avisa'm quan algú reverteix una modificació que he fet, emprant l'eina per a desfer o revocar.",
 	"echo-pref-tooltip-mention": "Notifica'm quan algú enllaci a la meva pàgina d'usuari.",
@@ -187,5 +188,6 @@
 	"echo-email-batch-link-text-view-all-notifications": "Vegeu totes les notificacions",
 	"notification-header-foreign-alert": "Més alertes {{PLURAL:$5|d'un altre wiki|de $5 altres wikis}}",
 	"notification-header-foreign-notice": "Més avisos {{PLURAL:$5|d'un altre wiki|de $5 altres wikis}}",
-	"notification-header-foreign-all": "Més notificacions {{PLURAL:$5|d'un altre wiki|de $5 altres wikis}}"
+	"notification-header-foreign-all": "Més notificacions {{PLURAL:$5|d'un altre wiki|de $5 altres wikis}}",
+	"right-manage-all-push-subscriptions": "Gestionar les subscripcions push"
 }

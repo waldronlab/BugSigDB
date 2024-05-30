@@ -49,7 +49,7 @@ class EchoTargetPageTest extends MediaWikiUnitTestCase {
 	 */
 	public function testToDbArray( EchoTargetPage $obj ) {
 		$row = $obj->toDbArray();
-		$this->assertTrue( is_array( $row ) );
+		$this->assertIsArray( $row );
 
 		// Not very common to assert that a field does _not_ exist
 		// but since we are explicitly removing it, it seems to make sense.
@@ -60,6 +60,7 @@ class EchoTargetPageTest extends MediaWikiUnitTestCase {
 	}
 
 	/**
+	 * @param int $pageId
 	 * @return Title
 	 */
 	protected function mockTitle( $pageId ) {
@@ -74,6 +75,7 @@ class EchoTargetPageTest extends MediaWikiUnitTestCase {
 	}
 
 	/**
+	 * @param int $eventId
 	 * @return EchoEvent
 	 */
 	protected function mockEchoEvent( $eventId = 1 ) {

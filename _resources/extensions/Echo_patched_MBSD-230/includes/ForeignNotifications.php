@@ -1,5 +1,8 @@
 <?php
 
+use MediaWiki\MediaWikiServices;
+use MediaWiki\User\UserIdentity;
+
 /**
  * Caches the result of EchoUnreadWikis::getUnreadCounts() and interprets the results in various useful ways.
  *
@@ -11,7 +14,7 @@
  */
 class EchoForeignNotifications {
 	/**
-	 * @var User
+	 * @var UserIdentity
 	 */
 	protected $user;
 
@@ -46,10 +49,10 @@ class EchoForeignNotifications {
 	protected $populated = false;
 
 	/**
-	 * @param User $user
+	 * @param UserIdentity $user
 	 * @param bool $forceEnable Ignore the user's preferences and act as if they've enabled cross-wiki notifications
 	 */
-	public function __construct( User $user, $forceEnable = false ) {
+	public function __construct( UserIdentity $user, $forceEnable = false ) {
 		$this->user = $user;
 		$this->enabled = $forceEnable || $this->isEnabledByUser();
 	}
@@ -59,7 +62,8 @@ class EchoForeignNotifications {
 	 * @return bool
 	 */
 	public function isEnabledByUser() {
-		return (bool)$this->user->getOption( 'echo-cross-wiki-notifications' );
+		$userOptionsLookup = MediaWikiServices::getInstance()->getUserOptionsLookup();
+		return (bool)$userOptionsLookup->getOption( $this->user, 'echo-cross-wiki-notifications' );
 	}
 
 	/**
@@ -160,7 +164,7 @@ class EchoForeignNotifications {
 
 		foreach ( $unreadCounts as $wiki => $sections ) {
 			// exclude current wiki
-			if ( $wiki === wfWikiID() ) {
+			if ( $wiki === WikiMap::getCurrentWikiId() ) {
 				continue;
 			}
 
@@ -239,7 +243,7 @@ class EchoForeignNotifications {
 			// try to fetch site name for this specific wiki, or fallback to the
 			// general project's sitename if there is no override
 			$wikiName = $wgConf->get( 'wgSitename', $wikiId ) ?: $wgConf->get( 'wgSitename', $site );
-			$langName = Language::fetchLanguageName( $langCode, $wgLang->getCode() );
+			$langName = Language::fetchLanguageName( $langCode ?? '', $wgLang->getCode() );
 
 			if ( !$langName ) {
 				// if we can't find a language name (in language-agnostic

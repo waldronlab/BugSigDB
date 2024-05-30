@@ -10,7 +10,7 @@ class EchoUserNotificationGatewayTest extends MediaWikiUnitTestCase {
 	public function testMarkRead() {
 		// no event ids to mark
 		$gateway = new EchoUserNotificationGateway(
-			User::newFromId( 1 ),
+			$this->mockUser(),
 			$this->mockMWEchoDbFactory(),
 			$this->mockConfig()
 		);
@@ -18,7 +18,7 @@ class EchoUserNotificationGatewayTest extends MediaWikiUnitTestCase {
 
 		// successful update
 		$gateway = new EchoUserNotificationGateway(
-			User::newFromId( 1 ),
+			$this->mockUser(),
 			$this->mockMWEchoDbFactory( [ 'update' => true ] ),
 			$this->mockConfig()
 		);
@@ -26,7 +26,7 @@ class EchoUserNotificationGatewayTest extends MediaWikiUnitTestCase {
 
 		// unsuccessful update
 		$gateway = new EchoUserNotificationGateway(
-			User::newFromId( 1 ),
+			$this->mockUser(),
 			$this->mockMWEchoDbFactory( [ 'update' => false ] ),
 			$this->mockConfig()
 		);
@@ -36,7 +36,7 @@ class EchoUserNotificationGatewayTest extends MediaWikiUnitTestCase {
 	public function testMarkAllRead() {
 		// successful update
 		$gateway = new EchoUserNotificationGateway(
-			User::newFromId( 1 ),
+			$this->mockUser(),
 			$this->mockMWEchoDbFactory( [ 'update' => true ] ),
 			$this->mockConfig()
 		);
@@ -44,7 +44,7 @@ class EchoUserNotificationGatewayTest extends MediaWikiUnitTestCase {
 
 		// null update
 		$gateway = new EchoUserNotificationGateway(
-			User::newFromId( 1 ),
+			$this->mockUser(),
 			$this->mockMWEchoDbFactory( [ 'update' => false ] ),
 			$this->mockConfig()
 		);
@@ -109,26 +109,23 @@ class EchoUserNotificationGatewayTest extends MediaWikiUnitTestCase {
 
 	/**
 	 * Mock object of User
+	 * @return User
 	 */
-	protected function mockUser( $group = 'echo_group' ) {
+	protected function mockUser() {
 		$user = $this->getMockBuilder( User::class )
 			->disableOriginalConstructor()
 			->getMock();
 		$user->expects( $this->any() )
 			->method( 'getID' )
 			->will( $this->returnValue( 1 ) );
-		$user->expects( $this->any() )
-			->method( 'getOption' )
-			->will( $this->returnValue( true ) );
-		$user->expects( $this->any() )
-			->method( 'getGroups' )
-			->will( $this->returnValue( [ $group ] ) );
 
 		return $user;
 	}
 
 	/**
 	 * Mock object of MWEchoDbFactory
+	 * @param array $dbResult
+	 * @return MWEchoDbFactory
 	 */
 	protected function mockMWEchoDbFactory( array $dbResult = [] ) {
 		$dbFactory = $this->getMockBuilder( MWEchoDbFactory::class )
@@ -149,6 +146,7 @@ class EchoUserNotificationGatewayTest extends MediaWikiUnitTestCase {
 
 	/**
 	 * Returns a mock database object
+	 * @param array $dbResult
 	 * @return \Wikimedia\Rdbms\IDatabase
 	 */
 	protected function mockDb( array $dbResult = [] ) {
@@ -171,10 +169,6 @@ class EchoUserNotificationGatewayTest extends MediaWikiUnitTestCase {
 		$db->expects( $this->any() )
 			->method( 'selectRowCount' )
 			->will( $this->returnValue( $dbResult['selectRowCount'] ) );
-		$numRows = is_array( $dbResult['select'] ) ? count( $dbResult['select'] ) : 0;
-		$db->expects( $this->any() )
-			->method( 'numRows' )
-			->will( $this->returnValue( $numRows ) );
 
 		return $db;
 	}

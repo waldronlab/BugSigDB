@@ -4,6 +4,7 @@ use MediaWiki\Revision\RevisionRecord;
 
 /**
  * Utility class that formats a notification in the format specified
+ * @todo Make this a service with DI
  */
 class EchoDataOutputFormatter {
 
@@ -46,12 +47,12 @@ class EchoDataOutputFormatter {
 
 		$bundledNotifs = $notification->getBundledNotifications();
 		if ( $bundledNotifs ) {
-			$bundledEvents = array_map( function ( EchoNotification $notif ) {
+			$bundledEvents = array_map( static function ( EchoNotification $notif ) {
 				return $notif->getEvent();
 			}, $bundledNotifs );
 			$event->setBundledEvents( $bundledEvents );
 
-			$bundledIds = array_map( function ( $event ) {
+			$bundledIds = array_map( static function ( $event ) {
 				return (int)$event->getId();
 			}, $bundledEvents );
 		}
@@ -78,7 +79,7 @@ class EchoDataOutputFormatter {
 		// End creating date section header
 
 		$output = [
-			'wiki' => wfWikiID(),
+			'wiki' => WikiMap::getCurrentWikiId(),
 			'id' => $event->getId(),
 			'type' => $event->getType(),
 			'category' => $event->getCategory(),
@@ -155,7 +156,7 @@ class EchoDataOutputFormatter {
 			$output['*'] = $formatted;
 
 			if ( $notification->getBundledNotifications() &&
-				self::isBundleExpandable( $event->getType() )
+				EchoServices::getInstance()->getAttributeManager()->isBundleExpandable( $event->getType() )
 			) {
 				$output['bundledNotifications'] = array_values( array_filter( array_map(
 					function ( EchoNotification $notification ) use ( $format, $user, $lang ) {
@@ -220,16 +221,6 @@ class EchoDataOutputFormatter {
 		$timestamp->offsetForUser( $user );
 
 		return $timestamp->getTimestamp( $format );
-	}
-
-	/**
-	 * @param string $type
-	 * @return bool Whether a notification type can be an expandable bundle
-	 */
-	public static function isBundleExpandable( $type ) {
-		global $wgEchoNotifications;
-		return isset( $wgEchoNotifications[$type]['bundle']['expandable'] )
-			&& $wgEchoNotifications[$type]['bundle']['expandable'];
 	}
 
 }

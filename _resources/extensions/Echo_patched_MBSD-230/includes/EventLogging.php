@@ -1,16 +1,21 @@
 <?php
 
+use MediaWiki\Extension\EventLogging\EventLogging;
+use MediaWiki\MediaWikiServices;
+use MediaWiki\User\UserIdentity;
+
 /**
  * Static class for handling all kinds of event logging
+ *
+ * TODO: consider making this a service with dependencies injected
  */
 class MWEchoEventLogging {
 
+	/** @var array */
 	private static $revisionIds = [
-		'Echo' => 7731316,
-		'EchoMail' => 5467650,
-		// Keep in sync with client-side revision
-		// in extension.json
-		'EchoInteraction' => 15823738
+		// Keep in sync with extension.json
+		'EchoMail' => '/analytics/legacy/echomail/1.0.0',
+		'EchoInteraction' => '/analytics/legacy/echointeraction/1.0.0'
 	];
 
 	/**
@@ -39,67 +44,13 @@ class MWEchoEventLogging {
 	}
 
 	/**
-	 * Function for logging the event for Schema:Echo
-	 * @param User $user User being notified.
-	 * @param EchoEvent $event Event to log detail about.
-	 * @param string $deliveryMethod 'web' or 'email'
-	 */
-	public static function logSchemaEcho( User $user, EchoEvent $event, $deliveryMethod ) {
-		global $wgEchoNotifications;
-
-		// Notifications under system category should have -1 as sender id
-		if ( $event->getCategory() === 'system' ) {
-			$sender = -1;
-		} else {
-			$agent = $event->getAgent();
-			if ( $agent ) {
-				$sender = $agent->isAnon() ? $agent->getName() : $agent->getId();
-			} else {
-				$sender = -1;
-			}
-		}
-
-		if ( isset( $wgEchoNotifications[$event->getType()]['group'] ) ) {
-			$group = $wgEchoNotifications[$event->getType()]['group'];
-		} else {
-			$group = 'neutral';
-		}
-		$data = [
-			'eventId' => (int)$event->getId(),
-			'notificationType' => $event->getType(),
-			'notificationGroup' => $group,
-			'sender' => (string)$sender,
-			'recipientUserId' => $user->getId(),
-			'recipientEditCount' => (int)$user->getEditCount()
-		];
-		// Add the source if it exists. (This is mostly for the Thanks extension.)
-		$extra = $event->getExtra();
-		if ( isset( $extra['source'] ) ) {
-			$data['eventSource'] = (string)$extra['source'];
-		}
-		if ( $deliveryMethod === 'email' ) {
-			$data['deliveryMethod'] = 'email';
-		} else {
-			// whitelist valid delivery methods so it is always valid
-			$data['deliveryMethod'] = 'web';
-		}
-		// Add revision ID if it exists
-		$rev = $event->getRevision();
-		if ( $rev ) {
-			$data['revisionId'] = $rev->getId();
-		}
-
-		self::logEvent( 'Echo', $data );
-	}
-
-	/**
 	 * Function for logging the event for Schema:EchoEmail
-	 * @param User $user
+	 * @param UserIdentity $userIdentity
 	 * @param string $emailDeliveryMode 'single' (default), 'daily_digest', or 'weekly_digest'
 	 */
-	public static function logSchemaEchoMail( User $user, $emailDeliveryMode = 'single' ) {
+	public static function logSchemaEchoMail( UserIdentity $userIdentity, $emailDeliveryMode = 'single' ) {
 		$data = [
-			'recipientUserId' => $user->getId(),
+			'recipientUserId' => $userIdentity->getId(),
 			'emailDeliveryMode' => $emailDeliveryMode
 		];
 
@@ -107,18 +58,21 @@ class MWEchoEventLogging {
 	}
 
 	/**
-	 * @param User $user
+	 * @param UserIdentity $userIdentity
 	 * @param string $skinName
 	 */
-	public static function logSpecialPageVisit( User $user, $skinName ) {
+	public static function logSpecialPageVisit( UserIdentity $userIdentity, $skinName ) {
+		$userEditCount = (int)MediaWikiServices::getInstance()
+			->getUserEditTracker()
+			->getUserEditCount( $userIdentity );
 		self::logEvent(
 			'EchoInteraction',
 			[
 				'context' => 'archive',
 				'action' => 'special-page-visit',
-				'userId' => (int)$user->getId(),
-				'editCount' => (int)$user->getEditCount(),
-				'notifWiki' => wfWikiID(),
+				'userId' => $userIdentity->getId(),
+				'editCount' => $userEditCount,
+				'notifWiki' => WikiMap::getCurrentWikiId(),
 				// Hack: Figure out if we are in the mobile skin
 				'mobile' => $skinName === 'minerva',
 			]

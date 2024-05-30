@@ -1,11 +1,13 @@
 <?php
 
+use MediaWiki\MediaWikiServices;
+
 class EchoEditUserTalkPresentationModel extends EchoEventPresentationModel {
 
 	/**
 	 * @var EchoPresentationModelSection
 	 */
-	private $section;
+	protected $section;
 
 	/**
 	 * @inheritDoc
@@ -106,7 +108,12 @@ class EchoEditUserTalkPresentationModel extends EchoEventPresentationModel {
 	private function getRevBeforeFirstNotification() {
 		$events = $this->getBundledEvents();
 		$firstNotificationRevId = end( $events )->getExtraParam( 'revid' );
-		return $this->event->getTitle()->getPreviousRevisionID( $firstNotificationRevId );
+		$revisionLookup = MediaWikiServices::getInstance()->getRevisionLookup();
+		$revisionRecord = $revisionLookup->getRevisionById( $firstNotificationRevId );
+		$previousRevision = $revisionRecord ? $revisionLookup->getPreviousRevision( $revisionRecord ) : null;
+		$oldRevisionID = $previousRevision ? $previousRevision->getId() : 0;
+
+		return $oldRevisionID;
 	}
 
 	protected function getSubjectMessageKey() {

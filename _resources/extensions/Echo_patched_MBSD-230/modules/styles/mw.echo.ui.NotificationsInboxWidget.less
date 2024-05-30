@@ -13,7 +13,9 @@
 
 	&-toolbarWrapper {
 		height: 3.5em;
+		/* stylelint-disable-next-line plugin/no-unsupported-browser-features */
 		position: -webkit-sticky;
+		/* stylelint-disable-next-line plugin/no-unsupported-browser-features */
 		position: sticky;
 		padding-top: 0.5em;
 		margin-top: -0.5em;
@@ -37,11 +39,6 @@
 		width: @specialpage-sidebar-width;
 		padding-right: 1em;
 		vertical-align: top;
-
-		@media all and ( max-width: ( @specialpage-hd-width - 1 ) ) {
-			// Hide the sidebar for small screens
-			display: none;
-		}
 	}
 
 	&-main {
@@ -82,8 +79,10 @@
 					}
 				}
 
-				&-readState {
-					display: inline-block;
+				// Nav filter is the mobile version of readState
+				&-readState,
+				&-nav-filter {
+					display: block;
 				}
 
 				&-settings,
@@ -98,6 +97,14 @@
 					}
 				}
 			}
+		}
+
+		&-cell-placeholder {
+			display: block;
+		}
+
+		&-sidebar {
+			display: none;
 		}
 
 		&-toolbarWrapper {

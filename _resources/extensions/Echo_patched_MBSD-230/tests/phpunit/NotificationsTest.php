@@ -1,23 +1,18 @@
 <?php
 
-use MediaWiki\MediaWikiServices;
-
 /**
  * Tests for the built in notification types
  *
  * @group Database
  */
-class NotificationsTest extends MediaWikiTestCase {
+class NotificationsTest extends MediaWikiIntegrationTestCase {
 
-	/** @var User $sysop */
-	// @codingStandardsIgnoreStart
-	var $sysop;
-	// @codingStandardsIgnoreEnd
+	/** @var User */
+	private $sysop;
 
-	protected function setUp() : void {
+	protected function setUp(): void {
 		parent::setUp();
-		$this->sysop = User::newFromName( 'UTSysop' );
-		$this->setMwGlobals( 'wgUser', $this->sysop );
+		$this->sysop = $this->getTestSysop()->getUser();
 	}
 
 	/**
@@ -34,7 +29,7 @@ class NotificationsTest extends MediaWikiTestCase {
 	}
 
 	/**
-	 * @covers \EchoHooks::onUserGroupsChanged
+	 * @covers \MediaWiki\Extension\Notifications\Hooks::onUserGroupsChanged
 	 */
 	public function testUserRightsNotif() {
 		$user = new User();
@@ -43,13 +38,13 @@ class NotificationsTest extends MediaWikiTestCase {
 
 		$context = new DerivativeContext( RequestContext::getMain() );
 		$context->setUser( $this->sysop );
-		$ur = new UserrightsPage(
-			MediaWikiServices::getInstance()->getPermissionManager()
-		);
+		$ur = $this->getServiceContainer()
+			->getSpecialPageFactory()
+			->getPage( 'Userrights' );
 		$ur->setContext( $context );
 		$ur->doSaveUserGroups( $user, [ 'sysop' ], [], 'reason' );
 		$event = self::getLatestNotification( $user );
-		$this->assertEquals( $event->getType(), 'user-rights' );
+		$this->assertEquals( 'user-rights', $event->getType() );
 		$this->assertEquals( $this->sysop->getName(), $event->getAgent()->getName() );
 		$extra = $event->getExtra();
 		$this->assertArrayHasKey( 'add', $extra );

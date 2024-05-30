@@ -1,5 +1,11 @@
 <?php
 
+use MediaWiki\Logger\LoggerFactory;
+use MediaWiki\Page\PageRecord;
+use MediaWiki\Page\PageStore;
+use Wikimedia\ParamValidator\ParamValidator;
+use Wikimedia\ParamValidator\TypeDef\IntegerDef;
+
 class ApiEchoUnreadNotificationPages extends ApiQueryBase {
 	use ApiCrossWiki;
 
@@ -9,11 +15,25 @@ class ApiEchoUnreadNotificationPages extends ApiQueryBase {
 	protected $crossWikiSummary = false;
 
 	/**
+	 * @var PageStore
+	 */
+	private $pageStore;
+
+	/**
+	 * @var TitleFactory
+	 */
+	private $titleFactory;
+
+	/**
 	 * @param ApiQuery $query
 	 * @param string $moduleName
+	 * @param PageStore $pageStore
+	 * @param TitleFactory $titleFactory
 	 */
-	public function __construct( $query, $moduleName ) {
+	public function __construct( $query, $moduleName, PageStore $pageStore, TitleFactory $titleFactory ) {
 		parent::__construct( $query, $moduleName, 'unp' );
+		$this->pageStore = $pageStore;
+		$this->titleFactory = $titleFactory;
 	}
 
 	/**
@@ -23,15 +43,15 @@ class ApiEchoUnreadNotificationPages extends ApiQueryBase {
 		// To avoid API warning, register the parameter used to bust browser cache
 		$this->getMain()->getVal( '_' );
 
-		if ( $this->getUser()->isAnon() ) {
+		if ( !$this->getUser()->isRegistered() ) {
 			$this->dieWithError( 'apierror-mustbeloggedin-generic', 'login-required' );
 		}
 
 		$params = $this->extractRequestParams();
 
 		$result = [];
-		if ( in_array( wfWikiID(), $this->getRequestedWikis() ) ) {
-			$result[wfWikiID()] = $this->getFromLocal( $params['limit'], $params['grouppages'] );
+		if ( in_array( WikiMap::getCurrentWikiId(), $this->getRequestedWikis() ) ) {
+			$result[WikiMap::getCurrentWikiId()] = $this->getFromLocal( $params['limit'], $params['grouppages'] );
 		}
 
 		if ( $this->getRequestedForeignWikis() ) {
@@ -54,7 +74,7 @@ class ApiEchoUnreadNotificationPages extends ApiQueryBase {
 	 * @phan-return array{pages:array[],totalCount:int}
 	 */
 	protected function getFromLocal( $limit, $groupPages ) {
-		$attributeManager = EchoAttributeManager::newFromGlobalVars();
+		$attributeManager = EchoServices::getInstance()->getAttributeManager();
 		$enabledTypes = $attributeManager->getUserEnabledEvents( $this->getUser(), 'web' );
 
 		$dbr = MWEchoDbFactory::newFromDefault()->getEchoDb( DB_REPLICA );
@@ -88,18 +108,22 @@ class ApiEchoUnreadNotificationPages extends ApiQueryBase {
 		$pageCounts = [];
 		foreach ( $rows as $row ) {
 			if ( $row->event_page_id !== null ) {
-				// @phan-suppress-next-line PhanTypeMismatchDimAssignment
-				$pageCounts[$row->event_page_id] = intval( $row->count );
+				$pageCounts[(int)$row->event_page_id] = intval( $row->count );
 			} else {
 				$nullCount = intval( $row->count );
 			}
 		}
 
-		// @phan-suppress-next-line PhanTypeMismatchArgument
-		$titles = Title::newFromIDs( array_keys( $pageCounts ) );
+		$titles = $this->pageStore
+			->newSelectQueryBuilder()
+			->wherePageIds( array_keys( $pageCounts ) )
+			->caller( __METHOD__ )
+			->fetchPageRecords();
 
 		$groupCounts = [];
+		/** @var PageRecord $title */
 		foreach ( $titles as $title ) {
+			$title = $this->titleFactory->castFromPageIdentity( $title );
 			if ( $groupPages ) {
 				// If $title is a talk page, add its count to its subject page's count
 				$pageName = $title->getSubjectPage()->getPrefixedText();
@@ -107,8 +131,7 @@ class ApiEchoUnreadNotificationPages extends ApiQueryBase {
 				$pageName = $title->getPrefixedText();
 			}
 
-			// @phan-suppress-next-line PhanTypeMismatchDimFetch
-			$count = $pageCounts[$title->getArticleID()];
+			$count = $pageCounts[$title->getArticleID()] ?? 0;
 			if ( isset( $groupCounts[$pageName] ) ) {
 				$groupCounts[$pageName] += $count;
 			} else {
@@ -174,7 +197,19 @@ class ApiEchoUnreadNotificationPages extends ApiQueryBase {
 	protected function getUnreadNotificationPagesFromForeign() {
 		$result = [];
 		foreach ( $this->getFromForeign() as $wiki => $data ) {
-			$result[$wiki] = $data['query'][$this->getModuleName()][$wiki];
+			if ( isset( $data['query'][$this->getModuleName()][$wiki] ) ) {
+				$result[$wiki] = $data['query'][$this->getModuleName()][$wiki];
+			} else {
+				# Usually an error or it is some malformed response
+				# T273479
+				LoggerFactory::getInstance( 'Echo' )->warning(
+					__METHOD__ . ': Unexpected API response from {wiki}',
+					[
+						'wiki' => $wiki,
+						'data' => $data,
+					]
+				);
+			}
 		}
 
 		return $result;
@@ -188,15 +223,15 @@ class ApiEchoUnreadNotificationPages extends ApiQueryBase {
 
 		return $this->getCrossWikiParams() + [
 			'grouppages' => [
-				ApiBase::PARAM_TYPE => 'boolean',
-				ApiBase::PARAM_DFLT => false,
+				ParamValidator::PARAM_TYPE => 'boolean',
+				ParamValidator::PARAM_DEFAULT => false,
 			],
 			'limit' => [
-				ApiBase::PARAM_TYPE => 'limit',
-				ApiBase::PARAM_DFLT => 10,
-				ApiBase::PARAM_MIN => 1,
-				ApiBase::PARAM_MAX => $wgEchoMaxUpdateCount,
-				ApiBase::PARAM_MAX2 => $wgEchoMaxUpdateCount,
+				ParamValidator::PARAM_TYPE => 'limit',
+				ParamValidator::PARAM_DEFAULT => 10,
+				IntegerDef::PARAM_MIN => 1,
+				IntegerDef::PARAM_MAX => $wgEchoMaxUpdateCount,
+				IntegerDef::PARAM_MAX2 => $wgEchoMaxUpdateCount,
 			],
 			// there is no `offset` or `continue` value: the set of possible
 			// notifications is small enough to allow fetching all of them at

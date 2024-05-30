@@ -6,7 +6,9 @@
 			"Amire80",
 			"Andriykopanytsia",
 			"Base",
+			"DDPAT",
 			"Green Zero",
+			"Ice bulldog",
 			"Lxlalexlxl",
 			"Macofe",
 			"Movses",
@@ -19,7 +21,7 @@
 			"Vlad5250",
 			"Ата",
 			"Максим Підліснюк",
-			"DDPAT"
+			"Andriy.v"
 		]
 	},
 	"echo-desc": "Система сповіщення користувачів про події і повідомлення",
@@ -52,7 +54,7 @@
 	"echo-learn-more": "Дізнатися більше",
 	"echo-log": "Публічний журнал",
 	"echo-new-messages": "У Вас є нові повідомлення",
-	"echo-category-title-edit-user-talk": "{{PLURAL:$1|Повідомлення}} на сторінці обговорення",
+	"echo-category-title-edit-user-talk": "{{PLURAL:$1|Зміна|Зміни|Змін}} на моїй сторінці обговорення користувача",
 	"echo-category-title-article-linked": "{{PLURAL:$1|Посилання}} на сторінку",
 	"echo-category-title-reverted": "Скасування {{PLURAL:$1|редагування|редагувань}}",
 	"echo-category-title-mention": "{{PLURAL:$1|Згадування}}",
@@ -68,7 +70,7 @@
 	"echo-category-title-thank-you-edit": "{{PLURAL:$1|Віхи}} редагування",
 	"echo-category-title-watchlist": "Редагування сторінки зі списку спостереження",
 	"echo-category-title-minor-watchlist": "Незначне редагування сторінки зі списку спостереження",
-	"echo-pref-tooltip-edit-user-talk": "Повідомляти мене, коли хтось надсилає повідомлення або відповідає на моїй сторінці обговорення.",
+	"echo-pref-tooltip-edit-user-talk": "Повідомляти мене, коли хтось редагуватиме мою сторінку обговорення користувача.",
 	"echo-pref-tooltip-article-linked": "Повідомляти мене, коли хтось додає посилання на створену мною сторінку.",
 	"echo-pref-tooltip-reverted": "Повідомляти мене, коли хтось відхиляє моє редагування за допомогою скасування чи відкату.",
 	"echo-pref-tooltip-mention": "Повідомляти мене, коли хтось посилається на мою сторінку користувача.",
@@ -183,6 +185,7 @@
 	"notification-header-watchlist-multiuser-deleted": "<strong>$1</strong>, сторінку з {{GENDER:$2|Вашого}} списку спостереження, вилучено $3 {{PLURAL:$3|раз|рази|раз}}.",
 	"notification-header-watchlist-multiuser-moved": "<strong>$1</strong>, сторінку з {{GENDER:$2|Вашого}} списку спостереження, перейменовано $3 {{PLURAL:$3|раз|рази|раз}}.",
 	"notification-header-watchlist-multiuser-restored": "<strong>$1</strong>, сторінку з {{GENDER:$2|Вашого}} списку спостереження, відновлено $3 {{PLURAL:$3|раз|рази|раз}}.",
+	"notification-body-watchlist-once": "Інших сповіщень електронною поштою за майбутньої активності не буде, якщо тільки ви не {{GENDER:$1|не відвідаєте}} цю сторінку, увійшовши в систему.",
 	"notification-welcome-linktext": "Ласкаво просимо!",
 	"notification-header-thank-you-1-edit": "{{GENDER:$2|Ви}} щойно зробили {{GENDER:$2|своє}} перше редагування; дякуємо {{GENDER:$2|Вам}} і ласкаво просимо!",
 	"notification-header-thank-you-10-edit": "{{GENDER:$2|Ви}} щойно зробили {{GENDER:$2|своє}} десяте редагування; дякуємо {{GENDER:$2|Вам}}, продовжуйте!",
@@ -240,5 +243,10 @@
 	"notification-header-foreign-notice": "Більше сповіщень з {{PLURAL:$5|іншої вікі|$5 інших вікі}}",
 	"notification-header-foreign-all": "Більше сповіщень з {{PLURAL:$5|іншої вікі|$5 інших вікі}}",
 	"echo-foreign-wiki-lang": "$1 - $2",
-	"echo-badge-count": "{{PLURAL:$1|$1|100={{formatnum:99}}+}}"
+	"echo-badge-count": "{{PLURAL:$1|$1|100={{formatnum:99}}+}}",
+	"right-manage-all-push-subscriptions": "Керувати всіма push-підписками",
+	"action-manage-all-push-subscriptions": "керувати всіма push-підписками",
+	"group-push-subscription-manager": "Керівники push-підписками",
+	"group-push-subscription-manager-member": "{{GENDER:$1|керівник|керівниця}} push-підписками",
+	"grouppage-push-subscription-manager": "{{ns:project}}:Керівники push-підписками"
 }

@@ -1,9 +1,12 @@
 <?php
 
+use MediaWiki\User\UserOptionsLookup;
+use Wikimedia\TestingAccessWrapper;
+
 /**
  * @covers \EchoNotificationController
  */
-class NotificationControllerTest extends MediaWikiTestCase {
+class NotificationControllerTest extends MediaWikiIntegrationTestCase {
 
 	public function evaluateUserLocatorsProvider() {
 		return [
@@ -28,7 +31,7 @@ class NotificationControllerTest extends MediaWikiTestCase {
 				// expected result
 				[ [ 123 ] ],
 				// event user locator config
-				function () {
+				static function () {
 					return [ 123 => 123 ];
 				}
 			],
@@ -39,10 +42,10 @@ class NotificationControllerTest extends MediaWikiTestCase {
 				[ [ 123 ], [ 456 ] ],
 				// event user locator config
 				[
-					function () {
+					static function () {
 						return [ 123 => 123 ];
 					},
-					function () {
+					static function () {
 						return [ 456 => 456 ];
 					},
 				],
@@ -57,7 +60,7 @@ class NotificationControllerTest extends MediaWikiTestCase {
 					[ [ EchoUserLocator::class, 'locateFromEventExtra' ], [ 'other-user' ] ],
 				],
 				// additional setup
-				function ( $test, $event ) {
+				static function ( $test, $event ) {
 					$event->expects( $test->any() )
 						->method( 'getExtraParam' )
 						->with( 'other-user' )
@@ -95,11 +98,10 @@ class NotificationControllerTest extends MediaWikiTestCase {
 	}
 
 	public function testEvaluateUserLocatorPassesParameters() {
-		$test = $this;
-		$callback = function ( $event, $firstOption, $secondOption ) use ( $test ) {
-			$test->assertInstanceOf( EchoEvent::class, $event );
-			$test->assertEquals( 'first', $firstOption );
-			$test->assertEquals( 'second', $secondOption );
+		$callback = function ( $event, $firstOption, $secondOption ) {
+			$this->assertInstanceOf( EchoEvent::class, $event );
+			$this->assertEquals( 'first', $firstOption );
+			$this->assertEquals( 'second', $secondOption );
 
 			return [];
 		};
@@ -134,7 +136,7 @@ class NotificationControllerTest extends MediaWikiTestCase {
 				// expected result
 				[ 123 ],
 				// users returned from locator
-				[ null, 'foo', User::newFromId( 123 ), new stdClass, 456 ],
+				[ null, 'foo', User::newFromId( 123 ), (object)[], 456 ],
 			],
 		];
 	}
@@ -150,7 +152,7 @@ class NotificationControllerTest extends MediaWikiTestCase {
 		$this->setMwGlobals( [
 			'wgEchoNotifications' => [
 				'unit-test' => [
-					EchoAttributeManager::ATTR_LOCATORS => function () use ( $users ) {
+					EchoAttributeManager::ATTR_LOCATORS => static function () use ( $users ) {
 						return $users;
 					},
 				],
@@ -260,5 +262,159 @@ class NotificationControllerTest extends MediaWikiTestCase {
 		] );
 		$result = EchoNotificationController::getEventNotifyTypes( $type );
 		$this->assertEquals( $expect, $result, $message );
+	}
+
+	public function testEnqueueEvent() {
+		$event = $this->getMockBuilder( EchoEvent::class )
+			->disableOriginalConstructor()
+			->getMock();
+		$event->expects( $this->any() )
+			->method( 'getExtraParam' )
+			->will( $this->returnValue( null ) );
+		$event->expects( $this->exactly( 1 ) )
+			->method( 'getTitle' )
+			->will( $this->returnValue( Title::newFromText( 'test-title' ) ) );
+		$event->expects( $this->exactly( 1 ) )
+			->method( 'getId' )
+			->will( $this->returnValue( 42 ) );
+		EchoNotificationController::enqueueEvent( $event );
+		$jobQueueGroup = $this->getServiceContainer()->getJobQueueGroup();
+		$queues = $jobQueueGroup->getQueuesWithJobs();
+		$this->assertCount( 1, $queues );
+		$this->assertEquals( 'EchoNotificationJob', $queues[0] );
+		$job = $jobQueueGroup->pop( 'EchoNotificationJob' );
+		$this->assertEquals( 'Test-title', $job->params[ 'title' ] );
+		$this->assertEquals( 42, $job->params[ 'eventId' ] );
+	}
+
+	public function testNotSupportedDelay() {
+		$queueGroup = $this->getServiceContainer()->getJobQueueGroup();
+		$this->assertCount( 0, $queueGroup->getQueuesWithJobs() );
+
+		$event = $this->getMockBuilder( EchoEvent::class )
+			->disableOriginalConstructor()
+			->getMock();
+		$event->expects( $this->any() )
+			->method( 'getExtraParam' )
+			->will( $this->returnValueMap(
+				[
+					[ 'delay', null, 120 ],
+					[ 'rootJobSignature', null, 'test-signature' ],
+					[ 'rootJobTimestamp', null,  wfTimestamp() ]
+				]
+			) );
+		$event->expects( $this->exactly( 1 ) )
+			->method( 'getTitle' )
+			->will( $this->returnValue( Title::newFromText( 'test-title' ) ) );
+		$event->expects( $this->any() )
+			->method( 'getId' )
+			->will( $this->returnValue( 42 ) );
+		EchoNotificationController::enqueueEvent( $event );
+
+		$this->assertCount( 0, $queueGroup->getQueuesWithJobs() );
+	}
+
+	public function testEventParams() {
+		$rootJobTimestamp = wfTimestamp();
+		MWTimestamp::setFakeTime( 0 );
+
+		$event = $this->getMockBuilder( EchoEvent::class )
+			->disableOriginalConstructor()
+			->getMock();
+		$event->expects( $this->any() )
+			->method( 'getExtraParam' )
+			->will( $this->returnValueMap(
+				[
+					[ 'delay', null, 10 ],
+					[ 'rootJobSignature', null, 'test-signature' ],
+					[ 'rootJobTimestamp', null,  $rootJobTimestamp ]
+				]
+			) );
+		$event->expects( $this->exactly( 1 ) )
+			->method( 'getId' )
+			->will( $this->returnValue( 42 ) );
+
+		$params = EchoNotificationController::getEventParams( $event );
+		$expectedParams = [
+			'eventId' => 42,
+			'rootJobSignature' => 'test-signature',
+			'rootJobTimestamp' => $rootJobTimestamp,
+			'jobReleaseTimestamp' => 10
+		];
+		$this->assertArrayEquals( $expectedParams, $params );
+	}
+
+	/**
+	 * @dataProvider PageLinkedTitleMutedByUserDataProvider
+	 * @covers EchoNotificationController::isPageLinkedTitleMutedByUser
+	 * @param Title $title
+	 * @param User $user
+	 * @param UserOptionsLookup $userOptionsLookup
+	 * @param bool $expected
+	 */
+	public function testIsPageLinkedTitleMutedByUser(
+		Title $title, User $user, UserOptionsLookup $userOptionsLookup, $expected ): void {
+		$wrapper = TestingAccessWrapper::newFromClass( EchoNotificationController::class );
+		$wrapper->mutedPageLinkedTitlesCache = $this->getMapCacheLruMock();
+		$this->setService( 'UserOptionsLookup', $userOptionsLookup );
+		$this->assertSame(
+			$expected,
+			$wrapper->isPageLinkedTitleMutedByUser( $title, $user )
+		);
+	}
+
+	public function PageLinkedTitleMutedByUserDataProvider(): array {
+		return [
+			[
+				$this->getMockTitle( 123 ),
+				$this->getMockUser(),
+				$this->getUserOptionsLookupMock( [] ),
+				false
+			],
+			[
+				$this->getMockTitle( 123 ),
+				$this->getMockUser(),
+				$this->getUserOptionsLookupMock( [ 123, 456, 789 ] ),
+				true
+			],
+			[
+				$this->getMockTitle( 456 ),
+				$this->getMockUser(),
+				$this->getUserOptionsLookupMock( [ 489 ] ),
+				false
+			]
+
+		];
+	}
+
+	private function getMockTitle( int $articleID ) {
+		$title = $this->getMockBuilder( Title::class )
+			->disableOriginalConstructor()
+			->getMock();
+		$title->method( 'getArticleID' )
+			->willReturn( $articleID );
+		return $title;
+	}
+
+	private function getMockUser() {
+		$user = $this->getMockBuilder( User::class )
+			->disableOriginalConstructor()
+			->getMock();
+		$user->method( 'getId' )
+			->willReturn( 456 );
+		return $user;
+	}
+
+	private function getMapCacheLruMock() {
+		return $this->getMockBuilder( MapCacheLRU::class )
+			->disableOriginalConstructor()
+			->getMock();
+	}
+
+	private function getUserOptionsLookupMock( $mutedTitlePreferences = [] ) {
+		$userOptionsLookupMock = $this->createMock( UserOptionsLookup::class );
+		$userOptionsLookupMock->method( 'getOption' )
+			->willReturn( implode( "\n", $mutedTitlePreferences ) );
+		return $userOptionsLookupMock;
 	}
 }

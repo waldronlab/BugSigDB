@@ -1,7 +1,7 @@
 <?php
 
-use EchoPush\NotificationServiceClient;
-use EchoPush\SubscriptionManager;
+use MediaWiki\Extension\Notifications\Push\NotificationServiceClient;
+use MediaWiki\Extension\Notifications\Push\SubscriptionManager;
 use MediaWiki\MediaWikiServices;
 
 class EchoServices {
@@ -35,6 +35,11 @@ class EchoServices {
 	/** @return SubscriptionManager */
 	public function getPushSubscriptionManager(): SubscriptionManager {
 		return $this->services->getService( 'EchoPushSubscriptionManager' );
+	}
+
+	/** @return EchoAttributeManager */
+	public function getAttributeManager(): EchoAttributeManager {
+		return $this->services->getService( 'EchoAttributeManager' );
 	}
 
 }

@@ -4,22 +4,22 @@
  * @group Echo
  * @group Database
  */
-class MWEchoThankYouEditTest extends MediaWikiTestCase {
+class MWEchoThankYouEditTest extends MediaWikiIntegrationTestCase {
 
-	protected function setUp() : void {
+	protected function setUp(): void {
 		parent::setUp();
 		$this->tablesUsed[] = 'echo_event';
 		$this->tablesUsed[] = 'echo_notification';
 	}
 
 	private function deleteEchoData() {
-		$db = MWEchoDbFactory::newFromDefault()->getEchoDb( DB_MASTER );
+		$db = MWEchoDbFactory::newFromDefault()->getEchoDb( DB_PRIMARY );
 		$db->delete( 'echo_event', '*', __METHOD__ );
 		$db->delete( 'echo_notification', '*', __METHOD__ );
 	}
 
 	/**
-	 * @covers \EchoHooks::onPageSaveComplete
+	 * @covers \MediaWiki\Extension\Notifications\Hooks::onPageSaveComplete
 	 */
 	public function testFirstEdit() {
 		// setup
@@ -41,7 +41,7 @@ class MWEchoThankYouEditTest extends MediaWikiTestCase {
 	}
 
 	/**
-	 * @covers \EchoHooks::onPageSaveComplete
+	 * @covers \MediaWiki\Extension\Notifications\Hooks::onPageSaveComplete
 	 */
 	public function testTenthEdit() {
 		// setup
@@ -70,8 +70,8 @@ class MWEchoThankYouEditTest extends MediaWikiTestCase {
 	}
 
 	private function edit( Title $title, User $user, $text ) {
-		$page = WikiPage::factory( $title );
+		$page = $this->getServiceContainer()->getWikiPageFactory()->newFromTitle( $title );
 		$content = ContentHandler::makeContent( $text, $title );
-		$page->doEditContent( $content, 'test', 0, false, $user );
+		$page->doUserEditContent( $content, $user, 'test' );
 	}
 }

@@ -2,7 +2,9 @@
 	"@metadata": {
 		"authors": [
 			"Arystanbek",
-			"Macofe"
+			"Macofe",
+			"СеніңШешең",
+			"Batyrbek.kz"
 		]
 	},
 	"echo-desc": "Оқиғалар мен хабарламалар туралы қатысушыларға ескерту \nжүйесі",
@@ -58,7 +60,7 @@
 	"notification-link-text-expand-alert-count": "{{PLURAL:$1|$1 Дабылды|$1 Дабылды}} көру",
 	"notification-link-text-expand-all-count": "{{PLURAL:$1|$1 ескертпені|$1 ескертпені}} көру",
 	"notification-link-text-collapse-all": "Жиыру",
-	"notification-link-text-view-message": "Хабарламаны көру",
+	"notification-link-text-view-message": "Хабарды көру",
 	"notification-link-text-view-mention": "Еске салуды көру",
 	"notification-link-text-view-changes": "Өзгерістерді {{GENDER:$1|көру}}",
 	"notification-link-text-view-page": "Бетті көру",
@@ -109,7 +111,7 @@
 	"notification-inbox-filter-all": "Барлығы",
 	"echo-notification-alert": "{{PLURAL:$1|Ескертпе ($1)|Ескертпе ($1)|100=Ескертпе (99+)}}",
 	"echo-notification-alert-text-only": "Дабылдар",
-	"echo-overlay-link": "Барлық ескертпелер",
+	"echo-overlay-link": "Барлық ескертпе",
 	"echo-overlay-title": "<b>Ескертпелер</b>",
 	"echo-mark-all-as-read": "Барлығын оқылды деп белгіле",
 	"echo-date-today": "Бүгін",

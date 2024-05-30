@@ -2,6 +2,7 @@
 	"@metadata": {
 		"authors": [
 			"Eduardo Addad de Oliveira",
+			"Eduardoaddad",
 			"Felipe L. Ewald",
 			"TheEduGobi"
 		]
@@ -32,8 +33,9 @@
 	"apihelp-echopushsubscriptions+create-param-provider": "O provedor de serviços push para o qual registrar um token.",
 	"apihelp-echopushsubscriptions+create-param-providertoken": "O token para registrar.",
 	"apihelp-echopushsubscriptions+create-example": "Registre uma assinatura push para o usuário atual.",
-	"apihelp-echopushsubscriptions+delete-summary": "Cancele o registro de assinaturas push para o usuário atual.",
+	"apihelp-echopushsubscriptions+delete-summary": "Cancele o registro de assinaturas push para o usuário atual ou outro usuário especificado.",
 	"apihelp-echopushsubscriptions+delete-param-providertoken": "O token associado à assinatura push para cancelar o registro.",
+	"apihelp-echopushsubscriptions+delete-param-centraluserid": "O ID do usuário central associado à assinatura para cancelar o registro.",
 	"apihelp-echopushsubscriptions+delete-example": "Cancele o registro de uma assinatura push para o usuário atual.",
 	"apihelp-query+notifications-description": "Receber notificações aguardando pelo usuário atual.",
 	"apihelp-query+notifications-summary": "Receber notificações aguardando pelo usuário atual.",
@@ -56,8 +58,10 @@
 	"apihelp-query+notifications-param-messageunreadfirst": "Se exibir notificações de alertas não lidas primeiro ou não.",
 	"apihelp-query+notifications-param-titles": "Somente as notificações de retorno para essas páginas. Para receber notificações não associadas a qualquer página, use [] como título.",
 	"apihelp-query+notifications-param-bundle": "Seja para mostrar notificações não lidas compatíveis com o pacote de acordo com as regras de agrupamento dos tipos de notificação.",
-	"apihelp-query+notifications-example-1": "Listar notificações",
-	"apihelp-query+notifications-example-2": "Listar notificações agrupadas por seção, incluindo contadores",
+	"apihelp-query+notifications-param-notifiertypes": "Tipos de notificadores para os quais retornar notificações.",
+	"apihelp-query+notifications-example-1": "Listar notificações web",
+	"apihelp-query+notifications-example-2": "Listar notificações web agrupadas por seção, incluindo contadores",
+	"apihelp-query+notifications-example-3": "Listar notificações por e-mail",
 	"apihelp-query+unreadnotificationpages-description": "Obter páginas para as quais há notificações não lidas para o usuário atual.",
 	"apihelp-query+unreadnotificationpages-summary": "Obter páginas para as quais há notificações não lidas para o usuário atual.",
 	"apihelp-query+unreadnotificationpages-param-grouppages": "Agrupar páginas de discussão em conjunto com a página de assunto e notificações de grupo não associadas a uma página juntamente com a página de usuário do usuário atual.",
@@ -76,5 +80,7 @@
 	"apiwarn-echo-deprecation-html": "<kbd>notformat=html</kbd> foi depreciado e será removido em breve. Use <kbd>notformat=special</kbd> em vez disso.",
 	"apierror-echo-event-creation-failed": "Não foi possível criar evento Echo",
 	"apierror-echo-push-token-exists": "O token fornecido já existe no banco de dados.",
-	"apierror-echo-push-token-not-found": "O token fornecido não foi encontrado no banco de dados."
+	"apierror-echo-push-token-not-found": "O token fornecido não foi encontrado no banco de dados.",
+	"apierror-echo-push-too-many-subscriptions": "O usuário atual já registrou o número máximo permitido de assinaturas push ($1).",
+	"apierror-echo-push-topic-required": "O campo do tópico é obrigatório para este provedor."
 }

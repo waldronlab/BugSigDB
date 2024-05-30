@@ -9,13 +9,19 @@ mw.echo.config.maxPrioritizedActions = 2;
  */
 function initDesktop() {
 	'use strict';
+	var uri;
 
 	// Remove ?markasread=XYZ from the URL
-	var uri = new mw.Uri();
-	if ( uri.query.markasread !== undefined ) {
-		delete uri.query.markasread;
-		delete uri.query.markasreadwiki;
-		window.history.replaceState( null, document.title, uri );
+	try {
+		uri = new mw.Uri();
+		if ( uri.query.markasread !== undefined ) {
+			delete uri.query.markasread;
+			delete uri.query.markasreadwiki;
+			window.history.replaceState( null, document.title, uri );
+		}
+	} catch ( e ) {
+		// Catch problems when the URI is malformed (T261799)
+		// e.g. #/media/Fitxer:Campbells_Soup_Cans_MOMA_reduced_80%.jpg
 	}
 
 	// Activate ooui
@@ -163,9 +169,7 @@ function initDesktop() {
 
 				alertModelManager.on( 'allTalkRead', function () {
 					// If there was a talk page notification, get rid of it
-					$( '#pt-mytalk a' )
-						.removeClass( 'mw-echo-alert' )
-						.text( mw.msg( 'mytalk' ) );
+					$( '#pt-talk-alert' ).remove();
 				} );
 
 				// listen to event countChange and change title only if polling rate is non-zero
@@ -230,7 +234,9 @@ function initDesktop() {
 				$badge = $( this ),
 				clickedSection = $badge.parent().prop( 'id' ) === 'pt-notifications-alert' ? 'alert' : 'message';
 			if ( e.which !== 1 || $badge.data( 'clicked' ) ) {
-				return false;
+				// Do not return false (as that calls stopPropagation)
+				e.preventDefault();
+				return;
 			}
 
 			$badge.data( 'clicked', true );
@@ -259,15 +265,15 @@ function initDesktop() {
 				if ( hasUnseenAlerts || hasUnseenMessages ) {
 					// Clicked on the flyout due to having unread notifications
 					// This is part of tracking how likely users are to click a badge with unseen notifications.
-					// The other part is the 'echo.unseen' counter, see EchoHooks::onPersonalUrls().
+					// The other part is the 'echo.unseen' counter, see EchoHooks::onSkinTemplateNavigationUniversal().
 					mw.track( 'counter.MediaWiki.echo.unseen.click' );
 				}
 			}, function () {
 				// Un-dim badge if loading failed
 				$badge.removeClass( 'mw-echo-notifications-badge-dimmed' );
 			} );
-			// Prevent default
-			return false;
+			// Prevent default. Do not return false (as that calls stopPropagation)
+			e.preventDefault();
 		} );
 
 		function pollForNotificationCountUpdates() {
@@ -296,7 +302,7 @@ function initDesktop() {
 function initMobile() {
 	if ( !mw.user.isAnon() ) {
 		mw.loader.using( [ 'ext.echo.mobile', 'mobile.startup' ] ).then( function ( require ) {
-			require( 'ext.echo.mobile' )();
+			require( 'ext.echo.mobile' ).init();
 		} );
 	}
 }

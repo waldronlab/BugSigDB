@@ -6,7 +6,7 @@ use PHPUnit\Framework\TestCase;
  * @group Echo
  * @covers \EchoSuppressionRowUpdateGenerator
  */
-class SuppressionMaintenanceTest extends MediaWikiTestCase {
+class SuppressionMaintenanceTest extends MediaWikiIntegrationTestCase {
 
 	public static function provider_updateRow() {
 		$input = [
@@ -103,7 +103,7 @@ class SuppressionMaintenanceTest extends MediaWikiTestCase {
 	}
 
 	protected static function attachTitleFor( $id, $providedText, $providedNamespace ) {
-		return function (
+		return static function (
 			TestCase $test,
 			EchoSuppressionRowUpdateGenerator $gen
 		) use ( $id, $providedText, $providedNamespace ) {
@@ -114,7 +114,7 @@ class SuppressionMaintenanceTest extends MediaWikiTestCase {
 
 			$titles = [ $providedNamespace => [ $providedText => $title ] ];
 
-			$gen->setNewTitleFromNsAndText( function ( $namespace, $text ) use ( $titles ) {
+			$gen->setNewTitleFromNsAndText( static function ( $namespace, $text ) use ( $titles ) {
 				return $titles[$namespace][$text] ?? Title::makeTitleSafe( $namespace, $text );
 			} );
 		};

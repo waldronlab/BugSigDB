@@ -14,6 +14,7 @@
 [submodule "_resources/extensions/CategoryLockdown"]
 	path = _resources/extensions/CategoryLockdown
 	url = https://github.com/wikimedia/mediawiki-extensions-CategoryLockdown.git
+	branch = REL1_39
 [submodule "_resources/extensions/DisplayTitle"]
 	path = _resources/extensions/DisplayTitle
 	url = https://gerrit.wikimedia.org/r/mediawiki/extensions/DisplayTitle

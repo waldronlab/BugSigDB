@@ -35,6 +35,8 @@
 	"echo-pref-dont-email-read-notifications": "Mma mmfa nkaabɔ a wɔakenkan dadaw wɔ tɔfabɔ emails no mu",
 	"echo-learn-more": "Sua bi kaho",
 	"echo-log": "Amansuon lɔɔgo",
+	"echo-new-messages": "Enya nkɔmbɔdzibea nkrato fofor",
+	"echo-category-title-edit-user-talk": "{{PLURAL:$1|Edit|Edits}} kɔ mo nkɔmbɔdzibea",
 	"echo-category-title-article-linked": "Kratafa {{PLURAL:$1|lenke}}",
 	"echo-category-title-reverted": "Yɛ nsesa {{PLURAL:$1|san ekyir}}",
 	"echo-category-title-mention": "{{PLURAL:$1|Dza wɔabɔ dzin|Dza wɔabobɔ edzin}}",
@@ -49,5 +51,6 @@
 	"echo-category-title-article-reminder": "Page {{PLURAL:$1|nkaakaadze}}",
 	"echo-category-title-thank-you-edit": "Nsesa {{PLURAL:$1|milestone|milestones}}",
 	"echo-category-title-watchlist": "Yɛ nsesa kɔ kratafa a wɔahwɛ do",
-	"echo-category-title-minor-watchlist": "Yɛ nsesa kumaa kɔ kratafa a wɔahwɛ do"
+	"echo-category-title-minor-watchlist": "Yɛ nsesa kumaa kɔ kratafa a wɔahwɛ do",
+	"echo-pref-tooltip-edit-user-talk": "Bɔ me nkaa sɛ obi yɛ nsesa wɔ me mkɔmbɔdzibea hɔ"
 }

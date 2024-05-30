@@ -1,16 +1,13 @@
 #!/bin/bash
 
-# Import environment variables from .env
-# we mainly interested in MATOMO_USER and MATOMO_PASSWORD
-if [ -f .env ]
-then
-  export $(cat .env | sed 's/#.*//g' | xargs)
-fi
+MATOMO_USER="admin"
+MATOMO_PASSWORD="yg668g7ABC453"
+MATOMO_URL="http://matomo"
 
 # Get stack information
-CONTAINER_MATOMO=$(docker inspect -f '{{.Name}}' $(docker-compose ps -q matomo) | cut -c2-)
-CONTAINER_WEB=$(docker inspect -f '{{.Name}}' $(docker-compose ps -q web) | cut -c2-)
-COMPOSE_NETWORK=$(docker inspect --format='{{range $k, $v := .NetworkSettings.Networks}}{{printf "%s\n" $k}}{{end}}' $CONTAINER_WEB | xargs)
+CONTAINER_MATOMO=$(docker inspect -f '{{.Name}}' "$(docker-compose ps -q matomo)" | cut -c2-)
+CONTAINER_WEB=$(docker inspect -f '{{.Name}}' "$(docker-compose ps -q web)" | cut -c2-)
+COMPOSE_NETWORK=$(docker inspect --format='{{range $k, $v := .NetworkSettings.Networks}}{{printf "%s\n" $k}}{{end}}' "$CONTAINER_WEB" | xargs)
 
 # Run logs parser using Python 3, fetch logs from
 # _logs/httpd/ mount point

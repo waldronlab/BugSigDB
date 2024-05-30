@@ -5,8 +5,7 @@ use MediaWiki\MediaWikiServices;
 class EchoWatchlistChangePresentationModel extends EchoEventPresentationModel {
 
 	public function getIconType() {
-		// @todo create an icon to use here
-		return 'placeholder';
+		return 'watchlist-progressive';
 	}
 
 	public function getHeaderMessage() {
@@ -30,7 +29,7 @@ class EchoWatchlistChangePresentationModel extends EchoEventPresentationModel {
 			// notification-header-watchlist-restored
 			$msg = $this->getMessageWithAgent( "notification-header-watchlist-" . $status );
 		}
-		$msg->params( $this->getTruncatedTitleText( $this->getEventTitle() ) );
+		$msg->params( $this->getTruncatedTitleText( $this->getEventTitle(), true ) );
 		$msg->params( $this->getViewingUserForGender() );
 		$msg->numParams( $this->getBundleCount() );
 		return $msg;
@@ -68,6 +67,13 @@ class EchoWatchlistChangePresentationModel extends EchoEventPresentationModel {
 			];
 			return [ $this->getAgentLink(), $viewChangesLink ];
 		}
+	}
+
+	public function getBodyMessage() {
+		if ( $this->event->getExtraParam( 'emailonce' ) && $this->getDistributionType() == 'email' ) {
+			return $this->msg( 'notification-body-watchlist-once', $this->getViewingUserForGender() );
+		}
+		return false;
 	}
 
 	private function isMultiUserBundle() {
@@ -110,7 +116,7 @@ class EchoWatchlistChangePresentationModel extends EchoEventPresentationModel {
 	 * @return Title
 	 */
 	private function getEventTitle(): Title {
-		$title = $this->event->getTitle();
+		$title = $this->getEventTitle();
 		if ( !$title ) {
 			$pageId = $this->event->getPageId();
 			if ( $pageId ) {
@@ -130,6 +136,10 @@ class EchoWatchlistChangePresentationModel extends EchoEventPresentationModel {
 			}
 			if ( !$title ) {
 				$title = Title::makeTitleSafe( NS_MAIN, 'UNKNOWN TITLE, SEE THE T286192 BUG FOR DETAILS' );
+			}
+			if ( !$title ) {
+				// The latest chance to return a Title object (paranoid mode on)
+				$title = Title::newMainPage();
 			}
 		}
 		return $title;

@@ -3,9 +3,12 @@
 		"authors": [
 			"AlnashPiyash2",
 			"Kaganer",
-			"Wadorgurt"
+			"Kotwys",
+			"Wadorgurt",
+			"Света Поторочина"
 		]
 	},
+	"echo-category-title-edit-user-talk": "Вераськон бамме {{PLURAL:$1|тупатэм|тупатэмъёс}}",
 	"tooltip-pt-notifications-alert": "{{GENDER:|Тӥляд}} ивортонъёсты",
-	"notification-inbox-filter-all": "Ваньзэ"
+	"notification-inbox-filter-all": "Ваньмыз"
 }

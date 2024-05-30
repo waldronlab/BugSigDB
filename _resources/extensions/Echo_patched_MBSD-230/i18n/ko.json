@@ -1,6 +1,7 @@
 {
 	"@metadata": {
 		"authors": [
+			"Bluehill",
 			"Bluemersen",
 			"Daisy2002",
 			"Ellif",
@@ -51,8 +52,8 @@
 	"echo-pref-dont-email-read-notifications": "요약 이메일에 읽음 알림을 포함하지 않습니다",
 	"echo-learn-more": "더 알아보기",
 	"echo-log": "공개 기록",
-	"echo-new-messages": "새 메시지가 있습니다",
-	"echo-category-title-edit-user-talk": "토론 문서 {{PLURAL:$1|메시지}}",
+	"echo-new-messages": "새 토론 문서 메시지가 있습니다",
+	"echo-category-title-edit-user-talk": "내 사용자 토론 문서의 {{PLURAL:$1|편집}}",
 	"echo-category-title-article-linked": "문서 {{PLURAL:$1|링크}}",
 	"echo-category-title-reverted": "편집이 {{PLURAL:$1|되돌려짐}}",
 	"echo-category-title-mention": "{{PLURAL:$1|언급}}",
@@ -68,7 +69,7 @@
 	"echo-category-title-thank-you-edit": "편집 {{PLURAL:$1|이정표}}",
 	"echo-category-title-watchlist": "주시 중인 문서의 편집",
 	"echo-category-title-minor-watchlist": "주시 중인 문서의 사소한 편집",
-	"echo-pref-tooltip-edit-user-talk": "내 토론 문서에 누군가가 글이나 답글을 남길 때 내게 알립니다.",
+	"echo-pref-tooltip-edit-user-talk": "누군가가 내 사용자 토론 문서를 편집할 때 내게 알립니다.",
 	"echo-pref-tooltip-article-linked": "누군가가 다른 문서에서 내가 만든 문서를 링크할 때 내게 알립니다.",
 	"echo-pref-tooltip-reverted": "누군가가 편집 취소나 되돌리기 도구를 사용하여 내 편집을 되돌릴 때 내게 알립니다.",
 	"echo-pref-tooltip-mention": "누군가가 내 사용자 문서를 링크할 때 내게 알립니다.",
@@ -217,5 +218,10 @@
 	"echo-email-batch-link-text-view-all-notifications": "모든 알림 보기",
 	"notification-header-foreign-alert": "{{PLURAL:$5|다른 위키|$5개의 다른 위키}}의 중요 알림 더 보기",
 	"notification-header-foreign-notice": "{{PLURAL:$5|다른 위키|$5개의 다른 위키}}의 더 많은 알림",
-	"notification-header-foreign-all": "$5개의 다른 위키로부터 알림 더 보기"
+	"notification-header-foreign-all": "$5개의 다른 위키로부터 알림 더 보기",
+	"right-manage-all-push-subscriptions": "모든 푸시 구독 관리",
+	"action-manage-all-push-subscriptions": "모든 푸시 구독을 관리할",
+	"group-push-subscription-manager": "푸시 구독 관리자",
+	"group-push-subscription-manager-member": "{{GENDER:$1|푸시 구독 관리자}}",
+	"grouppage-push-subscription-manager": "{{ns:project}}:푸시 구독 관리자"
 }

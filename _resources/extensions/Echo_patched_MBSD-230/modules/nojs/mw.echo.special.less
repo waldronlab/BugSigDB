@@ -60,13 +60,14 @@
 }
 
 ul.mw-echo-special-notifications {
-	div.mw-htmlform-submit-buttons {
-		margin: 0;
-	}
-	list-style: none none;
+	list-style: none;
 	padding: 0;
 	margin: 0;
 	width: 100%;
+
+	div.mw-htmlform-submit-buttons {
+		margin: 0;
+	}
 }
 
 .mw-echo-special-navbar-top {
@@ -147,6 +148,7 @@ div.mw-htmlform-ooui-wrapper {
 }
 
 @media all and ( max-width: ( @specialpage-hd-width - 1 ) ) {
+	/* stylelint-disable-next-line selector-class-pattern */
 	.pre-content.heading-holder {
 		// Center 'preferences' in mobile special page
 		text-align: center;

@@ -5,7 +5,7 @@ class ApiEchoArticleReminder extends ApiBase {
 	public function execute() {
 		$this->getMain()->setCacheMode( 'private' );
 		$user = $this->getUser();
-		if ( $user->isAnon() ) {
+		if ( !$user->isRegistered() ) {
 			$this->dieWithError( 'apierror-mustbeloggedin-generic', 'login-required' );
 		}
 
@@ -44,7 +44,7 @@ class ApiEchoArticleReminder extends ApiBase {
 			[ 'removeDuplicates' => true ],
 			Title::newFromID( $params['pageid'] )
 		);
-		JobQueueGroup::singleton()->push( $job );*/
+		MediaWikiServices::getInstance()->getJobQueueGroup()->push( $job );*/
 		$result += [
 			'result' => 'success'
 		];
@@ -74,10 +74,6 @@ class ApiEchoArticleReminder extends ApiBase {
 
 	public function needsToken() {
 		return 'csrf';
-	}
-
-	public function getTokenSalt() {
-		return '';
 	}
 
 	public function mustBePosted() {

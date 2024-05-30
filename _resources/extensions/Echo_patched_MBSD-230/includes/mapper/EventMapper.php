@@ -1,7 +1,5 @@
 <?php
 
-use Wikimedia\Rdbms\IResultWrapper;
-
 /**
  * Database mapper for EchoEvent model, which is an immutable class, there should
  * not be any update to it
@@ -12,10 +10,10 @@ class EchoEventMapper extends EchoAbstractMapper {
 	 * Insert an event record
 	 *
 	 * @param EchoEvent $event
-	 * @return int|false
+	 * @return int
 	 */
 	public function insert( EchoEvent $event ) {
-		$dbw = $this->dbFactory->getEchoDb( DB_MASTER );
+		$dbw = $this->dbFactory->getEchoDb( DB_PRIMARY );
 
 		$row = $event->toDbArray();
 
@@ -35,17 +33,17 @@ class EchoEventMapper extends EchoAbstractMapper {
 	 * Create an EchoEvent by id
 	 *
 	 * @param int $id
-	 * @param bool $fromMaster
+	 * @param bool $fromPrimary
 	 * @return EchoEvent|false False if it wouldn't load/unserialize
 	 * @throws MWException
 	 */
-	public function fetchById( $id, $fromMaster = false ) {
-		$db = $fromMaster ? $this->dbFactory->getEchoDb( DB_MASTER ) : $this->dbFactory->getEchoDb( DB_REPLICA );
+	public function fetchById( $id, $fromPrimary = false ) {
+		$db = $fromPrimary ? $this->dbFactory->getEchoDb( DB_PRIMARY ) : $this->dbFactory->getEchoDb( DB_REPLICA );
 
 		$row = $db->selectRow( 'echo_event', EchoEvent::selectFields(), [ 'event_id' => $id ], __METHOD__ );
 
-		// If the row was not found, fall back on the master if it makes sense to do so
-		if ( !$row && !$fromMaster && $this->dbFactory->canRetryMaster() ) {
+		// If the row was not found, fall back on the primary database if it makes sense to do so
+		if ( !$row && !$fromPrimary && $this->dbFactory->canRetryPrimary() ) {
 			return $this->fetchById( $id, true );
 		} elseif ( !$row ) {
 			throw new MWException( "No EchoEvent found with ID: $id" );
@@ -57,10 +55,9 @@ class EchoEventMapper extends EchoAbstractMapper {
 	/**
 	 * @param int[] $eventIds
 	 * @param bool $deleted
-	 * @return bool|IResultWrapper
 	 */
 	public function toggleDeleted( array $eventIds, $deleted ) {
-		$dbw = $this->dbFactory->getEchoDb( DB_MASTER );
+		$dbw = $this->dbFactory->getEchoDb( DB_PRIMARY );
 
 		$selectDeleted = $deleted ? 0 : 1;
 		$setDeleted = $deleted ? 1 : 0;
@@ -75,8 +72,6 @@ class EchoEventMapper extends EchoAbstractMapper {
 			],
 			__METHOD__
 		);
-
-		return true;
 	}
 
 	/**
@@ -117,7 +112,7 @@ class EchoEventMapper extends EchoAbstractMapper {
 			EchoEvent::selectFields(),
 			$conds,
 			__METHOD__,
-			[ 'GROUP BY' => 'etp_event' ],
+			[ 'DISTINCT' ],
 			[ 'echo_target_page' => [ 'INNER JOIN', 'event_id=etp_event' ] ]
 		);
 		if ( $res ) {
@@ -138,7 +133,7 @@ class EchoEventMapper extends EchoAbstractMapper {
 	public function fetchIdsByPage( $pageId ) {
 		$events = $this->fetchByPage( $pageId );
 		$eventIds = array_map(
-			function ( EchoEvent $event ) {
+			static function ( EchoEvent $event ) {
 				return $event->getId();
 			},
 			$events
@@ -188,7 +183,7 @@ class EchoEventMapper extends EchoAbstractMapper {
 	 * An event is orphaned if it is not referred to by any rows in the echo_notification or
 	 * echo_email_batch tables. If $ignoreUserId is set, rows for that user are not considered when
 	 * determining orphanhood; if $ignoreUserTable is set, this only applies to that table.
-	 * Use this when you've just recently deleted rows related to this user on the master, so that
+	 * Use this when you've just recently deleted rows related to this user on the primary database, so that
 	 * this function won't refuse to delete recently-orphaned events because it still sees the
 	 * recently-deleted rows on the replica.
 	 *
@@ -199,7 +194,7 @@ class EchoEventMapper extends EchoAbstractMapper {
 	 *  ('echo_notification' or 'echo_email_batch')
 	 */
 	public function deleteOrphanedEvents( array $eventIds, $ignoreUserId = null, $ignoreUserTable = null ) {
-		$dbw = $this->dbFactory->getEchoDb( DB_MASTER );
+		$dbw = $this->dbFactory->getEchoDb( DB_PRIMARY );
 		$dbr = $this->dbFactory->getEchoDb( DB_REPLICA );
 
 		$notifJoinConds = [];

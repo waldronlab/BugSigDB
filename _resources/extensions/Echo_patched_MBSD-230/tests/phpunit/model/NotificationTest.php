@@ -3,7 +3,7 @@
 /**
  * @covers \EchoNotification
  */
-class EchoNotificationTest extends MediaWikiTestCase {
+class EchoNotificationTest extends MediaWikiIntegrationTestCase {
 
 	public function testNewFromRow() {
 		$row = $this->mockNotificationRow() + $this->mockEventRow();
@@ -47,19 +47,21 @@ class EchoNotificationTest extends MediaWikiTestCase {
 
 	/**
 	 * Mock a notification row from database
+	 * @return array
 	 */
 	protected function mockNotificationRow() {
 		return [
 			'notification_user' => 1,
 			'notification_event' => 1,
 			'notification_timestamp' => time(),
-			'notification_read_timestamp' => '',
+			'notification_read_timestamp' => null,
 			'notification_bundle_hash' => 'testhash',
 		];
 	}
 
 	/**
 	 * Mock an event row from database
+	 * @return array
 	 */
 	protected function mockEventRow() {
 		return [
@@ -76,6 +78,7 @@ class EchoNotificationTest extends MediaWikiTestCase {
 
 	/**
 	 * Mock a target page row
+	 * @return array
 	 */
 	protected function mockTargetPageRow() {
 		return [

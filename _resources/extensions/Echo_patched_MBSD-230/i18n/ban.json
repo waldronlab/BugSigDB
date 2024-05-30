@@ -1,9 +1,9 @@
 {
 	"@metadata": {
 		"authors": [
-			"Luh Gede Krismayanti",
 			"Carma Citrawati",
-			"Chinamoonroll"
+			"Chinamoonroll",
+			"Luh Gede Krismayanti"
 		]
 	},
 	"echo-desc": "Sistem pambiwara majeng sang anganggé indik séwala miwah paristiwa",
@@ -19,6 +19,8 @@
 	"echo-pref-email-format-plain-text": "Suratan polos",
 	"echo-pref-cross-wiki-notifications": "Sinahang pambiwara saking wiki liyanan",
 	"echo-learn-more": "Pelajahin sajangkepné",
+	"echo-new-messages": "Ragané madué séwala Pabligbagan anyar",
+	"echo-category-title-edit-user-talk": "{{PLURAL:$1|uah}} ring kaca pabligbagan tiangé",
 	"echo-category-title-article-linked": "{{PLURAL:$1|Pranala}} kaca",
 	"echo-category-title-other": "{{PLURAL:$1|Liyanan}}",
 	"echo-category-title-system": "{{PLURAL:$1|Sistem}}",
@@ -39,6 +41,7 @@
 	"notification-welcome-linktext": "Rahajeng rauh",
 	"notification-timestamp-yesterday": "Dibi",
 	"notification-inbox-filter-read": "Wacén",
+	"echo-overlay-link": "Makasami pikélingan",
 	"echo-mark-all-as-read": "Cihna makasami dados kawacén",
 	"echo-mark-all-as-read-confirmation": "$1 {{PLURAL:$1|pambiwara}} sampun kacihna dados kawacén",
 	"echo-date-yesterday": "Dibi"

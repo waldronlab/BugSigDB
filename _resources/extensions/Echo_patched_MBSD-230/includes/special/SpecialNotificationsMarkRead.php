@@ -9,8 +9,6 @@
  * page should normally not need to be visited directly.
  */
 class SpecialNotificationsMarkRead extends FormSpecialPage {
-	protected $eventId;
-
 	public function __construct() {
 		parent::__construct( 'NotificationsMarkRead' );
 	}
@@ -47,7 +45,7 @@ class SpecialNotificationsMarkRead extends FormSpecialPage {
 				'type' => 'hidden',
 				'required' => true,
 				'default' => $this->par,
-				'filter-callback' => function ( $value, $alldata ) {
+				'filter-callback' => static function ( $value, $alldata ) {
 					// Allow for a single value or a set of values
 					$result = explode( ',', $value );
 					return $result;
@@ -102,10 +100,7 @@ class SpecialNotificationsMarkRead extends FormSpecialPage {
 		// places on the page, it has to be neutral, so we make the button
 		// manually.
 		$form->suppressDefaultSubmit();
-
-		$pageTitle = $this->getPageTitle();
-		$form->setTitle( $pageTitle );
-		$form->setAction( $pageTitle->getLocalURL() );
+		$form->setTitle( $this->getPageTitle() );
 
 		$form->addButton( [
 			'name' => 'submit',

@@ -7,7 +7,7 @@
  */
 class EchoTalkPageFunctionalTest extends ApiTestCase {
 
-	protected function setUp() : void {
+	protected function setUp(): void {
 		parent::setUp();
 		$this->db->delete( 'echo_event', '*' );
 	}
@@ -20,41 +20,59 @@ class EchoTalkPageFunctionalTest extends ApiTestCase {
 	public function testAddCommentsToTalkPage() {
 		$talkPage = self::$users['uploader']->getUser()->getName();
 
-		$messageCount = 0;
-		$this->assertCount( $messageCount, $this->fetchAllEvents() );
+		$expectedMessageCount = 0;
+		$this->assertCount( $expectedMessageCount, $this->fetchAllEvents() );
 
 		// Start a talkpage
+		$expectedMessageCount++;
 		$content = "== Section 8 ==\n\nblah blah ~~~~\n";
-		$this->editPage( $talkPage, $content, '', NS_USER_TALK );
+		$this->editPage(
+			$talkPage,
+			$content,
+			'',
+			NS_USER_TALK,
+			self::$users['sysop']->getUser()
+		);
 
 		// Ensure the proper event was created
 		$events = $this->fetchAllEvents();
-		// +1 is due to 0 index
-		$this->assertCount( 1 + $messageCount, $events, 'After initial edit a single event must exist.' );
-		$row = array_shift( $events );
+		$this->assertCount( $expectedMessageCount, $events, 'After initial edit a single event must exist.' );
+		$row = array_pop( $events );
 		$this->assertEquals( 'edit-user-talk', $row->event_type );
 		$this->assertEventSectionTitle( 'Section 8', $row );
 
 		// Add another message to the talk page
-		$messageCount++;
+		$expectedMessageCount++;
 		$content .= "More content ~~~~\n";
-		$this->editPage( $talkPage, $content, '', NS_USER_TALK );
+		$this->editPage(
+			$talkPage,
+			$content,
+			'',
+			NS_USER_TALK,
+			self::$users['sysop']->getUser()
+		);
 
 		// Ensure another event was created
 		$events = $this->fetchAllEvents();
-		$this->assertCount( 1 + $messageCount, $events );
-		$row = array_shift( $events );
+		$this->assertCount( $expectedMessageCount, $events );
+		$row = array_pop( $events );
 		$this->assertEquals( 'edit-user-talk', $row->event_type );
 		$this->assertEventSectionTitle( 'Section 8', $row );
 
 		// Add a new section and a message within it
-		$messageCount++;
+		$expectedMessageCount++;
 		$content .= "\n\n== EE ==\n\nhere we go with a new section ~~~~\n";
-		$this->editPage( $talkPage, $content, '', NS_USER_TALK );
+		$this->editPage(
+			$talkPage,
+			$content,
+			'',
+			NS_USER_TALK,
+			self::$users['sysop']->getUser()
+		);
 
 		// Ensure this event has the new section title
 		$events = $this->fetchAllEvents();
-		$this->assertCount( 1 + $messageCount, $events );
+		$this->assertCount( $expectedMessageCount, $events );
 		$row = array_pop( $events );
 		$this->assertEquals( 'edit-user-talk', $row->event_type );
 		$this->assertEventSectionTitle( 'EE', $row );
@@ -68,11 +86,11 @@ class EchoTalkPageFunctionalTest extends ApiTestCase {
 	}
 
 	/**
-	 * @return \stdClass[] All non-watchlist events in db sorted from oldest to newest
+	 * @return \stdClass[] All talk page edit events in db sorted from oldest to newest
 	 */
 	protected function fetchAllEvents() {
 		$res = $this->db->select( 'echo_event', EchoEvent::selectFields(), [
-				'event_type != "watchlist-change"'
+				'event_type' => 'edit-user-talk',
 			], __METHOD__, [ 'ORDER BY' => 'event_id ASC' ] );
 
 		return iterator_to_array( $res );
