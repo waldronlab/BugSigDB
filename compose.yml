@@ -51,7 +51,7 @@ services:
             - MW_LOAD_SKINS=Vector,chameleon
             - MW_DEFAULT_SKIN=chameleon
             - MW_LOAD_EXTENSIONS=GTag,CodeEditor,Nuke,ParserFunctions,ReplaceText,WikiEditor,Interwiki,CodeEditor,Scribunto,SyntaxHighlight_GeSHi,DataTransfer,Variables,PubmedParser,CodeMirror,Loops,MyVariables,Arrays,DisplayTitle,NCBITaxonomyLookup,SemanticExtraSpecialProperties,SemanticResultFormats
-            - MW_SEARCH_TYPE
+            - MW_SEARCH_TYPE=CirrusSearch
             - MW_PROXY_SERVERS=varnish:80
             - MW_CACHE_PURGE_PAUSE=${MW_CACHE_PURGE_PAUSE:-3600}
             - MW_CACHE_PURGE_PAGE=${MW_CACHE_PURGE_PAGE:-Main_Page}
