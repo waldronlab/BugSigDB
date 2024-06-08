@@ -74,7 +74,6 @@ services:
             - ./_resources/extensions/CategoryLockdown:/var/www/mediawiki/w/extensions/CategoryLockdown
             - ./_resources/extensions/Echo_patched_MBSD-230:/var/www/mediawiki/w/extensions/Echo
             - ./_resources/extensions/DisplayTitle:/var/www/mediawiki/w/extensions/DisplayTitle # WLDR-366 TODO remove when merged
-            - ./_resources/extensions/DynamicPageList3:/var/www/mediawiki/w/extensions/DynamicPageList3
             - ./_resources/extensions/SubpageWatchlist:/var/www/mediawiki/w/extensions/SubpageWatchlist
             - ./_resources/extensions/SemanticScribunto:/var/www/mediawiki/w/extensions/SemanticScribunto
             - ./_resources/extensions/SemanticDependencyUpdater:/var/www/mediawiki/w/extensions/SemanticDependencyUpdater
