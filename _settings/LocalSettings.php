@@ -429,3 +429,10 @@ $wgHiddenPrefs[] = 'skin';
 $wgHiddenPrefs[] = 'skin-responsive';
 $wgHiddenPrefs[] = 'skin-prefs';
 $wgHiddenPrefs[] = 'VectorSkinVersion'; // 1.35 Vector
+
+// WLDR-301 Install DiscussionTools
+wfLoadExtensions([
+    'VisualEditor',
+    'Linter',
+    'DiscussionTools'
+]);
