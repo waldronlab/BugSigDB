@@ -8,9 +8,6 @@
 [submodule "_resources/extensions/SemanticDependencyUpdater"]
 	path = _resources/extensions/SemanticDependencyUpdater
 	url = https://github.com/WikiTeq/SemanticDependencyUpdater.git
-[submodule "_resources/extensions/DynamicPageList3"]
-	path = _resources/extensions/DynamicPageList3
-	url = https://github.com/Universal-Omega/DynamicPageList3.git
 [submodule "_resources/extensions/CategoryLockdown"]
 	path = _resources/extensions/CategoryLockdown
 	url = https://github.com/wikimedia/mediawiki-extensions-CategoryLockdown.git
