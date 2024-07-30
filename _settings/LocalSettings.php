@@ -436,3 +436,8 @@ wfLoadExtensions([
     'Linter',
     'DiscussionTools'
 ]);
+
+// Search based on display titles, WLDR-370, GitHub issue #219
+$wgCirrusSearchCustomPageFields[ 'display_title' ] = \SearchIndexField::INDEX_TYPE_TEXT;
+// Match the default weight of the real title
+$wgCirrusSearchWeights[ 'display_title' ] = 20;
