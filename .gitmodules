@@ -12,3 +12,6 @@
 [submodule "_resources/extensions/DisplayTitle"]
 	path = _resources/extensions/DisplayTitle
 	url = https://gerrit.wikimedia.org/r/mediawiki/extensions/DisplayTitle
+[submodule "_resources/extensions/SemanticDependencyUpdater"]
+	path = _resources/extensions/SemanticDependencyUpdater
+	url = https://github.com/gesinn-it-pub/SemanticDependencyUpdater.git
