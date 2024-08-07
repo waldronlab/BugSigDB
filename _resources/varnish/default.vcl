@@ -17,8 +17,18 @@ acl purge {
 #    "fe80::"/10; # RFC 4291 link-local (directly plugged) machines
 }
 
+acl unwanted {
+    "47.76.99.127";
+    "47.76.209.138";
+}
+
 # vcl_recv is called whenever a request is received
 sub vcl_recv {
+
+    if (client.ip ~ unwanted || req.http.X-Real-Ip ~ "^(47.76.99.127|47.76.209.138)$") {
+        return (synth(403, "Access denied"));
+    }
+
         # Serve objects up to 2 minutes past their expiry if the backend
         # is slow to respond.
         set req.grace = 120s;
