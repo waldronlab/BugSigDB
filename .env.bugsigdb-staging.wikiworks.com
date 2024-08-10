@@ -1,5 +1,4 @@
 # DO NOT PUT SECRETS INTO THIS FILE (use .env.secret* files for them)
-TRAEFIK_STACK_PREFIX=STAGING
 COMPOSE_FILE=compose.yml
 
 MW_SITE_SERVER=https://bugsigdb-staging.wikiworks.com
@@ -13,7 +12,6 @@ MW_DB_INSTALLDB_PASS=zsGRLt!P0u
 
 # Enable it on PRODUCTION wiki only
 MW_ENABLE_SITEMAP_GENERATOR=false
-
 # # DEFINE THE FOLLOW VARIBALE VALUES in the .env.secrets* files (if required)
 ## .env.secret
 # This user will be created if the database will be initialized from scratch
