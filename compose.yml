@@ -145,7 +145,7 @@ services:
             - traefik.http.routers.${COMPOSE_PROJECT_NAME}-varnish.tls.certresolver=le
             - traefik.http.routers.${COMPOSE_PROJECT_NAME}-varnish.middlewares=${COMPOSE_PROJECT_NAME}-ipDenyList
             # middlewares
-            - traefik.http.middlewares.${COMPOSE_PROJECT_NAME}-ipDenyList.plugin.denyip.ipDenyList=47.76.99.127,47.76.209.138
+            - traefik.http.middlewares.${COMPOSE_PROJECT_NAME}-ipDenyList.plugin.denyip.ipDenyList=${IP_DENY_LIST:-127.0.0.254}
 
     updateEFO:
         image: python:3.7
