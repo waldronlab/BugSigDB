@@ -110,6 +110,9 @@ services:
     matomo:
         image: matomo
         restart: unless-stopped
+        networks:
+            - default
+            - traefik-public
         depends_on:
             - db
         environment:
@@ -119,6 +122,14 @@ services:
             - MATOMO_DATABASE_PASSWORD=$MW_DB_INSTALLDB_PASS
         volumes:
             - ./_data/matomo:/var/www/html
+        labels:
+            - "traefik.enable=true"
+            - "traefik.http.routers.matomo.rule=Host(`bugsigdb-staging.wikiworks.com`) && PathPrefix(`/matomo`)"
+            - "traefik.http.routers.matomo.entrypoints=websecure"
+            - "traefik.http.middlewares.matomo-stripprefix.stripprefix.prefixes=/matomo"
+            - "traefik.http.routers.${TRAEFIK_STACK_PREFIX}-matomo.middlewares=${TRAEFIK_STACK_PREFIX}-matomo-stripprefix"
+            - "traefik.http.routers.matomo.tls.certresolver=le"
+            - "traefik.http.services.matomo.loadbalancer.server.port=80"
 
     varnish:
         image: pastakhov/varnish:7.0
@@ -191,5 +202,7 @@ services:
             - ./_logs/restic:/var/log
 
 networks:
+    default:
+        driver: bridge
     traefik-public:
         external: true
