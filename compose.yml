@@ -111,7 +111,6 @@ services:
         image: matomo
         restart: unless-stopped
         networks:
-            - default
             - traefik-public
         depends_on:
             - db
@@ -124,11 +123,12 @@ services:
             - ./_data/matomo:/var/www/html
         labels:
             - "traefik.enable=true"
-            - "traefik.http.routers.matomo.rule=Host(`bugsigdb-staging.wikiworks.com`) && PathPrefix(`/matomo`)"
-            - "traefik.http.routers.matomo.entrypoints=websecure"
-            - "traefik.http.middlewares.matomo-stripprefix.stripprefix.prefixes=/matomo"
-            - "traefik.http.routers.${TRAEFIK_STACK_PREFIX}-matomo.middlewares=${TRAEFIK_STACK_PREFIX}-matomo-stripprefix"
-            - "traefik.http.routers.matomo.tls.certresolver=le"
+            - "traefik.http.routers.${COMPOSE_PROJECT_NAME}-matomo.rule=Host(`bugsigdb.org`) && PathPrefix(`/matomo`)"
+            - "traefik.http.routers.${COMPOSE_PROJECT_NAME}-matomo.entrypoints=websecure"
+            - "traefik.http.routers.${COMPOSE_PROJECT_NAME}-matomo.tls.certresolver=le"
+            - "traefik.http.middlewares.${COMPOSE_PROJECT_NAME}-matomo-stripprefix.stripprefix.prefixes=/matomo"
+            - "traefik.http.middlewares.${COMPOSE_PROJECT_NAME}-matomo-stripprefix.stripprefix.forceSlash=true"
+            - "traefik.http.routers.${COMPOSE_PROJECT_NAME}-matomo.middlewares=${COMPOSE_PROJECT_NAME}-matomo-stripprefix"
             - "traefik.http.services.matomo.loadbalancer.server.port=80"
 
     varnish:
@@ -202,7 +202,5 @@ services:
             - ./_logs/restic:/var/log
 
 networks:
-    default:
-        driver: bridge
     traefik-public:
         external: true
