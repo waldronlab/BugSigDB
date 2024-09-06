@@ -111,6 +111,7 @@ services:
         image: matomo
         restart: unless-stopped
         networks:
+            - default
             - traefik-public
         depends_on:
             - db
@@ -129,7 +130,6 @@ services:
             - "traefik.http.middlewares.${COMPOSE_PROJECT_NAME}-matomo-stripprefix.stripprefix.prefixes=/matomo"
             - "traefik.http.middlewares.${COMPOSE_PROJECT_NAME}-matomo-stripprefix.stripprefix.forceSlash=true"
             - "traefik.http.routers.${COMPOSE_PROJECT_NAME}-matomo.middlewares=${COMPOSE_PROJECT_NAME}-matomo-stripprefix"
-            - "traefik.http.services.matomo.loadbalancer.server.port=80"
 
     varnish:
         image: pastakhov/varnish:7.0
