@@ -56,7 +56,7 @@ services:
             - MW_CACHE_PURGE_PAUSE=${MW_CACHE_PURGE_PAUSE:-3600}
             - MW_CACHE_PURGE_PAGE=${MW_CACHE_PURGE_PAGE:-Main_Page}
             - MW_ENABLE_SITEMAP_GENERATOR # Should be enabled on PROD only
-            - PHP_MEMORY_LIMIT=2048M
+            - PHP_MEMORY_LIMIT=4056M
             - MW_JOB_RUNNER_MEMORY_LIMIT=1G
         volumes:
             - ./_data/mediawiki:/mediawiki
