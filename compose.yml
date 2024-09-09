@@ -112,6 +112,8 @@ services:
         restart: unless-stopped
         depends_on:
             - db
+        profiles:
+            - production
         environment:
             - MATOMO_DATABASE_HOST=db
             - MATOMO_DATABASE_DBNAME=matomo
