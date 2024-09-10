@@ -56,7 +56,7 @@ services:
             - MW_CACHE_PURGE_PAUSE=${MW_CACHE_PURGE_PAUSE:-3600}
             - MW_CACHE_PURGE_PAGE=${MW_CACHE_PURGE_PAGE:-Main_Page}
             - MW_ENABLE_SITEMAP_GENERATOR # Should be enabled on PROD only
-            - PHP_MEMORY_LIMIT=4056M
+            - PHP_MEMORY_LIMIT=4096M
             - MW_JOB_RUNNER_MEMORY_LIMIT=1G
         volumes:
             - ./_data/mediawiki:/mediawiki
@@ -110,6 +110,9 @@ services:
     matomo:
         image: matomo
         restart: unless-stopped
+        networks:
+            - default
+            - traefik-public
         depends_on:
             - db
         environment:
@@ -119,6 +122,14 @@ services:
             - MATOMO_DATABASE_PASSWORD=$MW_DB_INSTALLDB_PASS
         volumes:
             - ./_data/matomo:/var/www/html
+        labels:
+            - "traefik.enable=true"
+            - "traefik.http.routers.${COMPOSE_PROJECT_NAME}-matomo.rule=Host(`bugsigdb.org`) && PathPrefix(`/matomo`)"
+            - "traefik.http.routers.${COMPOSE_PROJECT_NAME}-matomo.entrypoints=websecure"
+            - "traefik.http.routers.${COMPOSE_PROJECT_NAME}-matomo.tls.certresolver=le"
+            - "traefik.http.middlewares.${COMPOSE_PROJECT_NAME}-matomo-stripprefix.stripprefix.prefixes=/matomo"
+            - "traefik.http.middlewares.${COMPOSE_PROJECT_NAME}-matomo-stripprefix.stripprefix.forceSlash=true"
+            - "traefik.http.routers.${COMPOSE_PROJECT_NAME}-matomo.middlewares=${COMPOSE_PROJECT_NAME}-matomo-stripprefix"
 
     varnish:
         image: pastakhov/varnish:7.0
@@ -143,6 +154,18 @@ services:
             - traefik.http.routers.${TRAEFIK_STACK_PREFIX?Variable not set}-varnish.rule=Host(`${MW_SITE_FQDN?Variable not set}`)
             - traefik.http.routers.${TRAEFIK_STACK_PREFIX?Variable not set}-varnish.entrypoints=websecure
             - traefik.http.routers.${TRAEFIK_STACK_PREFIX?Variable not set}-varnish.tls.certresolver=le
+    ofelia:
+        image: mcuadros/ofelia:6394070
+        command: daemon --docker -f label=com.docker.compose.project=${COMPOSE_PROJECT_NAME}
+        volumes:
+            - /var/run/docker.sock:/var/run/docker.sock:ro
+            - ./backup.sh:/root/backup.sh  # Mount backup.sh from the host
+        labels:
+            ofelia.enabled: "true"
+            ofelia.job-local.backup.schedule: "0 3 * * *"  # Schedule to run daily at 3 AM
+            ofelia.job-local.backup.command: "bash /root/backup.sh"  # Command to run the script
+            ofelia.job-local.backup.save-folder: "/var/log/ofelia"
+            ofelia.job-local.backup.save-only-on-error: "false"
 
     updateEFO:
         image: python:3.7
