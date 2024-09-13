@@ -124,7 +124,7 @@ services:
             - ./_data/matomo:/var/www/html
         labels:
             - "traefik.enable=true"
-            - "traefik.http.routers.${COMPOSE_PROJECT_NAME}-matomo.rule=Host(`bugsigdb.org`) && PathPrefix(`/matomo`)"
+            - "traefik.http.routers.${COMPOSE_PROJECT_NAME}-matomo.rule=Host(${MW_SITE_FQDN?Variable not set}) && PathPrefix(`/matomo`)"
             - "traefik.http.routers.${COMPOSE_PROJECT_NAME}-matomo.entrypoints=websecure"
             - "traefik.http.routers.${COMPOSE_PROJECT_NAME}-matomo.tls.certresolver=le"
             - "traefik.http.middlewares.${COMPOSE_PROJECT_NAME}-matomo-stripprefix.stripprefix.prefixes=/matomo"
