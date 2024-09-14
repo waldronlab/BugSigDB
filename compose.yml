@@ -110,6 +110,9 @@ services:
     matomo:
         image: matomo
         restart: unless-stopped
+        networks:
+            - default
+            - traefik-public
         depends_on:
             - db
         environment:
@@ -119,6 +122,14 @@ services:
             - MATOMO_DATABASE_PASSWORD=$MW_DB_INSTALLDB_PASS
         volumes:
             - ./_data/matomo:/var/www/html
+        labels:
+            - "traefik.enable=true"
+            - "traefik.http.routers.${COMPOSE_PROJECT_NAME}-matomo.rule=Host(${MW_SITE_FQDN?Variable not set}) && PathPrefix(`/matomo`)"
+            - "traefik.http.routers.${COMPOSE_PROJECT_NAME}-matomo.entrypoints=websecure"
+            - "traefik.http.routers.${COMPOSE_PROJECT_NAME}-matomo.tls.certresolver=le"
+            - "traefik.http.middlewares.${COMPOSE_PROJECT_NAME}-matomo-stripprefix.stripprefix.prefixes=/matomo"
+            - "traefik.http.middlewares.${COMPOSE_PROJECT_NAME}-matomo-stripprefix.stripprefix.forceSlash=true"
+            - "traefik.http.routers.${COMPOSE_PROJECT_NAME}-matomo.middlewares=${COMPOSE_PROJECT_NAME}-matomo-stripprefix"
 
     varnish:
         image: pastakhov/varnish:7.0
