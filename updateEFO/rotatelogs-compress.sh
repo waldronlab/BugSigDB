@@ -24,7 +24,7 @@ if [[ "${file_to_compress}" ]]; then
         DELAY=0
     else
         DELAY=$RANDOM
-        ((DELAY %= "$LOG_FILES_COMPRESS_DELAY"))
+        ((DELAY %= $LOG_FILES_COMPRESS_DELAY))
     fi
     echo "Wait for $DELAY seconds before compressing ${file_to_compress}"
     sleep "$DELAY"
