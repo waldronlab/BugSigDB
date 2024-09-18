@@ -123,13 +123,15 @@ services:
         volumes:
             - ./_data/matomo:/var/www/html
         labels:
-            - "traefik.enable=true"
-            - "traefik.http.routers.${COMPOSE_PROJECT_NAME}-matomo.rule=Host(${MW_SITE_FQDN?Variable not set}) && PathPrefix(`/matomo`)"
-            - "traefik.http.routers.${COMPOSE_PROJECT_NAME}-matomo.entrypoints=websecure"
-            - "traefik.http.routers.${COMPOSE_PROJECT_NAME}-matomo.tls.certresolver=le"
-            - "traefik.http.middlewares.${COMPOSE_PROJECT_NAME}-matomo-stripprefix.stripprefix.prefixes=/matomo"
-            - "traefik.http.middlewares.${COMPOSE_PROJECT_NAME}-matomo-stripprefix.stripprefix.forceSlash=true"
-            - "traefik.http.routers.${COMPOSE_PROJECT_NAME}-matomo.middlewares=${COMPOSE_PROJECT_NAME}-matomo-stripprefix"
+            - traefik.enable=true
+            - traefik.docker.network=traefik-public
+            - traefik.constraint-label=traefik-public
+            - traefik.http.routers.${COMPOSE_PROJECT_NAME}-matomo.rule=Host(`${MW_SITE_FQDN?Variable not set}`) && PathPrefix(`/matomo/`)
+            - traefik.http.routers.${COMPOSE_PROJECT_NAME}-matomo.entrypoints=websecure
+            - traefik.http.routers.${COMPOSE_PROJECT_NAME}-matomo.tls.certresolver=le
+            - traefik.http.middlewares.${COMPOSE_PROJECT_NAME}-matomo-stripprefix.stripprefix.prefixes=/matomo
+            - traefik.http.middlewares.${COMPOSE_PROJECT_NAME}-matomo-stripprefix.stripprefix.forceSlash=true
+            - traefik.http.routers.${COMPOSE_PROJECT_NAME}-matomo.middlewares=${COMPOSE_PROJECT_NAME}-matomo-stripprefix
 
     varnish:
         image: pastakhov/varnish:7.0
@@ -151,9 +153,9 @@ services:
             - traefik.enable=true
             - traefik.docker.network=traefik-public
             - traefik.constraint-label=traefik-public
-            - traefik.http.routers.${TRAEFIK_STACK_PREFIX?Variable not set}-varnish.rule=Host(`${MW_SITE_FQDN?Variable not set}`)
-            - traefik.http.routers.${TRAEFIK_STACK_PREFIX?Variable not set}-varnish.entrypoints=websecure
-            - traefik.http.routers.${TRAEFIK_STACK_PREFIX?Variable not set}-varnish.tls.certresolver=le
+            - traefik.http.routers.${COMPOSE_PROJECT_NAME}-varnish.rule=Host(`${MW_SITE_FQDN?Variable not set}`)
+            - traefik.http.routers.${COMPOSE_PROJECT_NAME}-varnish.entrypoints=websecure
+            - traefik.http.routers.${COMPOSE_PROJECT_NAME}-varnish.tls.certresolver=le
 
     updateEFO:
         image: python:3.7
