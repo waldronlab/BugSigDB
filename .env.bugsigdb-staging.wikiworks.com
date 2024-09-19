@@ -1,5 +1,4 @@
 # DO NOT PUT SECRETS INTO THIS FILE (use .env.secret* files for them)
-TRAEFIK_STACK_PREFIX=STAGING
 COMPOSE_FILE=compose.yml
 
 MW_SITE_SERVER=https://bugsigdb-staging.wikiworks.com
