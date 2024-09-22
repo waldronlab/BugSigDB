@@ -121,6 +121,7 @@ services:
             - MATOMO_DATABASE_PASSWORD=$MW_DB_INSTALLDB_PASS
         volumes:
             - ./_data/matomo:/var/www/html
+            - ./_resources/matomo-bootstrap.php:/var/www/html/bootstrap.php
         labels:
             # Ofelia
             - ofelia.enabled=true
@@ -132,14 +133,13 @@ services:
             - traefik.enable=true
             - traefik.docker.network=traefik-public
             - traefik.constraint-label=traefik-public
-            - traefik.http.routers.${COMPOSE_PROJECT_NAME}-matomo.rule=Host(`${MW_SITE_FQDN?Variable not set}`) && PathPrefix(`/matomo/`)
+            - traefik.http.routers.${COMPOSE_PROJECT_NAME}-matomo.rule=Host(`${MW_SITE_FQDN?Variable MW_SITE_FQDN not set}`) && PathPrefix(`/${MATOMO_FOLDER:-matomo}/`)
             - traefik.http.routers.${COMPOSE_PROJECT_NAME}-matomo.entrypoints=websecure
             - traefik.http.routers.${COMPOSE_PROJECT_NAME}-matomo.tls.certresolver=le
-            - traefik.http.middlewares.${COMPOSE_PROJECT_NAME}-matomo-stripprefix.stripprefix.prefixes=/matomo
+            - traefik.http.middlewares.${COMPOSE_PROJECT_NAME}-matomo-stripprefix.stripprefix.prefixes=/${MATOMO_FOLDER:-matomo}
             - traefik.http.middlewares.${COMPOSE_PROJECT_NAME}-matomo-stripprefix.stripprefix.forceSlash=true
-            - "traefik.http.middlewares.${COMPOSE_PROJECT_NAME}-matomo-redirect.redirectregex.regex=^https://([^\\/]+)/matomo/$$"
-            - "traefik.http.middlewares.${COMPOSE_PROJECT_NAME}-matomo-redirect.redirectregex.replacement=https://$${1}/matomo/index.php?module=CoreHome"
-            - traefik.http.routers.${COMPOSE_PROJECT_NAME}-matomo.middlewares=${COMPOSE_PROJECT_NAME}-matomo-redirect,${COMPOSE_PROJECT_NAME}-matomo-stripprefix
+            - traefik.http.middlewares.${COMPOSE_PROJECT_NAME}-matomo-headers.headers.customrequestheaders.X-Forwarded-Uri=/${MATOMO_FOLDER:-matomo}
+            - traefik.http.routers.${COMPOSE_PROJECT_NAME}-matomo.middlewares=${COMPOSE_PROJECT_NAME}-matomo-stripprefix,${COMPOSE_PROJECT_NAME}-matomo-headers
 
 
     varnish:
