@@ -233,6 +233,8 @@ services:
     # https://github.com/mcuadros/ofelia
     ofelia:
         image: mcuadros/ofelia:6394070
+        profiles:
+            - production
         depends_on:
             matomo:
                 condition: service_started
