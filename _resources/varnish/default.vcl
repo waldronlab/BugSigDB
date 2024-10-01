@@ -58,6 +58,11 @@ sub vcl_recv {
             return (pass);
         }      /* We only deal with GET and HEAD by default */
 
+        # MBSD-304 Pass /Special:Ask/
+        if (req.url ~ "^/Special:Ask/") {
+            return(pass);
+        }
+
         # Pass images
         if (req.url ~ "^/w/images/") {
             return(pass);

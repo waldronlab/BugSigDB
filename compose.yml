@@ -153,7 +153,7 @@ services:
         tmpfs:
             - /var/lib/varnish:exec
         environment:
-            - VARNISH_SIZE=${VARNISH_SIZE:-2G}
+            - VARNISH_SIZE=${VARNISH_SIZE:-5G}
             - VARNISH_STORAGE_KIND=file
             - VARNISH_LOG_DIR=/var/log/varnish
             - VARNISH_LOG_FORMAT
