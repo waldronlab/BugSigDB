@@ -114,8 +114,6 @@ services:
             - traefik-public
         depends_on:
             - db
-        profiles:
-            - production
         environment:
             - MATOMO_DATABASE_HOST=db
             - MATOMO_DATABASE_DBNAME=matomo
@@ -233,8 +231,6 @@ services:
     # https://github.com/mcuadros/ofelia
     ofelia:
         image: mcuadros/ofelia:6394070
-        profiles:
-            - production
         depends_on:
             matomo:
                 condition: service_started
