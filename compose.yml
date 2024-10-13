@@ -82,7 +82,7 @@ services:
             - ./cache_purge.sh:/cache_purge.sh
 
     redis:
-        image: "redis:alpine"
+        image: "redis:7.4.0-alpine3.20"
         restart: unless-stopped
         volumes:
             - ./_data/redis:/data
@@ -107,7 +107,7 @@ services:
             - ./_data/elasticsearch:/usr/share/elasticsearch/data
 
     matomo:
-        image: matomo
+        image: matomo:5.1.1
         restart: unless-stopped
         networks:
             - default
