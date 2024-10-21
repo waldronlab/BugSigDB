@@ -14,7 +14,7 @@ services:
             - ./_data/mysql:/var/lib/mysql
 
     web:
-        image: ghcr.io/wikiteq/taqasta:1.39.8-20240712-203
+        image: ghcr.io/wikiteq/taqasta:1.39.10-20241020-01c2911 # Update to 1.39.10
         env_file:
             - ./.env
             - ./.env.secret
