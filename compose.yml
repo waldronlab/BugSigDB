@@ -7,17 +7,16 @@ services:
         restart: unless-stopped
         environment:
             - MYSQL_ROOT_HOST=%
-            - MYSQL_ROOT_PASSWORD=$MW_DB_INSTALLDB_PASS
+            - MYSQL_ROOT_PASSWORD_FILE=/run/secrets/db_root_password
             - MYSQL_DATABASE=$MW_DB_NAME
+        secrets:
+            - db_root_password            
         volumes:
             - ./__initdb:/docker-entrypoint-initdb.d
             - ./_data/mysql:/var/lib/mysql
 
     web:
         image: ghcr.io/wikiteq/taqasta:1.39.10-20241020-01c2911 # Update to 1.39.10
-        env_file:
-            - ./.env
-            - ./.env.secret
         restart: unless-stopped
         extra_hosts:
             - "gateway.docker.internal:host-gateway"
@@ -32,13 +31,13 @@ services:
             - MW_RECAPTCHA_SITE_KEY
             - MW_RECAPTCHA_SECRET_KEY
             - MW_ADMIN_USER
-            - MW_ADMIN_PASS
+            - MW_ADMIN_PASS_FILE=/run/secrets/mw_admin_pass
             - MW_DB_NAME
             - MW_DB_INSTALLDB_USER=root
-            - MW_DB_INSTALLDB_PASS
+            - MW_DB_INSTALLDB_PASS_FILE=/run/secrets/db_root_password
             - MW_DB_USER=root
-            - MW_DB_PASS=$MW_DB_INSTALLDB_PASS
-            - MW_SECRET_KEY
+            - MW_DB_PASS_FILE=/run/secrets/db_root_password
+            - MW_SECRET_KEY_FILE=/run/secrets/mw_secret_key
             # - XDEBUG_CONFIG=remote_host=0.0.0.0 remote_enable=1 remote_autostart=Off remote_connect_back=On
             - MW_SITE_SERVER=${MW_SITE_SERVER:-https://bugsigdb.org}
             - MW_SITE_NAME=BugSigDB
@@ -57,6 +56,10 @@ services:
             - MW_ENABLE_SITEMAP_GENERATOR # Should be enabled on PROD only
             - PHP_MEMORY_LIMIT=4056M
             - MW_JOB_RUNNER_MEMORY_LIMIT=1G
+        secrets:
+            - db_root_password
+            - mw_admin_pass
+            - mw_secret_key
         volumes:
             - ./_data/mediawiki:/mediawiki
             - ./_logs/httpd:/var/log/apache2
@@ -118,7 +121,9 @@ services:
             - MATOMO_DATABASE_HOST=db
             - MATOMO_DATABASE_DBNAME=matomo
             - MATOMO_DATABASE_USERNAME=root
-            - MATOMO_DATABASE_PASSWORD=$MW_DB_INSTALLDB_PASS
+            - MATOMO_DATABASE_PASSWORD_FILE=/run/secrets/db_root_password
+        secrets:
+            - db_root_password
         volumes:
             - ./_data/matomo:/var/www/html
             - ./_resources/matomo-bootstrap.php:/var/www/html/bootstrap.php
@@ -140,7 +145,6 @@ services:
             - traefik.http.middlewares.${COMPOSE_PROJECT_NAME}-matomo-stripprefix.stripprefix.forceSlash=true
             - traefik.http.middlewares.${COMPOSE_PROJECT_NAME}-matomo-headers.headers.customrequestheaders.X-Forwarded-Uri=/${MATOMO_FOLDER:-matomo}
             - traefik.http.routers.${COMPOSE_PROJECT_NAME}-matomo.middlewares=${COMPOSE_PROJECT_NAME}-matomo-stripprefix,${COMPOSE_PROJECT_NAME}-matomo-headers
-
 
     varnish:
         image: pastakhov/varnish:7.0
@@ -184,9 +188,6 @@ services:
 
     updateEFO:
         image: python:3.7
-        env_file:
-            - ./.env
-            - ./.env.secret.updateEFO
         restart: unless-stopped
         profiles:
             - production
@@ -194,14 +195,13 @@ services:
             - ./updateEFO:/updateEFO
             - ./_logs/updateEFO:/var/log/updateEFO
             - ./updateEFO/rotatelogs-compress.sh:/rotatelogs-compress.sh
+        secrets:
+            - efo_secrets
         entrypoint:
             - /updateEFO/updateEFO.sh
 
     restic:
         image: ghcr.io/wikiteq/restic-backup-docker:stream
-        env_file:
-            - ./.env
-            - ./.env.secret.restic
         profiles:
             - production
         restart: unless-stopped
@@ -209,7 +209,7 @@ services:
             - db
         environment:
             - MW_DB_USER=root
-            - MW_DB_PASS=$MW_DB_INSTALLDB_PASS
+            - MW_DB_PASS_FILE=/run/secrets/db_root_password
             - MW_DB_NAME=$MW_DB_NAME
             - RESTIC_TAG=backup_full
             - BACKUP_CRON=0 1 * * 6
@@ -222,6 +222,14 @@ services:
             - RESTIC_STREAM=yes
             - RESTIC_STREAM_CMD=tar -cf - -C /data_mediawiki/ /data/database.sql.gz images
             - RESTIC_STREAM_FILENAME=full.images.database.tar
+            - RESTIC_REPOSITORY_FILE=/run/secrets/restic_s3_repository
+            - RESTIC_PASSWORD_FILE=/run/secrets/restic_password
+            - AWS_SHARED_CREDENTIALS_FILE=/run/secrets/aws_credentials
+        secrets:
+            - aws_credentials
+            - db_root_password
+            - restic_password
+            - restic_s3_repository         
         volumes:
             # read-only mount of mediawiki data directory for images access
             - ./_data/mediawiki:/data_mediawiki:ro
@@ -248,8 +256,22 @@ services:
             ofelia.save-only-on-error: false
 
 secrets:
+    aws_credentials:
+        file: ./secrets/aws_credentials.txt
+    db_root_password:
+        file: ./secrets/db_root_password.txt
+    efo_secrets:
+        file: ./secrets/efo_secrets.txt
     matomo_password:
         file: ./secrets/matomo_password.txt
+    mw_admin_pass:
+        file: ./secrets/mw_admin_pass.txt
+    mw_secret_key:
+        file: ./secrets/mw_secret_key.txt
+    restic_password:
+        file: ./secrets/restic_password.txt
+    restic_s3_repository:
+        file: ./secrets/restic_s3_repository.txt    
 
 networks:
     traefik-public:
