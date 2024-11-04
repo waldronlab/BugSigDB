@@ -1,5 +1,6 @@
 # DO NOT PUT SECRETS INTO THIS FILE (use .env.secret* files for them)
 COMPOSE_FILE=compose.yml
+COMPOSE_PROJECT_NAME=bugsigdb-staging
 
 MW_SITE_SERVER=https://bugsigdb-staging.wikiworks.com
 MW_SITE_FQDN=bugsigdb-staging.wikiworks.com
