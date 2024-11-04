@@ -1,4 +1,3 @@
-version: '3.7'
 services:
     db:
         image: mysql:8.0
@@ -15,7 +14,7 @@ services:
             - ./_data/mysql:/var/lib/mysql
 
     web:
-        image: ghcr.io/wikiteq/taqasta:1.39.8-20240712-203
+        image: ghcr.io/wikiteq/taqasta:1.39.10-20241020-01c2911 # Update to 1.39.10
         env_file:
             - ./.env
             - ./.env.secret
@@ -56,7 +55,7 @@ services:
             - MW_CACHE_PURGE_PAUSE=${MW_CACHE_PURGE_PAUSE:-3600}
             - MW_CACHE_PURGE_PAGE=${MW_CACHE_PURGE_PAGE:-Main_Page}
             - MW_ENABLE_SITEMAP_GENERATOR # Should be enabled on PROD only
-            - PHP_MEMORY_LIMIT=2048M
+            - PHP_MEMORY_LIMIT=4056M
             - MW_JOB_RUNNER_MEMORY_LIMIT=1G
         volumes:
             - ./_data/mediawiki:/mediawiki
@@ -83,7 +82,7 @@ services:
             - ./cache_purge.sh:/cache_purge.sh
 
     redis:
-        image: "redis:alpine"
+        image: "redis:7.4.0-alpine3.20"
         restart: unless-stopped
         volumes:
             - ./_data/redis:/data
@@ -108,8 +107,11 @@ services:
             - ./_data/elasticsearch:/usr/share/elasticsearch/data
 
     matomo:
-        image: matomo
+        image: matomo:5.1.1
         restart: unless-stopped
+        networks:
+            - default
+            - traefik-public
         depends_on:
             - db
         environment:
@@ -119,6 +121,26 @@ services:
             - MATOMO_DATABASE_PASSWORD=$MW_DB_INSTALLDB_PASS
         volumes:
             - ./_data/matomo:/var/www/html
+            - ./_resources/matomo-bootstrap.php:/var/www/html/bootstrap.php
+        labels:
+            # Ofelia
+            - ofelia.enabled=true
+            - ofelia.job-exec.maintenance-matomo.schedule=@daily
+            - ofelia.job-exec.maintenance-matomo.command=./console core:archive --force-all-websites --url="${MATOMO_URL:-http://matomo}"
+            - ofelia.job-exec.maintenance-matomo.no-overlap=true
+            - ofelia.job-exec.maintenance-matomo.tty=true
+            # Traefik
+            - traefik.enable=true
+            - traefik.docker.network=traefik-public
+            - traefik.constraint-label=traefik-public
+            - traefik.http.routers.${COMPOSE_PROJECT_NAME}-matomo.rule=Host(`${MW_SITE_FQDN?Variable MW_SITE_FQDN not set}`) && PathPrefix(`/${MATOMO_FOLDER:-matomo}/`)
+            - traefik.http.routers.${COMPOSE_PROJECT_NAME}-matomo.entrypoints=websecure
+            - traefik.http.routers.${COMPOSE_PROJECT_NAME}-matomo.tls.certresolver=le
+            - traefik.http.middlewares.${COMPOSE_PROJECT_NAME}-matomo-stripprefix.stripprefix.prefixes=/${MATOMO_FOLDER:-matomo}
+            - traefik.http.middlewares.${COMPOSE_PROJECT_NAME}-matomo-stripprefix.stripprefix.forceSlash=true
+            - traefik.http.middlewares.${COMPOSE_PROJECT_NAME}-matomo-headers.headers.customrequestheaders.X-Forwarded-Uri=/${MATOMO_FOLDER:-matomo}
+            - traefik.http.routers.${COMPOSE_PROJECT_NAME}-matomo.middlewares=${COMPOSE_PROJECT_NAME}-matomo-stripprefix,${COMPOSE_PROJECT_NAME}-matomo-headers
+
 
     varnish:
         image: pastakhov/varnish:7.0
@@ -131,12 +153,28 @@ services:
         tmpfs:
             - /var/lib/varnish:exec
         environment:
-            - VARNISH_SIZE=${VARNISH_SIZE:-2G}
+            - VARNISH_SIZE=${VARNISH_SIZE:-5G}
             - VARNISH_STORAGE_KIND=file
+            - VARNISH_LOG_DIR=/var/log/varnish
+            - VARNISH_LOG_FORMAT
+            - MATOMO_USER=admin
+        secrets:
+            - matomo_password
         volumes:
-            - ./_resources/varnish:/etc/varnish/
+            - ./_resources/varnish:/etc/varnish:ro
             - ./_data/varnish:/data
+            - ./_logs/varnish:/var/log/varnish
+            - ./_data/matomo:/var/www/html
         labels:
+            # Ofelia
+            - ofelia.enabled=true
+            # NOT COMPATIBLE WITH CRON, SEE https://pkg.go.dev/github.com/robfig/cron#hdr-CRON_Expression_Format
+            # Every hour at the 59th minute
+            - ofelia.job-exec.import_logs_matomo.schedule=0 59 * * * *
+            - ofelia.job-exec.import_logs_matomo.command=import_logs_matomo
+            - ofelia.job-exec.import_logs_matomo.no-overlap=true
+            - ofelia.job-exec.import_logs_matomo.tty=true
+            # Traefik
             - traefik.enable=true
             - traefik.docker.network=traefik-public
             - traefik.constraint-label=traefik-public
@@ -192,6 +230,29 @@ services:
             - ./_data/mediawiki:/data_mediawiki:ro
             # logs
             - ./_logs/restic:/var/log
+
+    # https://github.com/mcuadros/ofelia
+    ofelia:
+        image: mcuadros/ofelia:6394070
+        depends_on:
+            matomo:
+                condition: service_started
+                restart: true
+            varnish:
+                condition: service_started
+                restart: true
+        command: daemon --docker -f label=com.docker.compose.project=${COMPOSE_PROJECT_NAME}
+        volumes:
+            - /var/run/docker.sock:/var/run/docker.sock:ro
+            - ./_logs/ofelia:/var/log/ofelia
+        labels:
+            ofelia.enabled: "true"
+            ofelia.save-folder: "/var/log/ofelia"
+            ofelia.save-only-on-error: false
+
+secrets:
+    matomo_password:
+        file: ./secrets/matomo_password.txt
 
 networks:
     traefik-public:
