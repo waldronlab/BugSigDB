@@ -1,5 +1,6 @@
 # DO NOT PUT SECRETS INTO THIS FILE (use .env.secret* files for them)
 COMPOSE_FILE=compose.yml
+COMPOSE_PROJECT_NAME=bugsigdb-staging
 
 MW_SITE_SERVER=https://bugsigdb-staging.wikiworks.com
 MW_SITE_FQDN=bugsigdb-staging.wikiworks.com
@@ -12,6 +13,10 @@ MW_DB_INSTALLDB_PASS=zsGRLt!P0u
 
 # Enable it on PRODUCTION wiki only
 MW_ENABLE_SITEMAP_GENERATOR=false
+
+# Comma separated list of IP without space, WLDR-378
+# it uses the deny-ip Traefik plugin, https://plugins.traefik.io/plugins/62947363ffc0cd18356a97d1/deny-ip-plugin
+IP_DENY_LIST=47.76.99.127,47.76.209.138
 
 # # DEFINE THE FOLLOW VARIBALE VALUES in the .env.secrets* files (if required)
 ## .env.secret
