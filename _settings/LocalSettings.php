@@ -441,3 +441,7 @@ wfLoadExtensions([
 $wgCirrusSearchCustomPageFields[ 'display_title' ] = \SearchIndexField::INDEX_TYPE_TEXT;
 // Match the default weight of the real title
 $wgCirrusSearchWeights[ 'display_title' ] = 20;
+
+// WLDR-388
+wfLoadExtension( 'DismissableSiteNotice' );
+
