@@ -14,7 +14,7 @@ services:
             - ./_data/mysql:/var/lib/mysql
 
     web:
-        image: ghcr.io/wikiteq/taqasta:1.39.10-20241020-01c2911 # Update to 1.39.10
+        image: ghcr.io/wikiteq/taqasta:1.39.10-20241201-7459243 # Update to the latest 1.39.10 WLDR-388
         env_file:
             - ./.env
             - ./.env.secret
