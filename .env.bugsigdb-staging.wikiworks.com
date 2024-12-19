@@ -1,5 +1,5 @@
 # DO NOT PUT SECRETS INTO THIS FILE (use .env.secret* files for them)
-COMPOSE_FILE=compose.yml
+COMPOSE_FILE=compose.yml:compose.staging.auth.yml
 COMPOSE_PROJECT_NAME=bugsigdb-staging
 
 MW_SITE_SERVER=https://bugsigdb-staging.wikiworks.com
@@ -29,4 +29,7 @@ MW_NCBI_TAXONOMY_API_KEY=
 MW_RECAPTCHA_SITE_KEY=
 MW_RECAPTCHA_SECRET_KEY=
 
+BASIC_USERNAME=admin
+# Generate with `openssl passwd -apr1 MY_PASSWORD_RAW`, the password below is `admin`
+BASIC_PASSWORD='$apr1$Okb14nu5$bkgxEqp/ym0UFBFKCQTEH/'
 # touch .env.secret.updateEFO .env.secret.restic
