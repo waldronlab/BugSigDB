@@ -1,5 +1,5 @@
 services:
-  web:
+  varnish:
     labels:
       #### Redirect www.bugsigdb.org to non www
       # web
