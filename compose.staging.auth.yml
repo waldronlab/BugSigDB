@@ -7,5 +7,5 @@
 services:
   web:
     labels:
-      - traefik.http.middlewares.${TRAEFIK_STACK_PREFIX?Variable not set}-site-auth.basicauth.users=${BASIC_USERNAME?Variable not set}:${BASIC_PASSWORD?Variable not set}
-      - traefik.http.routers.${TRAEFIK_STACK_PREFIX?Variable not set}-ethw.middlewares=${TRAEFIK_STACK_PREFIX?Variable not set}-site-auth
+      - traefik.http.middlewares.${COMPOSE_PROJECT_NAME}-site-auth.basicauth.users=${BASIC_USERNAME?Variable not set}:${BASIC_PASSWORD?Variable not set}
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}-ethw.middlewares=${COMPOSE_PROJECT_NAME}-site-auth
