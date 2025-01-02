@@ -1,0 +1,10 @@
+# This file extension web services by adding a basic authentication to them
+# Please add this file to the COMPOSE_FILE variable in the .env file on staging wikis
+
+# Requires `BASIC_USERNAME` and `BASIC_PASSWORD` envs to be present
+# The `BASIC_PASSWORD` can be generated with `openssl passwd -apr1 mysuperpassword`
+
+services:
+  varnish:
+    labels:
+      - traefik.http.middlewares.${COMPOSE_PROJECT_NAME}-site-auth.basicauth.users=${BASIC_USERNAME?Variable not set}:${BASIC_PASSWORD?Variable not set}
