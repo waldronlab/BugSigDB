@@ -116,7 +116,7 @@ class EchoWatchlistChangePresentationModel extends EchoEventPresentationModel {
 	 * @return Title
 	 */
 	private function getEventTitle(): Title {
-		$title = $this->getEventTitle();
+		$title = $this->event->getTitle();
 		if ( !$title ) {
 			$pageId = $this->event->getPageId();
 			if ( $pageId ) {
