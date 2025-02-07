@@ -173,7 +173,7 @@ services:
             - traefik.http.routers.${COMPOSE_PROJECT_NAME}-varnish.rule=Host(`${MW_SITE_FQDN?Variable not set}`)
             - traefik.http.routers.${COMPOSE_PROJECT_NAME}-varnish.entrypoints=websecure
             - traefik.http.routers.${COMPOSE_PROJECT_NAME}-varnish.tls.certresolver=le
-            - traefik.http.routers.${COMPOSE_PROJECT_NAME}-varnish.middlewares=${COMPOSE_PROJECT_NAME}-ipDenyList${TRAEFIK_EXTRA_MIDDLEWARES:-}
+            - traefik.http.routers.${COMPOSE_PROJECT_NAME}-varnish.middlewares=${COMPOSE_PROJECT_NAME}-ipDenyList,crowdsec@file${TRAEFIK_EXTRA_MIDDLEWARES:-}
             # middlewares
             - traefik.http.middlewares.${COMPOSE_PROJECT_NAME}-ipDenyList.plugin.denyip.ipDenyList=${IP_DENY_LIST:-127.0.0.254}
 
