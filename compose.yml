@@ -30,6 +30,7 @@ services:
             - MW_RECAPTCHA_SITE_KEY_FILE=/run/secrets/mw_recaptcha_site_key
             - MW_RECAPTCHA_SECRET_KEY_FILE=/run/secrets/mw_recaptcha_secret_key
             - MW_ADMIN_USER=admin
+            - MW_ADMIN_PASS_FILE=/run/secrets/mw_admin_pass
             - MW_DB_NAME=${MW_DB_NAME:-mediawiki}
             - MW_SITE_SERVER=${MW_SITE_SERVER:-https://bugsigdb.org}
             - MW_SITE_NAME=BugSigDB
