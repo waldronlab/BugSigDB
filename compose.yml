@@ -13,7 +13,7 @@ services:
             - db_root_password
         volumes:
             - ./__initdb:/docker-entrypoint-initdb.d
-            - ./_data/mysql:/var/lib/mysql
+            - db_data:/var/lib/mysql
 
     web:
         image: ghcr.io/wikiteq/taqasta:1.39.10-20241222-234
@@ -30,6 +30,7 @@ services:
             - MW_RECAPTCHA_SITE_KEY_FILE=/run/secrets/mw_recaptcha_site_key
             - MW_RECAPTCHA_SECRET_KEY_FILE=/run/secrets/mw_recaptcha_secret_key
             - MW_ADMIN_USER=admin
+            - MW_ADMIN_PASS_FILE=/run/secrets/mw_admin_pass
             - MW_DB_NAME=${MW_DB_NAME:-mediawiki}
             - MW_SITE_SERVER=${MW_SITE_SERVER:-https://bugsigdb.org}
             - MW_SITE_NAME=BugSigDB
@@ -54,7 +55,8 @@ services:
             - mw_recaptcha_site_key
             - mw_recaptcha_secret_key
         volumes:
-            - ./_data/mediawiki:/mediawiki
+            - web_data:/mediawiki
+            - images:/mediawiki/images
             - ./_logs/httpd:/var/log/apache2
             - ./_logs/mediawiki:/var/log/mediawiki
             - ./_settings/:/var/www/mediawiki/w/_settings
@@ -81,7 +83,7 @@ services:
         image: "redis:7.4.0-alpine3.20"
         restart: unless-stopped
         volumes:
-            - ./_data/redis:/data
+            - redis_data:/data
             - ./_resources/redis.conf:/usr/local/etc/redis/redis.conf
 
     elasticsearch:
@@ -100,7 +102,7 @@ services:
                 soft: -1
                 hard: -1
         volumes:
-            - ./_data/elasticsearch:/usr/share/elasticsearch/data
+            - elasticsearch_data:/usr/share/elasticsearch/data
 
     matomo:
         image: matomo:5.1.1
@@ -118,7 +120,7 @@ services:
         secrets:
             - db_root_password
         volumes:
-            - ./_data/matomo:/var/www/html
+            - matomo_data:/var/www/html
             - ./_resources/matomo-bootstrap.php:/var/www/html/bootstrap.php
         labels:
             # cron
@@ -157,9 +159,9 @@ services:
             - matomo_password
         volumes:
             - ./_resources/varnish:/etc/varnish:ro
-            - ./_data/varnish:/data
+            - varnish_data:/data
             - ./_logs/varnish:/var/log/varnish
-            - ./_data/matomo:/var/www/html
+            - matomo_data:/var/www/html
         labels:
             # cron
             - cron.enabled=true
@@ -173,7 +175,7 @@ services:
             - traefik.http.routers.${COMPOSE_PROJECT_NAME}-varnish.rule=Host(`${MW_SITE_FQDN?Variable not set}`)
             - traefik.http.routers.${COMPOSE_PROJECT_NAME}-varnish.entrypoints=websecure
             - traefik.http.routers.${COMPOSE_PROJECT_NAME}-varnish.tls.certresolver=le
-            - traefik.http.routers.${COMPOSE_PROJECT_NAME}-varnish.middlewares=${COMPOSE_PROJECT_NAME}-ipDenyList${TRAEFIK_EXTRA_MIDDLEWARES:-}
+            - traefik.http.routers.${COMPOSE_PROJECT_NAME}-varnish.middlewares=${COMPOSE_PROJECT_NAME}-ipDenyList,crowdsec@file${TRAEFIK_EXTRA_MIDDLEWARES:-}
             # middlewares
             - traefik.http.middlewares.${COMPOSE_PROJECT_NAME}-ipDenyList.plugin.denyip.ipDenyList=${IP_DENY_LIST:-127.0.0.254}
 
@@ -223,7 +225,8 @@ services:
             - restic_password
         volumes:
             # read-only mount of mediawiki data directory for images access
-            - ./_data/mediawiki:/data_mediawiki:ro
+            - images:/data_mediawiki/images:ro
+            - restic_data:/mnt/restic
             # logs
             - ./_logs/restic:/var/log
 
@@ -264,3 +267,13 @@ secrets:
 networks:
     traefik-public:
         external: true
+
+volumes:
+    db_data:
+    web_data:
+    images:
+    redis_data:
+    elasticsearch_data:
+    varnish_data:
+    matomo_data:
+    restic_data:

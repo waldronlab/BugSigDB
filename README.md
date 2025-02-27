@@ -10,7 +10,7 @@ cd docker-bugsigdb.org
 copy a database dump to the __initdb directory
 copy images to the `bugsigdb.org/_data/mediawiki/images` directory
 copy .env_example to .env and modify as needed (see the Settings section)
-docker-compose up
+docker-compose up -d
 ```
 Wait for the completion of the build and initialization process and access it via `http://localhost:8081` in a browser.
 
@@ -22,10 +22,15 @@ Running `sudo docker-compose up` will start the containers:
 - `web` - Apache/MediaWiki container with PHP 7.4 and MediaWiki 1.35.0
 - `redis` - Redis is an open-source key-value store that functions as a data structure server
 - `matomo` - [Matomo](https://matomo.org/) instance
+- `elasticsearch` - Advanced search engine.
+- `varnish` - A reverse caching proxy and HTTP accelerator
+- `ofelia` - Alarm and workflow management suite
+- `restic` - (production only) A modern backup program
+- `updateEFO` - (production only) A Python script that updates EFO links on Glossary pages
 
 ## Settings
 
-Settings are in the `docker-compose.yml` file, in the *environment* sections.
+Settings are in the `compose.yml` file, in the *environment* sections.
 
 Also, `_resources` contains the favicon, logo and styles for the chameleon skin.
 `CustomSettings.php` contains settings for MediaWiki core and extensions. If customization is required, change the settings there.
@@ -71,32 +76,45 @@ The [LocalSettings.php](https://www.mediawiki.org/wiki/Manual:LocalSettings.php)
 - CustomSettings.php - contains user-defined settings such as user rights, extensions settings and etc. **For any required customizations, make changes there**.
 `CustomSettings.php` placed in folder `_resources` And will be copied to the container during build
 
-## Data (images, database)
+## Data
 
-Data, like uploaded images and the database files are stored in the `_data` directory.
-Docker containers write files to these directories using internal users; most likely you cannot change/remove these directories until you change the permissions.
+### Bind mounts
+Used to just binding a certain directory or file from the host inside the container. We use:
+- `./__initdb` directory is used to pass the database dump for stack initialization
+
+### Named volumes
+Data that must be persistent across container life cycles are stored in docker volumes:
+- `db_data` (MySQL databases and working directories, attached to `db` service)
+- `elasticsearch_data` (Elasticsearch nodes, attached to `elasticsearch` service)
+- `web_data` (Miscellaneous MediaWiki files and directories that must be persistent by design, attached to `web` service )
+- `images` (MediaWiki upload directory, attached to `web` service and used in `restic` service (read-only))
+- `redis_data` (Redis cache)
+- `varnish_data` (Varnish cache)
+- `matomo_data` (Analytics data)
+- `restic_data` (Space mounted to the `restic` service for operations with snapshots)
+Docker containers write files to volumes using internal users.
 
 ## Log files
 
-Log files arestored in the `_logs` directory.
+Log files are stored in the `_logs` directory.
 
 ## Keeping up to date
 
 **Make a full backup of the wiki, including both the database and the files.**
 While the upgrade scripts are well-maintained and robust, things could still go awry.
 ```sh
-cd compose-mediawiki-ubuntu
+cd <docker stack directory>
 docker-compose exec db /bin/bash -c 'mysqldump --all-databases -uroot -p"$MYSQL_ROOT_PASSWORD" 2>/dev/null | gzip | base64 -w 0' | base64 -d > backup_$(date +"%Y%m%d_%H%M%S").sql.gz
 docker-compose exec web /bin/bash -c 'tar -c $MW_VOLUME $MW_HOME/images 2>/dev/null | base64 -w 0' | base64 -d > backup_$(date +"%Y%m%d_%H%M%S").tar
 ```
 
 For picking up the latest changes, stop, rebuild and start containers:
 ```sh
-cd compose-mediawiki-ubuntu
+cd <docker stack directory>
 git pull
 docker-compose build
 docker-compose stop
-docker-compose up
+docker-compose up -d
 ```
 The upgrade process is fully automated and includes the launch of all necessary maintenance scripts.
 
