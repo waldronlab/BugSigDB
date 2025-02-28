@@ -7,8 +7,9 @@ This repo contains [Docker Compose](https://docs.docker.com/compose/) containers
 Clone the repo. Then create and start the containers:
 ```sh
 cd docker-bugsigdb.org
+docker compose up -d --no-start
 copy a database dump to the __initdb directory
-copy images to the `bugsigdb.org/_data/mediawiki/images` directory
+docker run --rm -v <images/directory>:/source -v <volume_prefix>_images:/target busybox cp -a /source/. /target/
 copy .env_example to .env and modify as needed (see the Settings section)
 docker-compose up -d
 ```
