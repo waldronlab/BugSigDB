@@ -1,0 +1,22 @@
+# Requires `BASIC_USERNAME` and `BASIC_PASSWORD` envs to be present
+# The `BASIC_PASSWORD` can be generated with `openssl passwd -apr1 mysuperpassword`
+
+services:
+  web:
+    environment:
+      - MW_SITE_SERVER=https://bugsigdb.traefik.localtest.me
+
+  varnish:
+    environment:
+      - VARNISH_SIZE=100m
+    labels:
+      # Traefik (keep the label synchronized between all the override files)
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}-varnish.rule=Host(`bugsigdb.traefik.localtest.me`)
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}-varnish.middlewares=crowdsec@file,${COMPOSE_PROJECT_NAME}-site-auth
+      - traefik.http.middlewares.${COMPOSE_PROJECT_NAME}-site-auth.basicauth.users=${BASIC_USERNAME?Variable BASIC_USERNAME not set}:${BASIC_PASSWORD?Variable BASIC_PASSWORD not set}
+
+  matomo:
+    labels:
+      # Traefik (keep the label synchronized between all the override files)
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}-matomo.rule=Host(`bugsigdb.traefik.localtest.me`) && PathPrefix(`/matomo/`)
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}-matomo.middlewares=${COMPOSE_PROJECT_NAME}-matomo-stripprefix,${COMPOSE_PROJECT_NAME}-matomo-headers

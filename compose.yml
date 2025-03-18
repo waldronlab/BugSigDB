@@ -1,16 +1,15 @@
 services:
     db:
+        container_name: ${COMPOSE_PROJECT_NAME}_db # don't allow to scale the container
         image: mysql:8.0
         command: --default-authentication-plugin=mysql_native_password --expire_logs_days=3 --secure-file-priv="" --local-infile=1
         cap_add:
             - SYS_NICE  # CAP_SYS_NICE, fix error mbind: Operation not permitted
         restart: unless-stopped
         environment:
+            - MYSQL_DATABASE=mediawiki
             - MYSQL_ROOT_HOST=%
-            - MYSQL_ROOT_PASSWORD_FILE=/run/secrets/db_root_password
-            - MYSQL_DATABASE=${MW_DB_NAME:-mediawiki}
-        secrets:
-            - db_root_password
+            - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD?Variable MYSQL_ROOT_PASSWORD not set}
         volumes:
             - ./__initdb:/docker-entrypoint-initdb.d
             - db_data:/var/lib/mysql
@@ -26,13 +25,14 @@ services:
             - elasticsearch
         command: bash /entrypoint.sh
         environment:
-            - MW_NCBI_TAXONOMY_API_KEY_FILE=/run/secrets/mw_ncbi_taxonomy_api_key
-            - MW_RECAPTCHA_SITE_KEY_FILE=/run/secrets/mw_recaptcha_site_key
-            - MW_RECAPTCHA_SECRET_KEY_FILE=/run/secrets/mw_recaptcha_secret_key
+            - MW_SITE_SERVER=https://bugsigdb.org
+            - MW_DB_NAME=mediawiki
+            - MW_DB_PASS=${MYSQL_ROOT_PASSWORD?Variable MYSQL_ROOT_PASSWORD not set}
+            - MW_NCBI_TAXONOMY_API_KEY=${MW_NCBI_TAXONOMY_API_KEY:-}
+            - MW_RECAPTCHA_SITE_KEY=${MW_RECAPTCHA_SITE_KEY:-}
+            - MW_RECAPTCHA_SECRET_KEY=${MW_RECAPTCHA_SECRET_KEY:-}
             - MW_ADMIN_USER=admin
-            - MW_ADMIN_PASS_FILE=/run/secrets/mw_admin_pass
-            - MW_DB_NAME=${MW_DB_NAME:-mediawiki}
-            - MW_SITE_SERVER=${MW_SITE_SERVER:-https://bugsigdb.org}
+            - MW_ADMIN_PASSWORD
             - MW_SITE_NAME=BugSigDB
             - MW_SITE_LANG=en
             - MW_ENABLE_UPLOADS=1
@@ -42,18 +42,10 @@ services:
             - MW_LOAD_EXTENSIONS=GTag,CodeEditor,Nuke,ParserFunctions,ReplaceText,WikiEditor,Interwiki,CodeEditor,Scribunto,SyntaxHighlight_GeSHi,DataTransfer,Variables,PubmedParser,CodeMirror,Loops,MyVariables,Arrays,DisplayTitle,NCBITaxonomyLookup,SemanticExtraSpecialProperties,SemanticResultFormats
             - MW_SEARCH_TYPE=CirrusSearch
             - MW_PROXY_SERVERS=varnish:80
-            - MW_CACHE_PURGE_PAUSE=${MW_CACHE_PURGE_PAUSE:-3600}
-            - MW_CACHE_PURGE_PAGE=${MW_CACHE_PURGE_PAGE:-Main_Page}
-            - MW_ENABLE_SITEMAP_GENERATOR # Should be enabled on PROD only
+            - MW_CACHE_PURGE_PAUSE=3600
+            - MW_CACHE_PURGE_PAGE=Main_Page
             - PHP_MEMORY_LIMIT=4056M
             - MW_JOB_RUNNER_MEMORY_LIMIT=1G
-            - MW_AUTOUPDATE
-        secrets:
-            - db_root_password
-            - mw_admin_pass
-            - mw_ncbi_taxonomy_api_key
-            - mw_recaptcha_site_key
-            - mw_recaptcha_secret_key
         volumes:
             - web_data:/mediawiki
             - images:/mediawiki/images
@@ -80,6 +72,7 @@ services:
             - ./cache_purge.sh:/cache_purge.sh
 
     redis:
+        container_name: ${COMPOSE_PROJECT_NAME}_redis # don't allow to scale the container
         image: "redis:7.4.0-alpine3.20"
         restart: unless-stopped
         volumes:
@@ -87,6 +80,7 @@ services:
             - ./_resources/redis.conf:/usr/local/etc/redis/redis.conf
 
     elasticsearch:
+        container_name: ${COMPOSE_PROJECT_NAME}_elasticsearch # don't allow to scale the container
         image: docker.elastic.co/elasticsearch/elasticsearch:7.10.2
         restart: unless-stopped
         environment:
@@ -116,9 +110,7 @@ services:
             - MATOMO_DATABASE_HOST=db
             - MATOMO_DATABASE_DBNAME=matomo
             - MATOMO_DATABASE_USERNAME=root
-            - MATOMO_DATABASE_PASSWORD_FILE=/run/secrets/db_root_password
-        secrets:
-            - db_root_password
+            - MATOMO_DATABASE_PASSWORD=${MYSQL_ROOT_PASSWORD?Variable MYSQL_ROOT_PASSWORD not set}
         volumes:
             - matomo_data:/var/www/html
             - ./_resources/matomo-bootstrap.php:/var/www/html/bootstrap.php
@@ -126,20 +118,22 @@ services:
             # cron
             - cron.enabled=true
             - cron.maintenance-matomo.schedule=@daily
-            - cron.maintenance-matomo.command=./console core:archive --force-all-websites --url="${MATOMO_URL:-http://matomo}"
+            - cron.maintenance-matomo.command=./console core:archive --force-all-websites --url="http://matomo"
             # Traefik
+            # (rule and middlewares are set in the override files, keep them synchronized)
+            # - traefik.http.routers.${COMPOSE_PROJECT_NAME}-matomo.rule=Host(`bugsigdb.org`) && PathPrefix(`/matomo/`)
+            # - traefik.http.routers.${COMPOSE_PROJECT_NAME}-matomo.middlewares=${COMPOSE_PROJECT_NAME}-matomo-stripprefix,${COMPOSE_PROJECT_NAME}-matomo-headers
             - traefik.enable=true
             - traefik.docker.network=traefik-public
             - traefik.constraint-label=traefik-public
-            - traefik.http.routers.${COMPOSE_PROJECT_NAME}-matomo.rule=Host(`${MW_SITE_FQDN?Variable MW_SITE_FQDN not set}`) && PathPrefix(`/${MATOMO_FOLDER:-matomo}/`)
             - traefik.http.routers.${COMPOSE_PROJECT_NAME}-matomo.entrypoints=websecure
             - traefik.http.routers.${COMPOSE_PROJECT_NAME}-matomo.tls.certresolver=le
-            - traefik.http.middlewares.${COMPOSE_PROJECT_NAME}-matomo-stripprefix.stripprefix.prefixes=/${MATOMO_FOLDER:-matomo}
+            - traefik.http.middlewares.${COMPOSE_PROJECT_NAME}-matomo-stripprefix.stripprefix.prefixes=/matomo
             - traefik.http.middlewares.${COMPOSE_PROJECT_NAME}-matomo-stripprefix.stripprefix.forceSlash=true
-            - traefik.http.middlewares.${COMPOSE_PROJECT_NAME}-matomo-headers.headers.customrequestheaders.X-Forwarded-Uri=/${MATOMO_FOLDER:-matomo}
-            - traefik.http.routers.${COMPOSE_PROJECT_NAME}-matomo.middlewares=${COMPOSE_PROJECT_NAME}-matomo-stripprefix,${COMPOSE_PROJECT_NAME}-matomo-headers${TRAEFIK_EXTRA_MIDDLEWARES:-}
+            - traefik.http.middlewares.${COMPOSE_PROJECT_NAME}-matomo-headers.headers.customrequestheaders.X-Forwarded-Uri=/matomo
 
     varnish:
+        container_name: ${COMPOSE_PROJECT_NAME}_varnish # don't allow to scale the container
         image: pastakhov/varnish:7.0
         restart: unless-stopped
         networks:
@@ -150,13 +144,12 @@ services:
         tmpfs:
             - /var/lib/varnish:exec
         environment:
-            - VARNISH_SIZE=${VARNISH_SIZE:-5G}
+            - VARNISH_SIZE=5G
             - VARNISH_STORAGE_KIND=file
             - VARNISH_LOG_DIR=/var/log/varnish
             - VARNISH_LOG_FORMAT
             - MATOMO_USER=admin
-        secrets:
-            - matomo_password
+            - MATOMO_PASSWORD=${MATOMO_PASSWORD?Variable MATOMO_PASSWORD not set}
         volumes:
             - ./_resources/varnish:/etc/varnish:ro
             - varnish_data:/data
@@ -169,100 +162,24 @@ services:
             - cron.import_logs_matomo.schedule=0 59 * * *
             - cron.import_logs_matomo.command=import_logs_matomo
             # Traefik
+            # (rule and middlewares are set in the override files, keep them synchronized)
+            # - traefik.http.routers.${COMPOSE_PROJECT_NAME}-varnish.rule=Host(`bugsigdb.org`)
+            # - traefik.http.routers.${COMPOSE_PROJECT_NAME}-varnish.middlewares=crowdsec@file
             - traefik.enable=true
             - traefik.docker.network=traefik-public
             - traefik.constraint-label=traefik-public
-            - traefik.http.routers.${COMPOSE_PROJECT_NAME}-varnish.rule=Host(`${MW_SITE_FQDN?Variable not set}`)
             - traefik.http.routers.${COMPOSE_PROJECT_NAME}-varnish.entrypoints=websecure
             - traefik.http.routers.${COMPOSE_PROJECT_NAME}-varnish.tls.certresolver=le
-            - traefik.http.routers.${COMPOSE_PROJECT_NAME}-varnish.middlewares=${COMPOSE_PROJECT_NAME}-ipDenyList,crowdsec@file${TRAEFIK_EXTRA_MIDDLEWARES:-}
-            # middlewares
-            - traefik.http.middlewares.${COMPOSE_PROJECT_NAME}-ipDenyList.plugin.denyip.ipDenyList=${IP_DENY_LIST:-127.0.0.254}
-
-    updateEFO:
-        image: python:3.7
-        restart: unless-stopped
-        profiles:
-            - production
-        environment:
-            - UPDATE_EFO_PAUSE=86400
-            - UPDATE_EFO_BOT_USER=${UPDATE_EFO_BOT_USER:-WikiWorks753@WikiBot}
-            - UPDATE_EFO_BOT_PASSWORD_FILE=/run/secrets/update_efo_bot_password
-        secrets:
-            - update_efo_bot_password
-        volumes:
-            - ./updateEFO:/updateEFO
-            - ./_logs/updateEFO:/var/log/updateEFO
-            - ./updateEFO/rotatelogs-compress.sh:/rotatelogs-compress.sh
-        entrypoint:
-            - /updateEFO/updateEFO.sh
-
-    restic:
-        image: ghcr.io/wikiteq/restic-backup-docker:stream
-        profiles:
-            - production
-        restart: unless-stopped
-        depends_on:
-            - db
-        environment:
-            - MW_DB_USER=root
-            - MW_DB_PASS_FILE=/run/secrets/db_root_password
-            - MW_DB_NAME=${MW_DB_NAME:-mediawiki}
-            - RESTIC_TAG=backup_full
-            - BACKUP_CRON=0 1 * * 6
-            - CHECK_CRON=0 23 * * 5
-            - RESTIC_FORGET_ARGS=--prune --keep-weekly 1 --keep-monthly 2 --group-by paths
-            # pre-backup script
-            - RESTIC_PRE_BACKUP=if [ ! -d "/data" ]; then mkdir /data; fi && tar -C /data_mediawiki/ -zcvf /data/images.tar.gz images && mysqldump -hdb -u$$MW_DB_USER -p$(cat /run/secrets/db_root_password) $$MW_DB_NAME | gzip -c > /data/database.sql.gz
-            # post-backup script
-            - RESTIC_POST_BACKUP=rm /data/images.tar.gz && rm /data/database.sql.gz
-            - RESTIC_REPOSITORY
-            - RESTIC_PASSWORD_FILE=/run/secrets/restic_password
-            - AWS_SHARED_CREDENTIALS_FILE=/run/secrets/aws_credentials
-        secrets:
-            - aws_credentials
-            - db_root_password
-            - restic_password
-        volumes:
-            # read-only mount of mediawiki data directory for images access
-            - images:/data_mediawiki/images:ro
-            - restic_data:/mnt/restic
-            # logs
-            - ./_logs/restic:/var/log
 
     cron:
+        container_name: ${COMPOSE_PROJECT_NAME}_cron # don't allow to scale the container
         image: ghcr.io/wikiteq/cron:20241201-377bd3f
         restart: unless-stopped
-        profiles:
-            - production
         environment:
             - COMPOSE_PROJECT_NAME=${COMPOSE_PROJECT_NAME}
-            - DEBUG=${CRON_DEBUG:-0}
         volumes:
             - /var/run/docker.sock:/var/run/docker.sock:ro
             - ./_logs/cron:/var/log/cron
-
-secrets:
-    aws_credentials:
-        file: ./secrets/aws_credentials.txt
-    db_root_password:
-        file: ./secrets/db_root_password.txt
-    matomo_password:
-        file: ./secrets/matomo_password.txt
-    mw_admin_pass:
-        file: ./secrets/mw_admin_pass.txt
-    mw_ncbi_taxonomy_api_key:
-        file: ./secrets/mw_ncbi_taxonomy_api_key.txt
-    mw_recaptcha_secret_key:
-        file: ./secrets/mw_recaptcha_secret_key.txt
-    mw_recaptcha_site_key:
-        file: ./secrets/mw_recaptcha_site_key.txt
-    restic_password:
-        file: ./secrets/restic_password.txt
-    restic_s3_repository:
-        file: ./secrets/restic_s3_repository.txt
-    update_efo_bot_password:
-        file: ./secrets/update_efo_bot_password.txt
 
 networks:
     traefik-public:

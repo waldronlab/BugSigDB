@@ -1,0 +1,90 @@
+services:
+  db:
+    restart: always
+
+  web:
+    restart: always
+    environment:
+      - MW_SITE_SERVER=https://bugsigdb.org
+      # Should be enabled on PRODUCTION only
+      - MW_ENABLE_SITEMAP_GENERATOR=true
+
+  redis:
+    restart: always
+
+  elasticsearch:
+    restart: always
+
+  matomo:
+    restart: always
+    labels:
+      # Traefik (keep the label synchronized between all the override files)
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}-matomo.rule=Host(`bugsigdb.org`) && PathPrefix(`/matomo/`)
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}-matomo.middlewares=${COMPOSE_PROJECT_NAME}-matomo-stripprefix,${COMPOSE_PROJECT_NAME}-matomo-headers
+
+  varnish:
+    restart: always
+    labels:
+      # Traefik (keep the label synchronized between all the override files)
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}-varnish.rule=Host(`bugsigdb.org`)
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}-varnish.middlewares=crowdsec@file
+      #### Redirect www.bugsigdb.org to non www
+      # web
+      - traefik.http.routers.web-www_bugsigdb.rule=Host(`www.bugsigdb.org`)
+      - traefik.http.routers.web-www_bugsigdb.entrypoints=web
+      - traefik.http.routers.web-www_bugsigdb.middlewares=www_bugsigdb_redirect
+      - traefik.http.routers.web-www_bugsigdb.priority=100
+      # websecure
+      - traefik.http.routers.websecure-www_bugsigdb.rule=Host(`www.bugsigdb.org`)
+      - traefik.http.routers.websecure-www_bugsigdb.entrypoints=websecure
+      - traefik.http.routers.websecure-www_bugsigdb.tls.certresolver=le
+      - traefik.http.routers.websecure-www_bugsigdb.middlewares=www_bugsigdb_redirect
+      # middlewares
+      - traefik.http.middlewares.www_bugsigdb_redirect.redirectregex.regex=^https?://www\.bugsigdb\.org/(.*)
+      - traefik.http.middlewares.www_bugsigdb_redirect.redirectregex.replacement=https://bugsigdb.org/$${1}
+
+  cron:
+    restart: always
+
+  restic:
+    container_name: ${COMPOSE_PROJECT_NAME}_restic # don't allow to scale the container
+    image: ghcr.io/wikiteq/restic-backup-docker:stream
+    restart: always
+    depends_on:
+      - db
+    environment:
+      - MW_DB_NAME=mediawiki
+      - MW_DB_USER=root
+      - MW_DB_PASS=${MYSQL_ROOT_PASSWORD?Variable MYSQL_ROOT_PASSWORD not set}
+      - RESTIC_TAG=backup_full
+      - BACKUP_CRON=0 1 * * 6
+      - CH-ECK_CRON=0 23 * * 5
+      - RESTIC_FORGET_ARGS=--prune --keep-weekly 1 --keep-monthly 2 --group-by paths
+      # pre-backup script
+      - RESTIC_PRE_BACKUP=if [ ! -d "/data" ]; then mkdir /data; fi && tar -C /data_mediawiki/ -zcvf /data/images.tar.gz images && mysqldump -hdb -u$$MW_DB_USER -p$$MW_DB_PASS $$MW_DB_NAME | gzip -c > /data/database.sql.gz
+      # post-backup script
+      - RESTIC_POST_BACKUP=rm /data/images.tar.gz && rm /data/database.sql.gz
+      - RESTIC_PASSWORD=${RESTIC_PASSWORD?Variable RESTIC_PASSWORD not set}
+      - RESTIC_REPOSITORY=s3:usc1.contabostorage.com/backups/bugsigdb.org
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID?Variable AWS_ACCESS_KEY_ID not set}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY?Variable AWS_SECRET_ACCESS_KEY not set}
+    volumes:
+      # read-only mount of mediawiki data directory for images access
+      - images:/data_mediawiki/images:ro
+      - restic_data:/mnt/restic
+      # logs
+      - ./_logs/restic:/var/log
+
+  updateEFO:
+    image: python:3.7
+    restart: always
+    environment:
+      - UPDATE_EFO_PAUSE=86400
+      - UPDATE_EFO_BOT_USER=WikiWorks753@WikiBot
+      - UPDATE_EFO_BOT_PASSWORD=${UPDATE_EFO_BOT_PASSWORD?Variable UPDATE_EFO_BOT_PASSWORD not set}
+    volumes:
+      - ./updateEFO:/updateEFO
+      - ./_logs/updateEFO:/var/log/updateEFO
+      - ./updateEFO/rotatelogs-compress.sh:/rotatelogs-compress.sh
+    entrypoint:
+      - /updateEFO/updateEFO.sh
