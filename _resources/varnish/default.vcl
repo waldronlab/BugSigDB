@@ -49,7 +49,10 @@ sub vcl_recv {
         }      /* We only deal with GET and HEAD by default */
 
         # MBSD-304 Pass /Special:Ask/
-        if (req.url ~ "^/Special:Ask/") {
+        if (
+            req.url ~ "^/Special:Ask/" ||
+            req.url ~ "^/w/index.php\?(.*&)?title=Special:Ask(&|$)"
+        ) {
             return(pass);
         }
 
