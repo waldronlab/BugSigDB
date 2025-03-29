@@ -58,19 +58,45 @@ services:
       - MW_DB_PASS=${MYSQL_ROOT_PASSWORD?Variable MYSQL_ROOT_PASSWORD not set}
       - RESTIC_TAG=backup_full
       - BACKUP_CRON=0 1 * * 6
-      - CH-ECK_CRON=0 23 * * 5
+      - CHECK_CRON=0 23 * * 5
       - RESTIC_FORGET_ARGS=--prune --keep-weekly 1 --keep-monthly 2 --group-by paths
       # pre-backup script
-      - RESTIC_PRE_BACKUP=if [ ! -d "/data" ]; then mkdir /data; fi && tar -C /data_mediawiki/ -zcvf /data/images.tar.gz images && mysqldump -hdb -u$$MW_DB_USER -p$$MW_DB_PASS $$MW_DB_NAME | gzip -c > /data/database.sql.gz
-      # post-backup script
-      - RESTIC_POST_BACKUP=rm /data/images.tar.gz && rm /data/database.sql.gz
+      - RESTIC_PRE_BACKUP=mysqldump -hdb -u$$MW_DB_USER -p$$MW_DB_PASS $$MW_DB_NAME | gzip -c > /data/database.sql.gz
+      # post-backup script using rclone to copy database snapshot and sync image folders
+      - RESTIC_POST_BACKUP= |
+          set -e
+
+          RCLONE_DATE=$(date +"%Y%m%d-%H%M%S")
+          SERVICE_ACCOUNT_FILE="/run/secrets/restic-GCS-account"
+
+          echo "Copying database backup to GCS..."
+          rclone copy /data/database.sql.gz "GCS:backups.bugsigdb.org/database${RCLONE_DATE}.sql.gz" \
+          --gcs-service-account-file "${SERVICE_ACCOUNT_FILE}"
+
+          echo "Checking image directories..."
+          IMAGES_SRC="/data/images/"
+          for dir in "$IMAGES_SRC"[0-9a-f][0-9a-f]; do
+          if [ -d "$dir" ] && [ "$(ls -A "$dir")" ]; then
+          echo "Syncing non-empty directory $dir..."
+          rclone sync "$dir" "GCS:backups.bugsigdb.org/images/$(basename "$dir")" \
+          --gcs-service-account-file "${SERVICE_ACCOUNT_FILE}"
+          else
+          echo "Skipping empty or non-existent directory $dir."
+          fi
+          done
+
+          echo "Removing local database backup file..."
+          rm /data/database.sql.gz
+
       - RESTIC_PASSWORD=${RESTIC_PASSWORD?Variable RESTIC_PASSWORD not set}
       - RESTIC_REPOSITORY=s3:usc1.contabostorage.com/backups/bugsigdb.org
       - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID?Variable AWS_ACCESS_KEY_ID not set}
       - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY?Variable AWS_SECRET_ACCESS_KEY not set}
+    secrets:
+      - restic-GCS-account
     volumes:
       # read-only mount of mediawiki data directory for images access
-      - images:/data_mediawiki/images:ro
+      - images:/data/images:ro
       - restic_data:/mnt/restic
       # logs
       - ./_logs/restic:/var/log
@@ -88,3 +114,7 @@ services:
       - ./updateEFO/rotatelogs-compress.sh:/rotatelogs-compress.sh
     entrypoint:
       - /updateEFO/updateEFO.sh
+
+secrets:
+  restic-GCS-account:
+    file: ./secrets/restic-GCS-account.json

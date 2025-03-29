@@ -8,74 +8,102 @@ Clone the repo. Then create and start the containers:
 ```sh
 cd docker-bugsigdb.org
 docker compose up -d --no-start
-copy a database dump to the __initdb directory
+# copy a database dump (*.sql or *.sql.gz) to the __initdb directory if needed
 docker run --rm -v <images/directory>:/source -v <volume_prefix>_images:/target busybox cp -a /source/. /target/
-copy .env_example to .env and modify as needed (see the Settings section)
-docker-compose up -d
+# copy .env_example to .env and modify as needed (see the Settings section)
+cp .env_example .env
+docker compose up -d
 ```
 Wait for the completion of the build and initialization process and access it via `http://localhost:8081` in a browser.
 
 ## Architecture of mediawiki containers
 
-Running `sudo docker-compose up` will start the containers:
+Running `docker compose up -d` will start the containers:
 
-- `db` - MySQL [container](https://hub.docker.com/r/pastakhov/mysql/), used as the database backend for MediaWiki.
-- `web` - Apache/MediaWiki container with PHP 7.4 and MediaWiki 1.35.0
-- `redis` - Redis is an open-source key-value store that functions as a data structure server
-- `matomo` - [Matomo](https://matomo.org/) instance
-- `elasticsearch` - Advanced search engine.
+- `db` - MySQL [official container](https://hub.docker.com/_/mysql/), used as the database backend for MediaWiki.
+- `web` - Apache/MediaWiki container (Taqasta) with PHP 7.4 and MediaWiki 1.39.x
+- `redis` - Redis is an open-source key-value store used as the cache backend
+- `matomo` - [Matomo](https://matomo.org/) analytics instance
+- `elasticsearch` - Advanced search engine
 - `varnish` - A reverse caching proxy and HTTP accelerator
-- `ofelia` - Alarm and workflow management suite
-- `restic` - (production only) A modern backup program
-- `updateEFO` - (production only) A Python script that updates EFO links on Glossary pages
+- `restic` - (production only) Modern backup container performing incremental backups to both S3 storage and Google Cloud Storage (GCS)
+- `updateEFO` - (production only) A Python script that updates EFO links on glossary pages automatically
 
 ## Settings
 
-Settings are in the `compose.yml` file, in the *environment* sections.
+Settings can be adjusted via the `.env` file created from `.env_example`. Environment and other general configuration are in the `compose.yml` and environment-specific overrides (`compose.staging.yml`, `compose.PRODUCTION.yml`) files, in the *environment* sections.
 
-Also, `_resources` contains the favicon, logo and styles for the chameleon skin.
-`CustomSettings.php` contains settings for MediaWiki core and extensions. If customization is required, change the settings there.
+Additionally:
+
+- `_resources` directory: contains favicon, logo, styles, and customizations for the chameleon skin and additional MediaWiki extensions.
+- `_settings/LocalSettings.php`: contains settings for MediaWiki core and extensions. If customization is required, change them there.
+- For production backups with restic, create the file `./secrets/restic-GCS-account.json`, containing your Google Cloud Storage credentials.
 
 ### db
-Was cloned from the official [mysql](https://hub.docker.com/_/mysql/) container and has the same environment variables.
-The reason that it is better than the official is the ability to automatically update the database when upgrading the version of mysql.
-The only one important environment variable for us is `MYSQL_ROOT_PASSWORD`; it specifies the password that will be set for the MySQL `root` superuser account.
-If changed, make sure that `MW_DB_INSTALLDB_PASS` in the web section was changed too.
+
+The database used is the official MySQL 8 container.  
+The most important environment variable is `MYSQL_ROOT_PASSWORD`; it specifies the password set for the MySQL `root` superuser account.
+
+If changed, ensure corresponding database passwords (`MW_DB_PASS` in the web section) are updated accordingly.
 
 ### web
 
 #### environment variables
 
-- `MW_SITE_SERVER` configures [$wgServer](https://www.mediawiki.org/wiki/Manual:$wgServer); set this to the server host and include the protocol like `http://my-wiki:8080`
+- `MW_SITE_SERVER` configures [$wgServer](https://www.mediawiki.org/wiki/Manual:$wgServer); set this to the server host and include the protocol like `https://bugsigdb.org`
 - `MW_SITE_NAME` configures [$wgSitename](https://www.mediawiki.org/wiki/Manual:$wgSitename)
 - `MW_SITE_LANG` configures [$wgLanguageCode](https://www.mediawiki.org/wiki/Manual:$wgLanguageCode)
 - `MW_DEFAULT_SKIN` configures [$wgDefaultSkin](https://www.mediawiki.org/wiki/Manual:$wgDefaultSkin)
 - `MW_ENABLE_UPLOADS` configures [$wgEnableUploads](https://www.mediawiki.org/wiki/Manual:$wgEnableUploads)
-- `MW_USE_INSTANT_COMMONS` configures [$wgUseInstantCommons](https://www.mediawiki.org/wiki/Manual:$wgUseInstantCommons)
 - `MW_ADMIN_USER` configures the default administrator username
-- `MW_ADMIN_PASS` configures the default administrator password
-- `MW_DB_NAME` specifies the database name that will be created automatically upon container startup
-- `MW_DB_USER` specifies the database user for access to the database specified in `MW_DB_NAME`
-- `MW_DB_PASS` specifies the database user password
-- `MW_DB_INSTALLDB_USER` specifies the database superuser name for create database and user specified above
-- `MW_DB_INSTALLDB_PASS` specifies the database superuser password; should be the same as `MYSQL_ROOT_PASSWORD` in db section.
-- `MW_PROXY_SERVERS` (comma separated values) configures [$wgSquidServers](https://www.mediawiki.org/wiki/Manual:$wgSquidServers). Leave empty if no reverse proxy server used.
-- `MW_MAIN_CACHE_TYPE` configures [$wgMainCacheType](https://www.mediawiki.org/wiki/Manual:$wgMainCacheType). `MW_MEMCACHED_SERVERS` should be provided for `CACHE_MEMCACHED`.
-- `MW_MEMCACHED_SERVERS` (comma separated values) configures [$wgMemCachedServers](https://www.mediawiki.org/wiki/Manual:$wgMemCachedServers).
-- `MW_AUTOUPDATE` if `true` (by default), run needed maintenance scripts automatically before web server start.
-- `MW_SHOW_EXCEPTION_DETAILS` if `true` (by default) configures [$wgShowExceptionDetails](https://www.mediawiki.org/wiki/Manual:$wgShowExceptionDetails) as true.
-- `PHP_LOG_ERRORS` specifies `log_errors` parameter in `php.ini` file.
-- `PHP_ERROR_REPORTING` specifies `error_reporting` parameter in `php.ini` file. `E_ALL` by default, on production should be changed to `E_ALL & ~E_DEPRECATED & ~E_STRICT`.
-- `MATOMO_USER` - Matomo admin username
-- `MATOMO_PASSWORD` - Matomo admin password
+- `MW_ADMIN_PASSWORD` configures the default administrator password
+- `MW_DB_NAME` specifies the database name MediaWiki uses
+- `MW_DB_USER` specifies the DB user MediaWiki uses; default is `root`
+- `MW_DB_PASS` specifies the DB user password; must match your MySQL password
+- `MW_PROXY_SERVERS` configures [$wgSquidServers](https://www.mediawiki.org/wiki/Manual:$wgSquidServers) for reverse proxies (typically `varnish:80`)
+- `MW_MAIN_CACHE_TYPE` configures [$wgMainCacheType](https://www.mediawiki.org/wiki/Manual:$wgMainCacheType). (`CACHE_REDIS` is recommended)
+- `MW_LOAD_EXTENSIONS` provided as comma-separated list of MediaWiki extensions to load during container startup
+- `MW_LOAD_SKINS` comma-separated list of MediaWiki skins available for use
+- `MW_SEARCH_TYPE` configures the search backend (typically `CirrusSearch`)
+- `MW_NCBI_TAXONOMY_API_KEY`, `MW_RECAPTCHA_SITE_KEY`, `MW_RECAPTCHA_SECRET_KEY` optional/requested third-party API keys
+- `MW_ENABLE_SITEMAP_GENERATOR` enables sitemap generator script on production (`true/false`)
 
-## LocalSettings.php
+### restic (production only)
 
-The [LocalSettings.php](https://www.mediawiki.org/wiki/Manual:LocalSettings.php) is divided into three parts:
-- LocalSettings.php will be created automatically upon container startup, contains settings specific to the MediaWiki installed instance such as database connection, [$wgSecretKey](https://www.mediawiki.org/wiki/Manual:$wgSecretKey) and etc. **Should not be changed**
-- DockerSettings.php contains settings specific to the released containers such as database server name, path to programs, installed extensions, etc. **Should be changed if you make changes to the containers only**
-- CustomSettings.php - contains user-defined settings such as user rights, extensions settings and etc. **For any required customizations, make changes there**.
-`CustomSettings.php` placed in folder `_resources` And will be copied to the container during build
+The restic container handles scheduled backups (weekly/monthly retention settings) through incremental snapshots:
+
+- `RESTIC_PASSWORD` - password to encrypt backup
+- `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY` - access credentials for S3-compatible storage
+- `BACKUP_CRON`, `CHECK_CRON` - cron schedule for automatic backup and check operations
+
+### updateEFO (production only)
+
+This Python-based container automatically updates EFO terms and links in the glossary:
+
+- `UPDATE_EFO_BOT_PASSWORD` - authentication password for bot account
+- `UPDATE_EFO_PAUSE` - update frequency in seconds (default 86400 sec / 24h)
+
+Note: the script may produce extra load to the wiki so it's recommended to schedule it for nigh time, also worth to
+consider that it takes time to process all the pages so average script cycle is ~4-8 hours. You can change sleep
+timeouts via `-z` parameter.
+
+### matomo
+
+Matomo instance provides website analytics:
+
+- Default admin username: `admin`
+- `MATOMO_PASSWORD` - sets the initial password for matomo administration panel
+
+### varnish
+
+Varnish cache container used as reverse proxy and front-end cache server:
+
+- `VARNISH_SIZE` - amount of RAM to dedicate to caching (e.g., `100m`)
+
+### Basic Authentication (Staging Only)
+
+- `BASIC_USERNAME` - basic http username
+- `BASIC_PASSWORD` - basic http password (hashed using `openssl passwd -apr1`)
 
 ## Data
 
@@ -93,6 +121,7 @@ Data that must be persistent across container life cycles are stored in docker v
 - `varnish_data` (Varnish cache)
 - `matomo_data` (Analytics data)
 - `restic_data` (Space mounted to the `restic` service for operations with snapshots)
+
 Docker containers write files to volumes using internal users.
 
 ## Log files
@@ -113,48 +142,9 @@ For picking up the latest changes, stop, rebuild and start containers:
 ```sh
 cd <docker stack directory>
 git pull
-docker-compose build
-docker-compose stop
 docker-compose up -d
 ```
 The upgrade process is fully automated and includes the launch of all necessary maintenance scripts.
-
-# Matomo
-
-By default, Matomo runs on port 8182 (to be shadowed with Nginx) and requires initial setup
-on the first run. Once installed, modify the `.env` file by adding `MATOMO_USER` and `MATOMO_PASSWORD`
-variables matching the user & password that were used during installation.
-
-Make the `import_logs_matomo.sh` run on Cron @daily close to midnight to keep the Matomo
-fed with visit information.
-
-## Nginx configuration
-
-```apacheconf
-   # matomo
-   location /matomo/ {
-        proxy_set_header Host $host;
-        proxy_set_header X-Forwarded-Host $host;
-        proxy_set_header X-Forwarded-Server $host;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
-        proxy_set_header X-Forwarded-Uri /matomo;
-        proxy_read_timeout 300;
-        proxy_pass http://127.0.0.1:8182/;
-        proxy_set_header X-Forwarded-For $remote_addr;
-   }
-```
-
-Also, once the containers are started, modify the Matomo config as below (the settings are intended to
-be generated automatically, but it's better to verify):
-
-```php
-[General]
-trusted_hosts[] = "127.0.0.1:8182"
-assume_secure_protocol = 1
-force_ssl=0
-proxy_uri_header = 1
-```
 
 ## Purging homepage SMW caches
 
@@ -166,24 +156,25 @@ MW_CACHE_PURGE_PAUSE=3600
 MW_CACHE_PURGE_PAGE=Main_Page
 ```
 
-## Updating EFO links
+---
 
-The repo contains a Python script that is capable to walk the wiki Glossary terms
-pages and update outdated EFO links by replacing them with actual ones. Follow the
-steps below to set it up:
+## Docker Compose Overrides & Environments
 
-* Install `python` v.3 and `pip`
-* Run `pip install -r updateEFO.requirements.txt`
-* Navigate to `Special:BotPasswords` on the wiki and create a new Bot with mass edit permissions
-* Run `python updateEFO.py --help` to ensure you hava a correct python version links as default binary, you should see a help text
-* Run `python updateEFO.py -s www.site.com -uBOT_USERNAME -pBOT_PASSWORD --verbose --dry`
-* The script should start working and printing some output, if everything looks good terminate it with Ctrl+C
-* Modify the `updateEFO.cron` file to use correct credentials and paths to the script and the output log
-* Copy the `updateEFO.cron` contents to your `crontab -e` file or move it to `/etc/cron.weekly/` by executing the following command: `cp updateEFO.cron /etc/cron.weekly/updateEFO && chown root:root /etc/cron.weekly/updateEFO && chmod +x /etc/cron.weekly/updateEFO`
+The deployment is organized as follows:
 
-Note: the script may produce extra load to the wiki so it's recommended to schedule it for nigh time, also worth to
-consider that it takes time to process all the pages so average script cycle is ~4-8 hours. You can change sleep
-timeouts via `-z` parameter.
+- `compose.yml`: common container definitions, typically used in development environment
+- `compose.staging.yml`: staging-specific overrides (hostnames, basic auth)
+- `compose.PRODUCTION.yml`: production-specific overrides including health-checks, backups, and special scripts
+
+Before running docker compose commands, link your environment configuration as follows:
+
+```bash
+ln -sf compose.staging.yml compose.override.yml  # staging environment
+# OR
+ln -sf compose.PRODUCTION.yml compose.override.yml  # production environment
+```
+
+Then use `docker compose up -d` as usual. Docker Compose automatically merges the files.
 
 ## Updating Active user count
 
