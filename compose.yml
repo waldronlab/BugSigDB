@@ -2,7 +2,13 @@ services:
     db:
         container_name: ${COMPOSE_PROJECT_NAME}_db # don't allow to scale the container
         image: mysql:8.0
-        command: --default-authentication-plugin=mysql_native_password --expire_logs_days=3 --secure-file-priv="" --local-infile=1
+        # MBSD-262
+        command: >
+            --default-authentication-plugin=mysql_native_password
+            --binlog_expire_logs_seconds=259200
+            --secure-file-priv=""
+            --local-infile=1
+            --innodb_redo_log_capacity=1G
         cap_add:
             - SYS_NICE  # CAP_SYS_NICE, fix error mbind: Operation not permitted
         restart: unless-stopped
