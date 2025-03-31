@@ -10,8 +10,8 @@ cd docker-bugsigdb.org
 docker compose up -d --no-start
 # copy a database dump (*.sql or *.sql.gz) to the __initdb directory if needed
 docker run --rm -v <images/directory>:/source -v <volume_prefix>_images:/target busybox cp -a /source/. /target/
-# copy .env_example to .env and modify as needed (see the Settings section)
-cp .env_example .env
+# copy .env.example to .env and modify as needed (see the Settings section)
+cp .env.example .env
 docker compose up -d
 ```
 Wait for the completion of the build and initialization process and access it via `http://localhost:8081` in a browser.
@@ -31,7 +31,7 @@ Running `docker compose up -d` will start the containers:
 
 ## Settings
 
-Settings can be adjusted via the `.env` file created from `.env_example`. Environment and other general configuration are in the `compose.yml` and environment-specific overrides (`compose.staging.yml`, `compose.PRODUCTION.yml`) files, in the *environment* sections.
+Settings can be adjusted via the `.env` file created from `.env.example`. Environment and other general configuration are in the `compose.yml` and environment-specific overrides (`compose.staging.yml`, `compose.PRODUCTION.yml`) files, in the *environment* sections.
 
 Additionally:
 

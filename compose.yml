@@ -15,7 +15,7 @@ services:
             - db_data:/var/lib/mysql
 
     web:
-        image: ghcr.io/wikiteq/taqasta:1.39.10-20241222-234
+        image: ghcr.io/wikiteq/taqasta:1.39.11-20250329-263
         restart: unless-stopped
         extra_hosts:
             - "gateway.docker.internal:host-gateway"
@@ -61,7 +61,6 @@ services:
             - ./_resources/footer_icons/ww.png:/var/www/mediawiki/w/ww.png
             - ./_resources/footer_icons/bioc.png:/var/www/mediawiki/w/bioc.png
             - ./_resources/extensions/CategoryLockdown:/var/www/mediawiki/w/extensions/CategoryLockdown
-            - ./_resources/extensions/Echo_patched_MBSD-230:/var/www/mediawiki/w/extensions/Echo
             - ./_resources/extensions/DisplayTitle:/var/www/mediawiki/w/extensions/DisplayTitle # WLDR-366 TODO remove when merged
             - ./_resources/extensions/SubpageWatchlist:/var/www/mediawiki/w/extensions/SubpageWatchlist
             - ./_resources/extensions/SemanticScribunto:/var/www/mediawiki/w/extensions/SemanticScribunto
