@@ -9,9 +9,6 @@
 	path = _resources/extensions/CategoryLockdown
 	url = https://github.com/wikimedia/mediawiki-extensions-CategoryLockdown.git
 	branch = REL1_39
-[submodule "_resources/extensions/DisplayTitle"]
-	path = _resources/extensions/DisplayTitle
-	url = https://gerrit.wikimedia.org/r/mediawiki/extensions/DisplayTitle
 [submodule "_resources/extensions/SemanticDependencyUpdater"]
 	path = _resources/extensions/SemanticDependencyUpdater
 	url = https://github.com/gesinn-it-pub/SemanticDependencyUpdater.git

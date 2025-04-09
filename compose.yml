@@ -21,7 +21,7 @@ services:
             - db_data:/var/lib/mysql
 
     web:
-        image: ghcr.io/wikiteq/taqasta:1.39.11-20250329-263
+        image: ghcr.io/wikiteq/taqasta:1.39.11-20250329-263 # BEFORE changing, make sure the PR https://github.com/WikiTeq/Taqasta/pull/263 was merged
         restart: unless-stopped
         extra_hosts:
             - "gateway.docker.internal:host-gateway"
@@ -67,7 +67,6 @@ services:
             - ./_resources/footer_icons/ww.png:/var/www/mediawiki/w/ww.png
             - ./_resources/footer_icons/bioc.png:/var/www/mediawiki/w/bioc.png
             - ./_resources/extensions/CategoryLockdown:/var/www/mediawiki/w/extensions/CategoryLockdown
-            - ./_resources/extensions/DisplayTitle:/var/www/mediawiki/w/extensions/DisplayTitle # WLDR-366 TODO remove when merged
             - ./_resources/extensions/SubpageWatchlist:/var/www/mediawiki/w/extensions/SubpageWatchlist
             - ./_resources/extensions/SemanticScribunto:/var/www/mediawiki/w/extensions/SemanticScribunto
             - ./_resources/extensions/SemanticDependencyUpdater:/var/www/mediawiki/w/extensions/SemanticDependencyUpdater
