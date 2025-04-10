@@ -66,22 +66,22 @@ services:
       - RESTIC_POST_BACKUP= |
           set -e
 
-          RCLONE_DATE=$(date +"%Y%m%d-%H%M%S")
+          RCLONE_DATE=$$(date +"%Y%m%d-%H%M%S")
           SERVICE_ACCOUNT_FILE="/run/secrets/restic-GCS-account"
 
           echo "Copying database backup to GCS..."
-          rclone copy /data/database.sql.gz "GCS:backups.bugsigdb.org/database${RCLONE_DATE}.sql.gz" \
-          --gcs-service-account-file "${SERVICE_ACCOUNT_FILE}"
+          rclone copy /data/database.sql.gz "GCS:backups.bugsigdb.org/database$${RCLONE_DATE}.sql.gz" \
+          --gcs-service-account-file "$${SERVICE_ACCOUNT_FILE}"
 
           echo "Checking image directories..."
           IMAGES_SRC="/data/images/"
-          for dir in "$IMAGES_SRC"[0-9a-f][0-9a-f]; do
-          if [ -d "$dir" ] && [ "$(ls -A "$dir")" ]; then
-          echo "Syncing non-empty directory $dir..."
-          rclone sync "$dir" "GCS:backups.bugsigdb.org/images/$(basename "$dir")" \
-          --gcs-service-account-file "${SERVICE_ACCOUNT_FILE}"
+          for dir in "$${IMAGES_SRC}"[0-9a-f][0-9a-f]; do
+          if [ -d "$${dir}" ] && [ "$$(ls -A "$${dir}")" ]; then
+          echo "Syncing non-empty directory $${dir}..."
+          rclone sync "$${dir}" "GCS:backups.bugsigdb.org/images/$$(basename "$${dir}")" \
+          --gcs-service-account-file "$${SERVICE_ACCOUNT_FILE}"
           else
-          echo "Skipping empty or non-existent directory $dir."
+          echo "Skipping empty or non-existent directory $${dir}."
           fi
           done
 
