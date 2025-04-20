@@ -177,7 +177,7 @@ services:
 
     cron:
         container_name: ${COMPOSE_PROJECT_NAME}_cron # don't allow to scale the container
-        image: ghcr.io/wikiteq/cron:20241201-377bd3f
+        image: ghcr.io/wikiteq/cron:20250110-ddded6a
         restart: unless-stopped
         environment:
             - COMPOSE_PROJECT_NAME=${COMPOSE_PROJECT_NAME}
