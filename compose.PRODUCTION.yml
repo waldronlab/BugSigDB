@@ -57,42 +57,11 @@ services:
       - MW_DB_USER=root
       - MW_DB_PASS=${MYSQL_ROOT_PASSWORD?Variable MYSQL_ROOT_PASSWORD not set}
       - RESTIC_TAG=backup_full
-      - BACKUP_CRON=0 1 * * 6
-      - CHECK_CRON=0 23 * * 5
+      - BACKUP_CRON=0 1 * * *
+      - CHECK_CRON=0 23 * * *
       - RESTIC_FORGET_ARGS=--prune --keep-weekly 1 --keep-monthly 2 --group-by paths
       # pre-backup script
       - RESTIC_PRE_BACKUP=mysqldump -hdb -u$$MW_DB_USER -p$$MW_DB_PASS $$MW_DB_NAME | gzip -c > /data/database.sql.gz
-      # post-backup script using rclone to copy database snapshot and sync image folders
-      - |
-        RESTIC_POST_BACKUP=
-          set -e
-
-          RCLONE_DATE=$$(date +"%Y%m%d-%H%M%S")
-          SERVICE_ACCOUNT_FILE="/run/secrets/restic-GCS-account"
-
-          if [ -f "/data/database.sql.gz" ]; then
-            echo "Copying database backup to Google Cloud Storage..."
-            rclone copy /data/database.sql.gz ":google cloud storage:backups.bugsigdb.org/database$${RCLONE_DATE}.sql.gz" \
-              --gcs-service-account-file "$${SERVICE_ACCOUNT_FILE}" --gcs-bucket-policy-only
-
-            echo "Removing local database backup file..."
-            rm /data/database.sql.gz
-          else
-            echo "No database backup file found at /data/database.sql.gz"
-          fi
-
-          echo "Checking image directories..."
-          IMAGES_SRC="/data/images/"
-          for dir in "$${IMAGES_SRC}"[0-9a-f]; do
-          if [ -d "$${dir}" ] && [ "$$(ls -A "$${dir}")" ]; then
-            echo "Syncing non-empty directory $${dir}..."
-            rclone sync "$${dir}" ":google cloud storage:backups.bugsigdb.org/images/$$(basename "$${dir}")" \
-              --gcs-service-account-file "$${SERVICE_ACCOUNT_FILE}" --gcs-bucket-policy-only
-          else
-            echo "Skipping empty or non-existent directory $${dir}."
-          fi
-          done
-
       - RESTIC_PASSWORD=${RESTIC_PASSWORD?Variable RESTIC_PASSWORD not set}
       - RESTIC_REPOSITORY=s3:usc1.contabostorage.com/backups/bugsigdb.org
       - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID?Variable AWS_ACCESS_KEY_ID not set}
@@ -100,6 +69,8 @@ services:
     secrets:
       - restic-GCS-account
     volumes:
+      # post-backup script using rclone to copy database snapshot and sync image folders
+      - ./_resources/restic-post-backup.sh:/hooks/post-backup.sh:ro
       # read-only mount of mediawiki data directory for images access
       - images:/data/images:ro
       - restic_data:/mnt/restic
