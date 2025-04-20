@@ -163,7 +163,7 @@ services:
             # cron
             - cron.enabled=true
             # Every hour at the 59th minute
-            - cron.import_logs_matomo.schedule=0 59 * * *
+            - cron.import_logs_matomo.schedule=59 * * * *
             - cron.import_logs_matomo.command=import_logs_matomo
             # Traefik
             # (rule and middlewares are set in the override files, keep them synchronized)
