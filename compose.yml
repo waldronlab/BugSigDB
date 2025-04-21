@@ -151,7 +151,7 @@ services:
             - VARNISH_SIZE=5G
             - VARNISH_STORAGE_KIND=file
             - VARNISH_LOG_DIR=/var/log/varnish
-            - VARNISH_LOG_FORMAT
+            - VARNISH_LOG_FORMAT=X-Real-IP
             - MATOMO_USER=admin
             - MATOMO_PASSWORD=${MATOMO_PASSWORD?Variable MATOMO_PASSWORD not set}
         volumes:
