@@ -82,6 +82,7 @@ services:
         volumes:
             - redis_data:/data
             - ./_resources/redis.conf:/usr/local/etc/redis/redis.conf
+        command: ["redis-server", "/usr/local/etc/redis/redis.conf"]
 
     elasticsearch:
         container_name: ${COMPOSE_PROJECT_NAME}_elasticsearch # don't allow to scale the container
