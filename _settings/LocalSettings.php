@@ -244,7 +244,8 @@ $wgMaxPPExpandDepth = 40*2;
 $wgMaxPPNodeCount = 1000000*2;
 $wgMaxTemplateDepth = 40*2;
 $wgMaxGeneratedPPNodeCount = 1000000*2;
-$wgExpensiveParserFunctionLimit = 99*4;
+# WLDR-371, MBSD-262
+$wgExpensiveParserFunctionLimit = 99*6;
 
 $egLoopsCounterLimit = 3000;
 
@@ -444,4 +445,3 @@ $wgCirrusSearchWeights[ 'display_title' ] = 20;
 
 // WLDR-388
 wfLoadExtension( 'DismissableSiteNotice' );
-
