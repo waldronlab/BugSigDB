@@ -11,7 +11,7 @@ services:
             --innodb_redo_log_capacity=1G
         cap_add:
             - SYS_NICE  # CAP_SYS_NICE, fix error mbind: Operation not permitted
-        restart: unless-stopped
+        restart: always
         environment:
             - MYSQL_DATABASE=mediawiki
             - MYSQL_ROOT_HOST=%
@@ -22,7 +22,7 @@ services:
 
     web:
         image: ghcr.io/wikiteq/taqasta:1.39.11-20250329-263 # BEFORE changing, make sure the PR https://github.com/WikiTeq/Taqasta/pull/264 was merged or MW version >= 1.43.1
-        restart: unless-stopped
+        restart: always
         extra_hosts:
             - "gateway.docker.internal:host-gateway"
         depends_on:
@@ -78,7 +78,7 @@ services:
     redis:
         container_name: ${COMPOSE_PROJECT_NAME}_redis # don't allow to scale the container
         image: "redis:7.4.0-alpine3.20"
-        restart: unless-stopped
+        restart: always
         volumes:
             - redis_data:/data
             - ./_resources/redis.conf:/usr/local/etc/redis/redis.conf
@@ -87,7 +87,7 @@ services:
     elasticsearch:
         container_name: ${COMPOSE_PROJECT_NAME}_elasticsearch # don't allow to scale the container
         image: docker.elastic.co/elasticsearch/elasticsearch:7.10.2
-        restart: unless-stopped
+        restart: always
         environment:
             - discovery.type=single-node
             - bootstrap.memory_lock=true
@@ -105,7 +105,7 @@ services:
 
     matomo:
         image: matomo:5.1.1
-        restart: unless-stopped
+        restart: always
         networks:
             - default
             - traefik-public
@@ -140,7 +140,7 @@ services:
     varnish:
         container_name: ${COMPOSE_PROJECT_NAME}_varnish # don't allow to scale the container
         image: pastakhov/varnish:7.0
-        restart: unless-stopped
+        restart: always
         networks:
             - default
             - traefik-public
@@ -179,7 +179,7 @@ services:
     cron:
         container_name: ${COMPOSE_PROJECT_NAME}_cron # don't allow to scale the container
         image: ghcr.io/wikiteq/cron:20250110-ddded6a
-        restart: unless-stopped
+        restart: always
         environment:
             - COMPOSE_PROJECT_NAME=${COMPOSE_PROJECT_NAME}
         volumes:
