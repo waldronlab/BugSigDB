@@ -116,6 +116,7 @@ services:
             - MATOMO_DATABASE_DBNAME=matomo
             - MATOMO_DATABASE_USERNAME=root
             - MATOMO_DATABASE_PASSWORD=${MYSQL_ROOT_PASSWORD?Variable MYSQL_ROOT_PASSWORD not set}
+            - PHP_MEMORY_LIMIT=2G
         volumes:
             - matomo_data:/var/www/html
             - ./_resources/matomo-bootstrap.php:/var/www/html/bootstrap.php
