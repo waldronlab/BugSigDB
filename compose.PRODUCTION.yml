@@ -27,7 +27,7 @@ services:
     labels:
       # Traefik (keep the label synchronized between all the override files)
       - traefik.http.routers.${COMPOSE_PROJECT_NAME}-varnish.rule=Host(`bugsigdb.org`)
-      - traefik.http.routers.${COMPOSE_PROJECT_NAME}-varnish.middlewares=crowdsec@file
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}-varnish.middlewares=crowdsec@file,mediawiki-ddos@file
       #### Redirect www.bugsigdb.org to non www
       # web
       - traefik.http.routers.web-www_bugsigdb.rule=Host(`www.bugsigdb.org`)
