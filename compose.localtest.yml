@@ -12,7 +12,7 @@ services:
     labels:
       # Traefik (keep the label synchronized between all the override files)
       - traefik.http.routers.${COMPOSE_PROJECT_NAME}-varnish.rule=Host(`bugsigdb.traefik.localtest.me`)
-      - traefik.http.routers.${COMPOSE_PROJECT_NAME}-varnish.middlewares=crowdsec@file,${COMPOSE_PROJECT_NAME}-site-auth
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}-varnish.middlewares=crowdsec@file,mediawiki-ddos@file,${COMPOSE_PROJECT_NAME}-site-auth
       - traefik.http.middlewares.${COMPOSE_PROJECT_NAME}-site-auth.basicauth.users=${BASIC_USERNAME?Variable BASIC_USERNAME not set}:${BASIC_PASSWORD?Variable BASIC_PASSWORD not set}
 
   matomo:

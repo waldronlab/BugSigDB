@@ -5,7 +5,7 @@ services:
         # MBSD-262
         command: >
             --default-authentication-plugin=mysql_native_password
-            --binlog_expire_logs_seconds=259200
+            --binlog_expire_logs_seconds=86400
             --secure-file-priv=""
             --local-infile=1
             --innodb_redo_log_capacity=1G
@@ -116,6 +116,7 @@ services:
             - MATOMO_DATABASE_DBNAME=matomo
             - MATOMO_DATABASE_USERNAME=root
             - MATOMO_DATABASE_PASSWORD=${MYSQL_ROOT_PASSWORD?Variable MYSQL_ROOT_PASSWORD not set}
+            - PHP_MEMORY_LIMIT=2G
         volumes:
             - matomo_data:/var/www/html
             - ./_resources/matomo-bootstrap.php:/var/www/html/bootstrap.php
@@ -178,8 +179,8 @@ services:
 
     cron:
         container_name: ${COMPOSE_PROJECT_NAME}_cron # don't allow to scale the container
-        image: ghcr.io/wikiteq/cron:20250110-ddded6a
-        restart: always
+        image: ghcr.io/wikiteq/cron:20250704-10
+        restart: unless-stopped
         environment:
             - COMPOSE_PROJECT_NAME=${COMPOSE_PROJECT_NAME}
         volumes:
