@@ -1,7 +1,7 @@
 [submodule "_resources/extensions/SubpageWatchlist"]
 	path = _resources/extensions/SubpageWatchlist
 	url = https://gerrit.wikimedia.org/r/mediawiki/extensions/SubpageWatchlist.git
-	branch = REL1_35
+	branch = REL1_39
 [submodule "_resources/extensions/SemanticScribunto"]
 	path = _resources/extensions/SemanticScribunto
 	url = https://github.com/SemanticMediaWiki/SemanticScribunto
