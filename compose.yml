@@ -34,11 +34,12 @@ services:
             - MW_SITE_SERVER=https://bugsigdb.org
             - MW_DB_NAME=mediawiki
             - MW_DB_PASS=${MYSQL_ROOT_PASSWORD?Variable MYSQL_ROOT_PASSWORD not set}
+            - MW_DB_INSTALLDB_PASS=${MYSQL_ROOT_PASSWORD?Variable MYSQL_ROOT_PASSWORD not set}
             - MW_NCBI_TAXONOMY_API_KEY=${MW_NCBI_TAXONOMY_API_KEY:-}
             - MW_RECAPTCHA_SITE_KEY=${MW_RECAPTCHA_SITE_KEY:-}
             - MW_RECAPTCHA_SECRET_KEY=${MW_RECAPTCHA_SECRET_KEY:-}
             - MW_ADMIN_USER=admin
-            - MW_ADMIN_PASSWORD
+            - MW_ADMIN_PASS=${MW_ADMIN_PASS?Variable MW_ADMIN_PASS not set}
             - MW_SITE_NAME=BugSigDB
             - MW_SITE_LANG=en
             - MW_ENABLE_UPLOADS=1
