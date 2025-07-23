@@ -35,6 +35,7 @@ services:
             - MW_DB_NAME=mediawiki
             - MW_DB_PASS=${MYSQL_ROOT_PASSWORD?Variable MYSQL_ROOT_PASSWORD not set}
             - MW_NCBI_TAXONOMY_API_KEY=${MW_NCBI_TAXONOMY_API_KEY:-}
+            - MW_NCBI_TAXONOMY_API_URL
             - MW_RECAPTCHA_SITE_KEY=${MW_RECAPTCHA_SITE_KEY:-}
             - MW_RECAPTCHA_SECRET_KEY=${MW_RECAPTCHA_SECRET_KEY:-}
             - MW_ADMIN_USER=admin
