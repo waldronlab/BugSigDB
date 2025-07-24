@@ -65,6 +65,7 @@ If changed, ensure corresponding database passwords (`MW_DB_PASS` in the web sec
 - `MW_LOAD_EXTENSIONS` provided as comma-separated list of MediaWiki extensions to load during container startup
 - `MW_LOAD_SKINS` comma-separated list of MediaWiki skins available for use
 - `MW_SEARCH_TYPE` configures the search backend (typically `CirrusSearch`)
+- `MW_NCBI_TAXONOMY_API_URL` optionally sets custom URL for the NCBI API endpoint
 - `MW_NCBI_TAXONOMY_API_KEY`, `MW_RECAPTCHA_SITE_KEY`, `MW_RECAPTCHA_SECRET_KEY` optional/requested third-party API keys
 - `MW_ENABLE_SITEMAP_GENERATOR` enables sitemap generator script on production (`true/false`)
 
