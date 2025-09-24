@@ -73,6 +73,21 @@ services:
             - ./_resources/googlef2273af339547660.html:/var/www/mediawiki/googlef2273af339547660.html
             - ./entrypoint.sh:/entrypoint.sh
             - ./cache_purge.sh:/cache_purge.sh
+            # csv reports with index enabled, MBSD-355
+            - ./csv_reports:/var/www/mediawiki/w/images/csv_reports
+        labels:
+            # cron
+            - cron.enabled=true
+            # studies export, MBSD-355
+            #- "cron.report-studies.schedule=0 */1 * * *"
+            - "cron.report-studies.schedule=*/5 * * * *"
+            - 'cron.report-studies.command=php extensions/SemanticReports/maintenance/GenerateReport.php -q "[[Category:Studies]] |?Study design |?PMID |?DOI |?URI |?Authors list |?Title |?Journal |?Year |?Abstract |?Keyword list=Keywords |?State |?Reviewer" -f "csv" -o "/var/www/html/w/images/csv_reports/studies.$(date +%Y-%m-%d_%H).csv"'
+            # experiments export, MBSD-355
+            #- "cron.report-studies.schedule=5 */1 * * *"
+            #- 'cron.report-studies.command=php extensions/SemanticReports/maintenance/GenerateReport.php -q "[[Category:Experiments]] |?Original page name=Experiment page name |?Related study=Study |?Location of subjects |?Host species |?Body site |?UBERON ID |?Condition |?EFO ID |?Group 0 name |?Group 1 name |?Group 1 definition |?Group 0 sample size |?Group 1 sample size |?Antibiotics exclusion |?Sequencing type |?16S variable region |?Sequencing platform |?Data transformation |?Statistical test |?Significance threshold |?MHT correction |?LDA Score above |?Matched on |?Confounders controlled for |?Pielou |?Shannon |?Chao1 |?Simpson |?Inverse Simpson |?Richness |?State |?Reviewer" -f "csv" -o "/var/www/html/w/images/csv_reports/experiments.$(date +%Y-%m-%d_%H).csv"'
+            # signatures export, MBSD-355
+            #- "cron.report-studies.schedule=10 */1 * * *"
+            #- 'cron.report-studies.command=php extensions/SemanticReports/maintenance/GenerateReport.php -q "[[Category:Signatures]] |?Original page name=Signature page name |?Related experiment=Experiment |?Related study=Study |?Source data=Source |?Curated date |?Curator |?Revision editor |?Description |?Abundance in Group 1 |?NCBI_export=MetaPhlAn taxon names |?NCBI_export_ids_sc=NCBI Taxonomy IDs |?State |?Reviewer" -f "csv" -o "/var/www/html/w/images/csv_reports/experiments.$(date +%Y-%m-%d_%H).csv"'
 
     redis:
         container_name: ${COMPOSE_PROJECT_NAME}_redis # don't allow to scale the container
