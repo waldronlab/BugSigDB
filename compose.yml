@@ -74,7 +74,7 @@ services:
             - ./entrypoint.sh:/entrypoint.sh
             - ./cache_purge.sh:/cache_purge.sh
             # csv reports with index enabled, MBSD-355
-            - ./csv_reports:/var/www/mediawiki/w/images/csv_reports
+            - ./csv_reports:/mediawiki/images/csv_reports
         labels:
             # cron
             - cron.enabled=true
