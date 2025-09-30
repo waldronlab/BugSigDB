@@ -411,3 +411,6 @@ $wgCirrusSearchWeights[ 'display_title' ] = 20;
 
 // WLDR-388
 wfLoadExtension( 'DismissableSiteNotice' );
+
+// MBSD-355
+wfLoadExtension( 'SemanticReports' );
