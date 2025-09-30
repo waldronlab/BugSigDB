@@ -302,8 +302,6 @@ $wgHooks['SkinAddFooterLinks'][] = function ( $skin, string $key, array &$footer
 	}
 };
 
-$wgInternalServer = "http://web:80";
-
 // Disables cache for Special:Random
 $wgHooks['SpecialPageBeforeExecute'][] = function( SpecialPage $special, $subPage ) {
 	if ( $special->getName() === 'Randompage' ) {
@@ -368,44 +366,12 @@ $wgDplSettings['functionalRichness'] = 3;
 
 wfLoadExtension( 'VariablesLua' );
 wfLoadExtension( 'SubpageWatchlist' );
-$wgInternalServer = 'http://127.0.0.1:8081'; # MBSD-139
 wfLoadExtension( 'SemanticScribunto' );
 if ( !isset( $wgScribuntoEngineConf ) ) {
 	$wgScribuntoEngineConf = [ 'luasandbox' => [] ];
 }
 // WLDR-312, WLDR-362
 $wgScribuntoEngineConf['luasandbox']['cpuLimit'] = 200;
-
-// There is no nginx in front of varnish.
-$wgInternalServer = $wgServer;
-
-// Request from varnish after each links update.
-// This ensures that varnish is always populated but
-// doesn't get overloaded with requests like CdnCacheUpdate would.
-$wgHooks['LinksUpdateComplete'][] = function ( $linksUpdate ) {
-	global $wgCdnServers;
-	$url = $linksUpdate->getTitle()->getInternalURL();
-	// Adapted from CdnCacheUpdate::naivePurge.
-	foreach( $wgCdnServers as $server ) {
-		$urlInfo = wfParseUrl( $url );
-		$urlHost = strlen( $urlInfo['port'] ?? '' )
-			? IPUtils::combineHostAndPort( $urlInfo['host'], (int)$urlInfo['port'] )
-			: $urlInfo['host'];
-		$baseReq = [
-			'method' => 'GET',
-			'url' => $url,
-			'headers' => [
-				'Host' => $urlHost,
-				'Connection' => 'Keep-Alive',
-				'Proxy-Connection' => 'Keep-Alive',
-				'User-Agent' => 'MediaWiki/' . MW_VERSION . ' LinksUpdate',
-			],
-			'proxy' => $server
-		];
-		MediaWiki\MediaWikiServices::getInstance()->getHttpRequestFactory()
-			->createMultiClient()->runMulti( [ $baseReq ] );
-	}
-};
 
 wfLoadExtension( 'SemanticDependencyUpdater' );
 // MBSD-256
