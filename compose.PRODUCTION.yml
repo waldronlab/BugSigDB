@@ -1,6 +1,8 @@
 services:
   db:
     restart: always
+    volumes:
+      - ./_resources/mysql.cnf:/etc/mysql/conf.d/70-my.cnf:ro
 
   web:
     restart: always
