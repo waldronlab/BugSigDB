@@ -23,7 +23,7 @@ Running `docker compose up -d` will start the containers:
 - `db` - MySQL [official container](https://hub.docker.com/_/mysql/), used as the database backend for MediaWiki.
 - `web` - Apache/MediaWiki container (Taqasta) with PHP 7.4 and MediaWiki 1.39.x
 - `redis` - Redis is an open-source key-value store used as the cache backend
-- `matomo` - [Matomo](https://matomo.org/) analytics instance
+  - `matomo` - [Matomo](https://matomo.org/) analytics instance (disabled by default, requires `matomo` profile to be set)
 - `elasticsearch` - Advanced search engine
 - `varnish` - A reverse caching proxy and HTTP accelerator
 - `restic` - (production only) Modern backup container performing incremental backups to both S3 storage and Google Cloud Storage (GCS)
@@ -50,6 +50,7 @@ If changed, ensure corresponding database passwords (`MW_DB_PASS` in the web sec
 
 #### environment variables
 
+- `COMPOSE_PROFILES` enables services with the selected profiles. Available profiles: `matomo`
 - `MW_SITE_SERVER` configures [$wgServer](https://www.mediawiki.org/wiki/Manual:$wgServer); set this to the server host and include the protocol like `https://bugsigdb.org`
 - `MW_SITE_NAME` configures [$wgSitename](https://www.mediawiki.org/wiki/Manual:$wgSitename)
 - `MW_SITE_LANG` configures [$wgLanguageCode](https://www.mediawiki.org/wiki/Manual:$wgLanguageCode)
@@ -93,6 +94,8 @@ Matomo instance provides website analytics:
 
 - Default admin username: `admin`
 - `MATOMO_PASSWORD` - sets the initial password for matomo administration panel
+- `MATOMO_MYSQL_ROOT_PASSWORD` - MySQL root password for matomo database
+- `MATOMO_MYSQL_PASSWORD` - MySQL user password for matomo database
 
 ### varnish
 
@@ -110,6 +113,10 @@ Varnish cache container used as reverse proxy and front-end cache server:
 ### Bind mounts
 Used to just binding a certain directory or file from the host inside the container. We use:
 - `./__initdb` directory is used to pass the database dump for stack initialization
+
+####  Matomo
+When `matomo` profile is enabled the stack expects you to have `/matomo/data` and `/matomo/__initdb` directories
+on the host.
 
 ### Named volumes
 Data that must be persistent across container life cycles are stored in docker volumes:

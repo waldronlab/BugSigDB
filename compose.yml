@@ -20,6 +20,31 @@ services:
             - ./__initdb:/docker-entrypoint-initdb.d
             - db_data:/var/lib/mysql
 
+    matomo-db:
+        profiles:
+            - matomo
+        container_name: ${COMPOSE_PROJECT_NAME}_matomo_db # don't allow to scale the container
+        image: mysql:8.0
+        # MBSD-262
+        command: >
+            --default-authentication-plugin=mysql_native_password
+            --binlog_expire_logs_seconds=86400
+            --secure-file-priv=""
+            --local-infile=1
+            --innodb_redo_log_capacity=1G
+        cap_add:
+            - SYS_NICE  # CAP_SYS_NICE, fix error mbind: Operation not permitted
+        restart: unless-stopped
+        environment:
+            - MYSQL_DATABASE=matomo
+            - MYSQL_ROOT_HOST=%
+            - MYSQL_ROOT_PASSWORD=${MATOMO_MYSQL_ROOT_PASSWORD?Variable MATOMO_MYSQL_ROOT_PASSWORD not set}
+            - MYSQL_USER=matomo
+            - MYSQL_PASSWORD=${MATOMO_MYSQL_PASSWORD?Variable MATOMO_MYSQL_PASSWORD not set}
+        volumes:
+            - /matomo/__initdb:/docker-entrypoint-initdb.d
+            - /matomo/data:/var/lib/mysql
+
     web:
         image: ghcr.io/wikiteq/taqasta:1.39.13-20251009-6b3acda # BEFORE upgrading to 1.4x, make sure the PR https://github.com/WikiTeq/Taqasta/pull/264 was merged or MW version >= 1.43.1
         restart: unless-stopped
@@ -103,18 +128,20 @@ services:
             - elasticsearch_data:/usr/share/elasticsearch/data
 
     matomo:
+        profiles:
+            - matomo
         image: matomo:5.1.1
         restart: unless-stopped
         networks:
             - default
             - traefik-public
         depends_on:
-            - db
+            - matomo-db
         environment:
-            - MATOMO_DATABASE_HOST=db
+            - MATOMO_DATABASE_HOST=matomo-db
             - MATOMO_DATABASE_DBNAME=matomo
-            - MATOMO_DATABASE_USERNAME=root
-            - MATOMO_DATABASE_PASSWORD=${MYSQL_ROOT_PASSWORD?Variable MYSQL_ROOT_PASSWORD not set}
+            - MATOMO_DATABASE_USERNAME=matomo
+            - MATOMO_DATABASE_PASSWORD=${MATOMO_MYSQL_PASSWORD?Variable MATOMO_MYSQL_PASSWORD not set}
             - PHP_MEMORY_LIMIT=2G
         volumes:
             - matomo_data:/var/www/html
