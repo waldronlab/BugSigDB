@@ -32,5 +32,5 @@ ln -sf /var/www/mediawiki/w/images/csv_reports/signatures.$CURDATE.csv /var/www/
 echo "Done"
 
 echo "Cleaning up files older than 24 hours.."
-find /var/www/mediawiki/w/images/csv_reports/ -maxdepth 1 -name '*.csv' -type f -mtime +1 -delete
+find /var/www/mediawiki/w/images/csv_reports/ -maxdepth 1 -name '*.csv' -type f -mtime +0 -delete
 echo "Done"
