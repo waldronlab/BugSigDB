@@ -214,13 +214,19 @@ services:
 
     cron:
         container_name: ${COMPOSE_PROJECT_NAME}_cron # don't allow to scale the container
-        image: ghcr.io/wikiteq/cron:20250709-2da693f
+        image: ghcr.io/wikiteq/cron:20251031-11
         restart: unless-stopped
         environment:
             - COMPOSE_PROJECT_NAME=${COMPOSE_PROJECT_NAME}
         volumes:
             - /var/run/docker.sock:/var/run/docker.sock:ro
             - ./_logs/cron:/var/log/cron
+        labels:
+          # Enable cron scheduling for the cron container itself
+          - cron.enabled=true
+          # Log archiving job - runs monthly and creates archives when a period accumulates 30 files
+          - cron.archive_cron_logs.schedule=@monthly
+          - cron.archive_cron_logs.command=archive-cron-logs 30
 
 networks:
     traefik-public:
