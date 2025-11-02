@@ -224,7 +224,7 @@ services:
         labels:
           # Enable cron scheduling for the cron container itself
           - cron.enabled=true
-          # Log archiving job - runs monthly and creates archives when a period accumulates 100 files
+          # Log archiving job - runs monthly and creates archives when a period accumulates 30 files
           - cron.archive_cron_logs.schedule=@monthly
           - cron.archive_cron_logs.command=archive-cron-logs 30
 
