@@ -156,6 +156,9 @@ $smwgValueLookupCacheType = 'redis';
 
 //wfLoadExtension( 'NCBITaxonomyLookup' );
 $wgNCBITaxonomyLookupCacheTTL = 1296000; # 15 days
+if ( getenv( 'MW_NCBI_TAXONOMY_API_URL' ) ) {
+	$wgNCBITaxonomyLookupApiURL = getenv( 'MW_NCBI_TAXONOMY_API_URL' );
+}
 $wgNCBITaxonomyApiKey = getenv( 'MW_NCBI_TAXONOMY_API_KEY' );
 $wgNCBITaxonomyApiTimeout = 30;
 $wgNCBITaxonomyLookupCacheRandomizeTTL = true;
