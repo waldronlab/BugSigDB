@@ -88,6 +88,36 @@ $wgGroupPermissions['*']['edit'] = false;
 //$wgDefaultSkin = "chameleon";
 $wgCategoryCollation = 'numeric';
 
+wfLoadSkin( 'Vector' );
+wfLoadSkin( 'chameleon' );
+$wgDefaultSkin = 'chameleon';
+wfLoadExtension( 'Bootstrap' );
+
+wfLoadExtension( 'GTag' );
+wfLoadExtension( 'CodeEditor' );
+wfLoadExtension( 'Nuke' );
+wfLoadExtension( 'ParserFunctions' );
+wfLoadExtension( 'ReplaceText' );
+wfLoadExtension( 'WikiEditor' );
+wfLoadExtension( 'Interwiki' );
+wfLoadExtension( 'CodeEditor' );
+wfLoadExtension( 'Scribunto' );
+wfLoadExtension( 'SyntaxHighlight_GeSHi' );
+wfLoadExtension( 'DataTransfer' );
+wfLoadExtension( 'Variables' );
+wfLoadExtension( 'PubmedParser' );
+wfLoadExtension( 'CodeMirror' );
+wfLoadExtension( 'Loops' );
+wfLoadExtension( 'MyVariables' );
+wfLoadExtension( 'Arrays' );
+wfLoadExtension( 'DisplayTitle' );
+wfLoadExtension( 'NCBITaxonomyLookup' );
+wfLoadExtension( 'SemanticExtraSpecialProperties' );
+wfLoadExtension( 'SemanticResultFormats' );
+
+$wgScribuntoUseGeSHi = true;
+$wgScribuntoUseCodeEditor = true;
+
 //# Enabled skins.
 //# The following skins were automatically enabled:
 //wfLoadSkin( 'Vector' );
