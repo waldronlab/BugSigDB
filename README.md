@@ -54,7 +54,6 @@ If changed, ensure corresponding database passwords (`MW_DB_PASS` in the web sec
 - `MW_SITE_SERVER` configures [$wgServer](https://www.mediawiki.org/wiki/Manual:$wgServer); set this to the server host and include the protocol like `https://bugsigdb.org`
 - `MW_SITE_NAME` configures [$wgSitename](https://www.mediawiki.org/wiki/Manual:$wgSitename)
 - `MW_SITE_LANG` configures [$wgLanguageCode](https://www.mediawiki.org/wiki/Manual:$wgLanguageCode)
-- `MW_DEFAULT_SKIN` configures [$wgDefaultSkin](https://www.mediawiki.org/wiki/Manual:$wgDefaultSkin)
 - `MW_ENABLE_UPLOADS` configures [$wgEnableUploads](https://www.mediawiki.org/wiki/Manual:$wgEnableUploads)
 - `MW_ADMIN_USER` configures the default administrator username
 - `MW_ADMIN_PASSWORD` configures the default administrator password
@@ -63,8 +62,6 @@ If changed, ensure corresponding database passwords (`MW_DB_PASS` in the web sec
 - `MW_DB_PASS` specifies the DB user password; must match your MySQL password
 - `MW_PROXY_SERVERS` configures [$wgSquidServers](https://www.mediawiki.org/wiki/Manual:$wgSquidServers) for reverse proxies (typically `varnish:80`)
 - `MW_MAIN_CACHE_TYPE` configures [$wgMainCacheType](https://www.mediawiki.org/wiki/Manual:$wgMainCacheType). (`CACHE_REDIS` is recommended)
-- `MW_LOAD_EXTENSIONS` provided as comma-separated list of MediaWiki extensions to load during container startup
-- `MW_LOAD_SKINS` comma-separated list of MediaWiki skins available for use
 - `MW_SEARCH_TYPE` configures the search backend (typically `CirrusSearch`)
 - `MW_NCBI_TAXONOMY_API_KEY`, `MW_RECAPTCHA_SITE_KEY`, `MW_RECAPTCHA_SECRET_KEY` optional/requested third-party API keys
 - `MW_ENABLE_SITEMAP_GENERATOR` enables sitemap generator script on production (`true/false`)
