@@ -175,8 +175,8 @@ enableSemantics( 'bugsigdb.org' ); # Keep this first
 $smwgEntityCollation = $wgCategoryCollation;
 $wgNamespacesWithSubpages[102] = true; // SMW_NS_PROPERTY
 $smwgQMaxInlineLimit = 220000;
-# Enable embedded query updates, see MBSD-142
-$smwgEnabledQueryDependencyLinksStore = false;
+# Enable embedded query updates, see MBSD-142, MBSD-387
+$smwgEnabledQueryDependencyLinksStore = true;
 
 $smwgCacheType = 'redis';
 $smwgQueryResultCacheType = 'redis';
@@ -350,7 +350,7 @@ wfLoadExtension( 'WikiSEO' );
 // WLDR-194
 wfLoadExtension( 'ContributionScores' );
 $wgContribScoreIgnoreBots = true;
-$wgContribScoreIgnoreBlockedUsers = true;
+$wgContribScoreIgnoreBlockedUsers = false;
 $wgContribScoreIgnoreUsernames = [
 	'Wikiteq',
 	'WikiWorks',
@@ -468,3 +468,19 @@ $wgHooks['AbortNewAccount'][] = function ( $user, &$error ) {
 		// Don't do anything
 	}
 };
+
+// WLDR-382 / MBSD-369
+wfLoadExtension( 'ExternalData' );
+
+// WLDR-382
+wfLoadExtension( 'MagicNoCache' );
+
+if ( getenv( 'SMTP_SERVER' ) ) {
+	$wgSMTP = [
+		'host' => getenv( 'SMTP_SERVER' ),
+		'port' => getenv( 'SMTP_PORT' ),
+		'auth' => true,
+		'username' => getenv( 'SMTP_USER' ),
+		'password' => getenv( 'SMTP_PASSWORD' )
+	];
+}
