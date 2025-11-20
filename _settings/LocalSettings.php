@@ -445,6 +445,9 @@ wfLoadExtension( 'DismissableSiteNotice' );
 // MBSD-355
 wfLoadExtension( 'SemanticReports' );
 
+// WLDR-406
+wfLoadExtension( 'Widgets' );
+
 // MBSD-378
 wfLoadExtension( 'SpamBlacklist' );
 // Initial request was based on emails, which are not logged, but in case they
