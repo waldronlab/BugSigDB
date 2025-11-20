@@ -320,7 +320,7 @@ wfLoadExtension( 'WikiSEO' );
 // WLDR-194
 wfLoadExtension( 'ContributionScores' );
 $wgContribScoreIgnoreBots = true;
-$wgContribScoreIgnoreBlockedUsers = true;
+$wgContribScoreIgnoreBlockedUsers = false;
 $wgContribScoreIgnoreUsernames = [
 	'Wikiteq',
 	'WikiWorks',
