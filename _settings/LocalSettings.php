@@ -444,3 +444,13 @@ wfLoadExtension( 'DismissableSiteNotice' );
 
 // MBSD-355
 wfLoadExtension( 'SemanticReports' );
+
+// MBSD-378
+wfLoadExtension( 'SpamBlacklist' );
+// Initial request was based on emails, which are not logged, but in case they
+// also want to use this for links, create a restricted log
+$wgLogSpamBlacklistHits = true;
+$wgGroupPermissions['user']['spamblacklistlog'] = false;
+$wgGroupPermissions['sysop']['spamblacklistlog'] = true;
+// Don't import the list from Wikimedia until requested
+$wgBlacklistSettings = [ 'spam' => [ 'files' => [], ], ];
