@@ -454,3 +454,17 @@ $wgGroupPermissions['user']['spamblacklistlog'] = false;
 $wgGroupPermissions['sysop']['spamblacklistlog'] = true;
 // Don't import the list from Wikimedia until requested
 $wgBlacklistSettings = [ 'spam' => [ 'files' => [], ], ];
+
+// Prevent requesting accounts from spam emails
+$wgHooks['AbortNewAccount'][] = function ( $user, &$error ) {
+	// If something goes wrong, don't break
+	try {
+		$blacklist = \MediaWiki\Extension\SpamBlacklist\BaseBlacklist::getEmailBlacklist();
+		if ( !$blacklist->checkUser( $user ) ) {
+			$error = 'The requested email address cannot be used';
+			return false;
+		}
+	} catch ( \Throwable $e ) {
+		// Don't do anything
+	}
+};
