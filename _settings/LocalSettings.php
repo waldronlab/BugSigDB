@@ -417,3 +417,6 @@ wfLoadExtension( 'SemanticReports' );
 
 // WLDR-406
 wfLoadExtension( 'Widgets' );
+
+// MBSD-369
+wfLoadExtension( 'ExternalData' );
