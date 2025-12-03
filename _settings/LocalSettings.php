@@ -448,6 +448,9 @@ wfLoadExtension( 'SemanticReports' );
 // WLDR-406
 wfLoadExtension( 'Widgets' );
 
+// MBSD-369
+wfLoadExtension( 'ExternalData' );
+
 // MBSD-378
 wfLoadExtension( 'SpamBlacklist' );
 // Initial request was based on emails, which are not logged, but in case they
