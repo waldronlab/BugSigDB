@@ -46,7 +46,7 @@ services:
             - /matomo/data:/var/lib/mysql
 
     web:
-        image: ghcr.io/wikiteq/taqasta:1.39.13-20251029-3c6664f # BEFORE upgrading to 1.4x, make sure the PR https://github.com/WikiTeq/Taqasta/pull/264 was merged or MW version >= 1.43.1
+        image: ghcr.io/wikiteq/taqasta:1.43.5-20251202-01333b3
         restart: unless-stopped
         extra_hosts:
             - "gateway.docker.internal:host-gateway"

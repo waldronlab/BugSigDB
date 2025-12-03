@@ -350,7 +350,7 @@ wfLoadExtension( 'WikiSEO' );
 // WLDR-194
 wfLoadExtension( 'ContributionScores' );
 $wgContribScoreIgnoreBots = true;
-$wgContribScoreIgnoreBlockedUsers = true;
+$wgContribScoreIgnoreBlockedUsers = false;
 $wgContribScoreIgnoreUsernames = [
 	'Wikiteq',
 	'WikiWorks',
@@ -444,3 +444,9 @@ wfLoadExtension( 'DismissableSiteNotice' );
 
 // MBSD-355
 wfLoadExtension( 'SemanticReports' );
+
+// WLDR-406
+wfLoadExtension( 'Widgets' );
+
+// MBSD-369
+wfLoadExtension( 'ExternalData' );
