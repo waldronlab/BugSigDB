@@ -46,7 +46,7 @@ services:
             - /matomo/data:/var/lib/mysql
 
     web:
-        image: ghcr.io/wikiteq/taqasta:1.43.5-20251120-328
+        image: ghcr.io/wikiteq/taqasta:1.43.5-20251202-01333b3
         restart: unless-stopped
         extra_hosts:
             - "gateway.docker.internal:host-gateway"
