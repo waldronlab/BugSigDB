@@ -175,8 +175,8 @@ enableSemantics( 'bugsigdb.org' ); # Keep this first
 $smwgEntityCollation = $wgCategoryCollation;
 $wgNamespacesWithSubpages[102] = true; // SMW_NS_PROPERTY
 $smwgQMaxInlineLimit = 220000;
-# Enable embedded query updates, see MBSD-142, MBSD-387
-$smwgEnabledQueryDependencyLinksStore = true;
+# Enable embedded query updates, see MBSD-142
+$smwgEnabledQueryDependencyLinksStore = false;
 
 $smwgCacheType = 'redis';
 $smwgQueryResultCacheType = 'redis';
@@ -350,7 +350,7 @@ wfLoadExtension( 'WikiSEO' );
 // WLDR-194
 wfLoadExtension( 'ContributionScores' );
 $wgContribScoreIgnoreBots = true;
-$wgContribScoreIgnoreBlockedUsers = false;
+$wgContribScoreIgnoreBlockedUsers = true;
 $wgContribScoreIgnoreUsernames = [
 	'Wikiteq',
 	'WikiWorks',
@@ -444,49 +444,3 @@ wfLoadExtension( 'DismissableSiteNotice' );
 
 // MBSD-355
 wfLoadExtension( 'SemanticReports' );
-
-// WLDR-406
-wfLoadExtension( 'Widgets' );
-
-// MBSD-369
-wfLoadExtension( 'ExternalData' );
-
-// MBSD-378
-wfLoadExtension( 'SpamBlacklist' );
-// Initial request was based on emails, which are not logged, but in case they
-// also want to use this for links, create a restricted log
-$wgLogSpamBlacklistHits = true;
-$wgGroupPermissions['user']['spamblacklistlog'] = false;
-$wgGroupPermissions['sysop']['spamblacklistlog'] = true;
-// Don't import the list from Wikimedia until requested
-$wgBlacklistSettings = [ 'spam' => [ 'files' => [], ], ];
-
-// Prevent requesting accounts from spam emails
-$wgHooks['AbortNewAccount'][] = function ( $user, &$error ) {
-	// If something goes wrong, don't break
-	try {
-		$blacklist = \MediaWiki\Extension\SpamBlacklist\BaseBlacklist::getEmailBlacklist();
-		if ( !$blacklist->checkUser( $user ) ) {
-			$error = 'The requested email address cannot be used';
-			return false;
-		}
-	} catch ( \Throwable $e ) {
-		// Don't do anything
-	}
-};
-
-// WLDR-382 / MBSD-369
-wfLoadExtension( 'ExternalData' );
-
-// WLDR-382
-wfLoadExtension( 'MagicNoCache' );
-
-if ( getenv( 'SMTP_SERVER' ) ) {
-	$wgSMTP = [
-		'host' => getenv( 'SMTP_SERVER' ),
-		'port' => getenv( 'SMTP_PORT' ),
-		'auth' => true,
-		'username' => getenv( 'SMTP_USER' ),
-		'password' => getenv( 'SMTP_PASSWORD' )
-	];
-}
