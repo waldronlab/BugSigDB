@@ -56,14 +56,15 @@ services:
             - elasticsearch
         command: bash /entrypoint.sh
         environment:
-            - MW_SITE_SERVER=https://bugsigdb.org
+            - MW_SITE_SERVER=${MW_SITE_SERVER:-https://bugsigdb.org}
             - MW_DB_NAME=mediawiki
             - MW_DB_PASS=${MYSQL_ROOT_PASSWORD?Variable MYSQL_ROOT_PASSWORD not set}
+            - MW_DB_INSTALLDB_PASS=${MYSQL_ROOT_PASSWORD?Variable MYSQL_ROOT_PASSWORD not set}
             - MW_NCBI_TAXONOMY_API_KEY=${MW_NCBI_TAXONOMY_API_KEY:-}
             - MW_RECAPTCHA_SITE_KEY=${MW_RECAPTCHA_SITE_KEY:-}
             - MW_RECAPTCHA_SECRET_KEY=${MW_RECAPTCHA_SECRET_KEY:-}
             - MW_ADMIN_USER=admin
-            - MW_ADMIN_PASSWORD
+            - MW_ADMIN_PASS=${MW_ADMIN_PASS:-anyotherpassword}
             - MW_SITE_NAME=BugSigDB
             - MW_SITE_LANG=en
             - MW_ENABLE_UPLOADS=1
@@ -138,9 +139,9 @@ services:
             - matomo
         image: matomo:5.1.1
         restart: unless-stopped
-        networks:
-            - default
-            - traefik-public
+        #networks:
+        #    - default
+        #    - traefik-public
         depends_on:
             - matomo-db
         environment:
@@ -174,11 +175,13 @@ services:
         container_name: ${COMPOSE_PROJECT_NAME}_varnish # don't allow to scale the container
         image: pastakhov/varnish:7.0
         restart: unless-stopped
-        networks:
-            - default
-            - traefik-public
+        #networks:
+        #    - default
+        #    - traefik-public
         depends_on:
             - web
+        ports:
+            - "${PORT:-127.0.0.1:8081}:80"
         tmpfs:
             - /var/lib/varnish:exec
         environment:
@@ -225,9 +228,9 @@ services:
           - cron.archive_cron_logs.schedule=@daily
           - cron.archive_cron_logs.command=archive-cron-logs 30
 
-networks:
-    traefik-public:
-        external: true
+#networks:
+#    traefik-public:
+#        external: true
 
 volumes:
     db_data:

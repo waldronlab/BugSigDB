@@ -57,16 +57,25 @@ git submodule update --init
 
 ### Configure Environment File
 
-Copy the local test environment configuration:
+Create the `.env` file from the example:
 
 ```bash
-cp .env.localtest.me .env
+cp .env.example .env
 ```
 
-Edit the `.env` file and ensure `MW_SITE_SERVER` is set appropriately:
-- For setup **without Traefik**: `MW_SITE_SERVER=http://localhost:8081`
+Edit the `.env` file and ensure the following are set:
+- `MYSQL_ROOT_PASSWORD=anypassword` (set a password, can be anything for local dev)
+- `MW_SITE_SERVER=http://localhost:8081` (for setup **without Traefik**)
 - For setup **with Traefik**: Use the domain configured in your Traefik setup (typically `http://localtest.me`)
 
+**Note:** Even if you're not using Matomo, you need to add empty values for Matomo environment variables to avoid Docker Compose validation errors:
+
+```bash
+# Add to .env file
+MATOMO_MYSQL_ROOT_PASSWORD=
+MATOMO_MYSQL_PASSWORD=
+MATOMO_PASSWORD=
+```
 ### Configure Docker Compose File
 
 #### For Setup Without Traefik (Recommended)
@@ -191,7 +200,13 @@ cd secrets
 echo anypassword > db_root_password.txt
 echo anyotherpassword > mw_admin_pass.txt
 
+# Note: The password in db_root_password.txt should match MYSQL_ROOT_PASSWORD in .env
 cd ..
+
+# Add MW_ADMIN_PASS to .env file (should match mw_admin_pass.txt)
+echo "MW_ADMIN_PASS=anyotherpassword" >> .env
+
+**Important:** The compose.yml file also requires `MW_DB_INSTALLDB_PASS` to be set. This should be added to the web service environment in compose.yml (it should match MYSQL_ROOT_PASSWORD). If you see an error about this variable, ensure it is set in compose.yml.
 ```
 
 **Note:** Replace `anypassword` and `anyotherpassword` with secure passwords if needed. For local development, any password is acceptable as long as they match across configuration files.
@@ -315,6 +330,33 @@ web-1  | Transcoder started.
 Once you see these messages, navigate to your configured URL (`http://localhost:8081` or your Traefik domain) to access the wiki.
 
 ## Troubleshooting
+
+
+### Missing Environment Variables
+
+If you see errors about missing variables:
+
+1. **MW_DB_INSTALLDB_PASS must be defined:**
+   - Add this to the `web` service environment in `compose.yml`:
+   ```yaml
+   - MW_DB_INSTALLDB_PASS=${MYSQL_ROOT_PASSWORD?Variable MYSQL_ROOT_PASSWORD not set}
+   ```
+   - This should match your `MYSQL_ROOT_PASSWORD` value
+
+2. **MW_ADMIN_PASS must be defined:**
+   - Add `MW_ADMIN_PASS=anyotherpassword` to your `.env` file
+   - Also ensure it's set in `compose.yml`:
+   ```yaml
+   - MW_ADMIN_PASS=${MW_ADMIN_PASS:-anyotherpassword}
+   ```
+   - This should match the value in `secrets/mw_admin_pass.txt`
+
+### LocalSettings.php Not Found
+
+If you see "There is no LocalSettings.php file" or "The file /var/www/mediawiki/w/LocalSettings.php must exist":
+- Ensure `_settings/LocalSettings.php` exists in your repository
+- The Taqasta image should automatically copy it from `_settings/` to the correct location
+- If the issue persists, check that the `_settings` directory is properly mounted in `compose.yml`
 
 ### Semantic MediaWiki Maintenance Screen
 
