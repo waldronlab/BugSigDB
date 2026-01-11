@@ -484,3 +484,9 @@ if ( getenv( 'SMTP_SERVER' ) ) {
 		'password' => getenv( 'SMTP_PASSWORD' )
 	];
 }
+
+// WLDR-406
+wfLoadExtension( 'Widgets' );
+
+// MBSD-369
+wfLoadExtension( 'ExternalData' );
