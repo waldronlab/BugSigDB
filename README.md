@@ -1,5 +1,16 @@
 # Containerized MediaWiki for bugsigdb.org
 
+## Running BugSigDB Locally
+
+**For detailed instructions on setting up and running BugSigDB locally, including troubleshooting and maintenance, see [docs/LOCAL_SETUP.md](docs/LOCAL_SETUP.md).**
+
+The local setup guide covers:
+- Getting started and prerequisites
+- Database setup (with and without backups)
+- Networking options (with and without Traefik)
+- Common troubleshooting issues
+- Updating images and maintenance tasks
+
 ## Briefly
 
 This repo contains [Docker Compose](https://docs.docker.com/compose/) containers to run the [MediaWiki](https://www.mediawiki.org/) software.
