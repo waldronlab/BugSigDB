@@ -167,7 +167,6 @@ services:
             - traefik.http.routers.${COMPOSE_PROJECT_NAME}-matomo.entrypoints=websecure
             - traefik.http.routers.${COMPOSE_PROJECT_NAME}-matomo.tls.certresolver=le
             - traefik.http.middlewares.${COMPOSE_PROJECT_NAME}-matomo-stripprefix.stripprefix.prefixes=/matomo
-            - traefik.http.middlewares.${COMPOSE_PROJECT_NAME}-matomo-stripprefix.stripprefix.forceSlash=true
             - traefik.http.middlewares.${COMPOSE_PROJECT_NAME}-matomo-headers.headers.customrequestheaders.X-Forwarded-Uri=/matomo
 
     varnish:
