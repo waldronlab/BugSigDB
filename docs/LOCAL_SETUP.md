@@ -77,6 +77,22 @@ MATOMO_MYSQL_PASSWORD=
 MATOMO_PASSWORD=
 ```
 
+### Configure Docker Compose files (recommended for local setup)
+
+To avoid repeating `-f compose.yml -f compose.local.yml` on every command, you can use the `COMPOSE_FILE` environment variable as described in the Docker documentation.
+
+For **local development without Traefik**, set:
+
+```bash
+export COMPOSE_FILE=compose.yml:compose.local.yml
+```
+
+You can set this in your shell before running commands, or add it to your environment configuration so it is loaded automatically.
+
+For **setup with Traefik**, use the default `compose.yml` only (do **not** include `compose.local.yml` in `COMPOSE_FILE`).
+
+For the remainder of this guide, commands using `docker compose` assume you have configured `COMPOSE_FILE` appropriately for your chosen setup.
+
 ## Secrets Configuration
 
 Create the necessary secret files for the stack to operate **before** starting the containers:
@@ -140,34 +156,21 @@ To get a copy of the production database with all BugSigDB content:
    cp database.sql ./__initdb/
    ```
 
-   **Important:** The database file must be placed in the `__initdb/` directory before running `docker compose -f compose.yml -f compose.local.yml up -d --no-start` (for local setup without Traefik) or `docker compose up -d --no-start` (for setup with Traefik).
+   **Important:** The database file must be placed in the `__initdb/` directory before running `docker compose up -d --no-start`.
 
 ### Manual Database Setup (If Automated Setup Fails)
 
 If the automated database initialization hangs or fails, you can manually create and import the database:
 
-**For local setup without Traefik:**
-```bash
-# Stop all containers
-docker compose -f compose.yml -f compose.local.yml down
-
-# Start only the database container
-docker compose -f compose.yml -f compose.local.yml up -d db
-```
-
-**For setup with Traefik:**
 ```bash
 # Stop all containers
 docker compose down
 
 # Start only the database container
 docker compose up -d db
-```
 
-# Access the web container (use -f flags if using local setup)
-docker compose -f compose.yml -f compose.local.yml exec web bash
-# OR for Traefik setup:
-# docker compose exec web bash
+# Access the web container
+docker compose exec web bash
 
 # Connect to MySQL
 mysql -p
@@ -181,8 +184,8 @@ source /docker-entrypoint-initdb.d/your.database.backup.sql;
 exit
 exit
 
-# Start all containers (use compose.local.yml for local setup without Traefik)
-docker compose -f compose.yml -f compose.local.yml up -d
+# Start all containers
+docker compose up -d
 ```
 
 ## Networking Options
@@ -197,17 +200,16 @@ This is the simplest setup for local development. The wiki will be accessible at
    - Ensure `.env` has `MW_SITE_SERVER=http://localhost:8081`
 
 2. **Use the local compose override file:**
-   - The repository includes `compose.local.yml` which automatically configures:
-     - Port mapping for varnish service (exposes on `localhost:8081`)
-     - Removes network dependencies for local development
+   - Ensure `COMPOSE_FILE` includes `compose.yml:compose.local.yml` (see [Configure Docker Compose files (recommended for local setup)](#configure-docker-compose-files-recommended-for-local-setup))
+   - The `compose.local.yml` file:
+     - Configures port mapping for the varnish service (exposes on `localhost:8081`)
+     - Removes the Traefik network dependency for local development
      - Sets `MW_SITE_SERVER` to `http://localhost:8081` (if not set in `.env`)
 
 3. **Start the stack** (see [Starting the Stack](#starting-the-stack))
 
 4. **Access the wiki:**
    - Navigate to `http://localhost:8081` in your browser
-
-**Note:** When using the local setup, always use the `-f compose.yml -f compose.local.yml` flags with docker compose commands to apply the local overrides.
 
 ### With Traefik
 
@@ -252,12 +254,6 @@ The BugSigDB MediaWiki stack is designed to work with Traefik for production-lik
 
 Create Docker volumes without starting containers:
 
-**For local setup without Traefik:**
-```bash
-docker compose -f compose.yml -f compose.local.yml up -d --no-start
-```
-
-**For setup with Traefik:**
 ```bash
 docker compose up -d --no-start
 ```
@@ -266,12 +262,6 @@ This ensures all necessary volumes are created before the first full start.
 
 ### Start All Services
 
-**For local setup without Traefik:**
-```bash
-docker compose -f compose.yml -f compose.local.yml up -d
-```
-
-**For setup with Traefik:**
 ```bash
 docker compose up -d
 ```
@@ -280,12 +270,6 @@ docker compose up -d
 
 The first startup, especially with a database backup, can take a significant amount of time (over 1 hour for a full production database). Monitor the web container logs:
 
-**For local setup without Traefik:**
-```bash
-docker compose -f compose.yml -f compose.local.yml logs -f web
-```
-
-**For setup with Traefik:**
 ```bash
 docker compose logs -f web
 ```
@@ -347,13 +331,6 @@ exit
 
 Or run them in a single command:
 
-**For local setup without Traefik:**
-```bash
-docker compose -f compose.yml -f compose.local.yml exec web bash -cl 'php extensions/SemanticMediaWiki/maintenance/updateEntityCollation.php'
-docker compose -f compose.yml -f compose.local.yml exec web bash -cl 'php maintenance/update.php'
-```
-
-**For setup with Traefik:**
 ```bash
 docker compose exec web bash -cl 'php extensions/SemanticMediaWiki/maintenance/updateEntityCollation.php'
 docker compose exec web bash -cl 'php maintenance/update.php'
@@ -369,7 +346,7 @@ If you see "The server is temporarily unable to service your request" at `http:/
    ```
 
 2. **Verify ports are configured:**
-   - If using `compose.local.yml`, ensure you're using `-f compose.yml -f compose.local.yml` flags
+   - Ensure that port 8081 is exposed (via `compose.local.yml` for local development)
    - Check that no other service is using port 8081
 
 3. **Check LocalSettings.php:**
@@ -424,15 +401,6 @@ If you see errors about missing extensions (e.g., "VariablesLua requires Scribun
 If MediaWiki reports that the database doesn't exist:
 
 1. **Check if database was created:**
-   
-   **For local setup without Traefik:**
-   ```bash
-   docker compose -f compose.yml -f compose.local.yml exec db mysql -uroot -p
-   # Enter password from secrets/db_root_password.txt
-   show databases;
-   ```
-   
-   **For setup with Traefik:**
    ```bash
    docker compose exec db mysql -uroot -p
    # Enter password from secrets/db_root_password.txt
@@ -446,15 +414,6 @@ If MediaWiki reports that the database doesn't exist:
    ```
 
 3. **Run MediaWiki installation/update:**
-   
-   **For local setup without Traefik:**
-   ```bash
-   docker compose -f compose.yml -f compose.local.yml exec web bash
-   php maintenance/update.php
-   exit
-   ```
-   
-   **For setup with Traefik:**
    ```bash
    docker compose exec web bash
    php maintenance/update.php
@@ -467,17 +426,9 @@ The BugSigDB wiki uses a Docker volume to store uploaded images. To update the i
 
 ### Download Images from Cloud Storage
 
-**For local setup without Traefik:**
-```bash
-# Stop the stack
-docker compose -f compose.yml -f compose.local.yml down
-```
-
-**For setup with Traefik:**
 ```bash
 # Stop the stack
 docker compose down
-```
 
 # Download images directory (this will download to current directory)
 gcloud storage cp --recursive gs://backups.bugsigdb.org/images .
@@ -501,13 +452,6 @@ gcloud storage cp --recursive gs://backups.bugsigdb.org/images .
    ```
 
 3. **Restart the stack:**
-   
-   **For local setup without Traefik:**
-   ```bash
-   docker compose -f compose.yml -f compose.local.yml up -d
-   ```
-   
-   **For setup with Traefik:**
    ```bash
    docker compose up -d
    ```
@@ -533,17 +477,6 @@ docker run --rm -v $(pwd)/images:/source -v bugsigdborg_images:/target busybox c
 
 ### Viewing Logs
 
-**For local setup without Traefik:**
-```bash
-# All services
-docker compose -f compose.yml -f compose.local.yml logs -f
-
-# Specific service
-docker compose -f compose.yml -f compose.local.yml logs -f web
-docker compose -f compose.yml -f compose.local.yml logs -f db
-```
-
-**For setup with Traefik:**
 ```bash
 # All services
 docker compose logs -f
@@ -555,17 +488,6 @@ docker compose logs -f db
 
 ### Accessing Containers
 
-**For local setup without Traefik:**
-```bash
-# Access web container shell
-docker compose -f compose.yml -f compose.local.yml exec web bash
-
-# Access database
-docker compose -f compose.yml -f compose.local.yml exec db mysql -uroot -p
-# Enter password from secrets/db_root_password.txt
-```
-
-**For setup with Traefik:**
 ```bash
 # Access web container shell
 docker compose exec web bash
@@ -577,19 +499,6 @@ docker compose exec db mysql -uroot -p
 
 ### Stopping and Starting
 
-**For local setup without Traefik:**
-```bash
-# Stop all services
-docker compose -f compose.yml -f compose.local.yml down
-
-# Start all services
-docker compose -f compose.yml -f compose.local.yml up -d
-
-# Restart a specific service
-docker compose -f compose.yml -f compose.local.yml restart web
-```
-
-**For setup with Traefik:**
 ```bash
 # Stop all services
 docker compose down
@@ -603,18 +512,6 @@ docker compose restart web
 
 ### Updating the Stack
 
-**For local setup without Traefik:**
-```bash
-# Pull latest code
-git pull
-git submodule update --init --recursive
-
-# Rebuild and restart
-docker compose -f compose.yml -f compose.local.yml down
-docker compose -f compose.yml -f compose.local.yml up -d --build
-```
-
-**For setup with Traefik:**
 ```bash
 # Pull latest code
 git pull
@@ -629,20 +526,6 @@ docker compose up -d --build
 
 Common MediaWiki maintenance tasks:
 
-**For local setup without Traefik:**
-```bash
-# Update MediaWiki
-docker compose -f compose.yml -f compose.local.yml exec web bash
-php maintenance/update.php
-
-# Update Semantic MediaWiki entity collation
-php extensions/SemanticMediaWiki/maintenance/updateEntityCollation.php
-
-# Update special pages
-php maintenance/updateSpecialPages.php
-```
-
-**For setup with Traefik:**
 ```bash
 # Update MediaWiki
 docker compose exec web bash

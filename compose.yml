@@ -139,9 +139,9 @@ services:
             - matomo
         image: matomo:5.1.1
         restart: unless-stopped
-        #networks:
-        #    - default
-        #    - traefik-public
+        networks:
+            - default
+            - traefik-public
         depends_on:
             - matomo-db
         environment:
@@ -175,9 +175,9 @@ services:
         container_name: ${COMPOSE_PROJECT_NAME}_varnish # don't allow to scale the container
         image: pastakhov/varnish:7.0
         restart: unless-stopped
-        #networks:
-        #    - default
-        #    - traefik-public
+        networks:
+            - default
+            - traefik-public
         depends_on:
             - web
         ports:
@@ -228,9 +228,9 @@ services:
           - cron.archive_cron_logs.schedule=@daily
           - cron.archive_cron_logs.command=archive-cron-logs 30
 
-#networks:
-#    traefik-public:
-#        external: true
+networks:
+    traefik-public:
+        external: true
 
 volumes:
     db_data:
