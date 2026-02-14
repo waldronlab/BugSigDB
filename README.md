@@ -63,6 +63,7 @@ If changed, ensure corresponding database passwords (`MW_DB_PASS` in the web sec
 - `MW_PROXY_SERVERS` configures [$wgSquidServers](https://www.mediawiki.org/wiki/Manual:$wgSquidServers) for reverse proxies (typically `varnish:80`)
 - `MW_MAIN_CACHE_TYPE` configures [$wgMainCacheType](https://www.mediawiki.org/wiki/Manual:$wgMainCacheType). (`CACHE_REDIS` is recommended)
 - `MW_SEARCH_TYPE` configures the search backend (typically `CirrusSearch`)
+- `MW_NCBI_TAXONOMY_API_URL` optionally sets custom URL for the NCBI API endpoint
 - `MW_NCBI_TAXONOMY_API_KEY`, `MW_RECAPTCHA_SITE_KEY`, `MW_RECAPTCHA_SECRET_KEY` optional/requested third-party API keys
 - `MW_ENABLE_SITEMAP_GENERATOR` enables sitemap generator script on production (`true/false`)
 
