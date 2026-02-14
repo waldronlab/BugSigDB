@@ -184,12 +184,9 @@ $smwgValueLookupCacheType = 'redis';
 
 //wfLoadExtension( 'DataTransfer' );
 
-//wfLoadExtension( 'NCBITaxonomyLookup' );
-$wgNCBITaxonomyLookupCacheTTL = 1296000; # 15 days
-$wgNCBITaxonomyApiKey = getenv( 'MW_NCBI_TAXONOMY_API_KEY' );
-$wgNCBITaxonomyApiTimeout = 30;
-$wgNCBITaxonomyLookupCacheRandomizeTTL = true;
-$wgNCBITaxonomyApiTimeoutFallbackToCache = true;
+wfLoadExtension( 'ExternalData' );
+$wgExternalDataSources['json'] = true;
+$wgExternalDataAllowedDomains[] = 'api.taxoniq.net';
 
 //wfLoadExtension( 'Variables' );
 wfLoadExtension( 'PageForms' );
