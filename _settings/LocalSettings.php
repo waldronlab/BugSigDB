@@ -175,8 +175,8 @@ enableSemantics( 'bugsigdb.org' ); # Keep this first
 $smwgEntityCollation = $wgCategoryCollation;
 $wgNamespacesWithSubpages[102] = true; // SMW_NS_PROPERTY
 $smwgQMaxInlineLimit = 220000;
-# Enable embedded query updates, see MBSD-142
-$smwgEnabledQueryDependencyLinksStore = false;
+# Enable embedded query updates, see MBSD-142, MBSD-387
+$smwgEnabledQueryDependencyLinksStore = true;
 
 $smwgCacheType = 'redis';
 $smwgQueryResultCacheType = 'redis';
