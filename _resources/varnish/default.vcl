@@ -124,7 +124,7 @@ sub vcl_backend_response {
     }
     # force cache for main page, MBSD-400
     if (beresp.status == 200 &&
-      (bereq.url ~ "^/wiki/Main_Page" ||
+      (bereq.url ~ "^/Main_Page$" ||
       bereq.url ~ "^/w/index\\.php\\?.*\\btitle=Main_Page\\b")) {
         # Ignore backend cache headers
         unset beresp.http.Cache-Control;
