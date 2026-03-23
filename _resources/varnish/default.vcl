@@ -75,7 +75,7 @@ sub vcl_recv {
 
         # Pass requests from logged-in users directly.
         # Only detect cookies with "session" and "Token" in file name, otherwise nothing get cached.
-        if (req.http.Authorization || req.http.Cookie ~ "_session" || req.http.Cookie ~ "Token") {
+        if (req.http.Authorization || ( req.http.Cookie ~ "_session" && req.http.Cookie ~ "UserID" ) || req.http.Cookie ~ "Token") {
             return (pass);
         } /* Not cacheable by default */
 
@@ -122,6 +122,21 @@ sub vcl_backend_response {
     if (beresp.status >= 500) {
         call beresp_hitmiss;
     }
+    # force cache for main page, MBSD-400
+    if (beresp.status == 200 &&
+      (bereq.url ~ "^/Main_Page$" ||
+      bereq.url ~ "^/w/index\\.php\\?.*\\btitle=Main_Page\\b")) {
+        # Ignore backend cache headers
+        unset beresp.http.Cache-Control;
+        unset beresp.http.Pragma;
+        unset beresp.http.Expires;
+
+        # Force cacheability (1d)
+        set beresp.ttl = 1d;
+        set beresp.grace = 4w;
+        set beresp.uncacheable = false;
+        return (deliver);
+    }
     if (!beresp.ttl > 0s) {
         call beresp_hitmiss;
     }
@@ -159,4 +174,3 @@ sub vsv8 {
 
 sub vcl_synth { call vsv8; }
 sub vcl_deliver { call vsv8; }
-
