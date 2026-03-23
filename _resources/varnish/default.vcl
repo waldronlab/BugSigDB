@@ -75,7 +75,7 @@ sub vcl_recv {
 
         # Pass requests from logged-in users directly.
         # Only detect cookies with "session" and "Token" in file name, otherwise nothing get cached.
-        if (req.http.Authorization || req.http.Cookie ~ "_session" || req.http.Cookie ~ "Token") {
+        if (req.http.Authorization || ( req.http.Cookie ~ "_session" && req.http.Cookie ~ "UserID" ) || req.http.Cookie ~ "Token") {
             return (pass);
         } /* Not cacheable by default */
 
@@ -174,4 +174,3 @@ sub vsv8 {
 
 sub vcl_synth { call vsv8; }
 sub vcl_deliver { call vsv8; }
-
