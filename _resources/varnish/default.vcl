@@ -122,6 +122,21 @@ sub vcl_backend_response {
     if (beresp.status >= 500) {
         call beresp_hitmiss;
     }
+    # force cache for main page, MBSD-400
+    if (beresp.status == 200 &&
+      (bereq.url ~ "^/wiki/Main_Page" ||
+      bereq.url ~ "^/w/index\\.php\\?.*\\btitle=Main_Page\\b")) {
+        # Ignore backend cache headers
+        unset beresp.http.Cache-Control;
+        unset beresp.http.Pragma;
+        unset beresp.http.Expires;
+
+        # Force cacheability (1d)
+        set beresp.ttl = 1d;
+        set beresp.grace = 4w;
+        set beresp.uncacheable = false;
+        return (deliver);
+    }
     if (!beresp.ttl > 0s) {
         call beresp_hitmiss;
     }
