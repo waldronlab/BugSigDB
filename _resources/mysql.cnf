@@ -1,7 +1,7 @@
 [mysqld]
 
 # Memory
-innodb_buffer_pool_size = 2G
+innodb_buffer_pool_size = 1G
 innodb_buffer_pool_instances = 2
 innodb_flush_method = O_DIRECT
 
