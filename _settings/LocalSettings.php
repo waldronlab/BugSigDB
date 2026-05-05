@@ -474,3 +474,13 @@ wfLoadExtension( 'ExternalData' );
 
 // WLDR-382
 wfLoadExtension( 'MagicNoCache' );
+
+if ( getenv( 'SMTP_SERVER' ) ) {
+	$wgSMTP = [
+		'host' => getenv( 'SMTP_SERVER' ),
+		'port' => getenv( 'SMTP_PORT' ),
+		'auth' => true,
+		'username' => getenv( 'SMTP_USER' ),
+		'password' => getenv( 'SMTP_PASSWORD' )
+	];
+}
