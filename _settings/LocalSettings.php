@@ -391,7 +391,7 @@ $wgGLAuthoritativeMode = true;
 **/
 
 // WLDR-258
-wfLoadExtension( 'DynamicPageList3' );
+wfLoadExtension( 'DynamicPageList4' );
 $wgDplSettings['functionalRichness'] = 3;
 
 wfLoadExtension( 'VariablesLua' );
