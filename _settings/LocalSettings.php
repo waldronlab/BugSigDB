@@ -426,6 +426,10 @@ $wgHiddenPrefs[] = 'skin';
 $wgHiddenPrefs[] = 'skin-responsive';
 $wgHiddenPrefs[] = 'skin-prefs';
 $wgHiddenPrefs[] = 'VectorSkinVersion'; // 1.35 Vector
+// Vector 1.43 prefs use hide-if on skin; must hide them too (MSEN-183)
+$wgHiddenPrefs[] = 'vector-limited-width';
+$wgHiddenPrefs[] = 'vector-font-size';
+$wgHiddenPrefs[] = 'vector-theme';
 
 // WLDR-301 Install DiscussionTools
 wfLoadExtensions([
