@@ -100,7 +100,6 @@ wfLoadExtension( 'ParserFunctions' );
 wfLoadExtension( 'ReplaceText' );
 wfLoadExtension( 'WikiEditor' );
 wfLoadExtension( 'Interwiki' );
-wfLoadExtension( 'CodeEditor' );
 wfLoadExtension( 'Scribunto' );
 wfLoadExtension( 'SyntaxHighlight_GeSHi' );
 wfLoadExtension( 'DataTransfer' );
@@ -350,7 +349,8 @@ wfLoadExtension( 'WikiSEO' );
 // WLDR-194
 wfLoadExtension( 'ContributionScores' );
 $wgContribScoreIgnoreBots = true;
-$wgContribScoreIgnoreBlockedUsers = true;
+// MBSD-369 Stops ContributionScores from looking into the retired ipblocks (bug T379715)
+$wgContribScoreIgnoreBlockedUsers = false;
 $wgContribScoreIgnoreUsernames = [
 	'Wikiteq',
 	'WikiWorks',
@@ -391,7 +391,7 @@ $wgGLAuthoritativeMode = true;
 **/
 
 // WLDR-258
-wfLoadExtension( 'DynamicPageList3' );
+wfLoadExtension( 'DynamicPageList4' );
 $wgDplSettings['functionalRichness'] = 3;
 
 wfLoadExtension( 'VariablesLua' );
@@ -426,6 +426,10 @@ $wgHiddenPrefs[] = 'skin';
 $wgHiddenPrefs[] = 'skin-responsive';
 $wgHiddenPrefs[] = 'skin-prefs';
 $wgHiddenPrefs[] = 'VectorSkinVersion'; // 1.35 Vector
+// Vector 1.43 prefs use hide-if on skin; must hide them too (MSEN-183)
+$wgHiddenPrefs[] = 'vector-limited-width';
+$wgHiddenPrefs[] = 'vector-font-size';
+$wgHiddenPrefs[] = 'vector-theme';
 
 // WLDR-301 Install DiscussionTools
 wfLoadExtensions([
@@ -474,6 +478,9 @@ wfLoadExtension( 'ExternalData' );
 
 // WLDR-382
 wfLoadExtension( 'MagicNoCache' );
+
+// WLDR-406
+wfLoadExtension( 'Widgets' );
 
 if ( getenv( 'SMTP_SERVER' ) ) {
 	$wgSMTP = [
