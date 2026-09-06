@@ -1,0 +1,26 @@
+# Local development override file
+# Recommended usage:
+#   export COMPOSE_FILE=compose.yml:compose.local.yml
+#   docker compose up -d
+# This file overrides settings for local development without Traefik.
+#
+# This file ensures:
+# - Varnish is exposed on localhost:8081
+# - MW_SITE_SERVER is set to http://localhost:8081 (if not set in .env)
+# - Traefik-specific networks are removed for local development
+
+services:
+    varnish:
+        # Expose varnish on localhost:8081 for local access
+        ports:
+            - "127.0.0.1:8081:80"
+
+    web:
+        # Override MW_SITE_SERVER for local development
+        # This can also be set via .env file (which takes precedence)
+        environment:
+            - MW_SITE_SERVER=${MW_SITE_SERVER:-http://localhost:8081}
+
+# Reset networks from the base compose file so that
+# local development does not depend on the traefik-public network.
+networks: !reset []
