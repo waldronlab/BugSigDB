@@ -484,6 +484,9 @@ wfLoadExtension( 'MagicNoCache' );
 // WLDR-406
 wfLoadExtension( 'Widgets' );
 
+// MBSD-370
+wfLoadExtension( 'CrawlerProtection' );
+
 if ( getenv( 'SMTP_SERVER' ) ) {
 	$wgSMTP = [
 		'host' => getenv( 'SMTP_SERVER' ),
