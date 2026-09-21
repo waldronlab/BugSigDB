@@ -12,3 +12,6 @@
 [submodule "_resources/extensions/SemanticDependencyUpdater"]
 	path = _resources/extensions/SemanticDependencyUpdater
 	url = https://github.com/gesinn-it-pub/SemanticDependencyUpdater.git
+[submodule "_resources/extensions/ExternalData"]
+	path = _resources/extensions/ExternalData
+	url = https://github.com/wikimedia/mediawiki-extensions-ExternalData.git
