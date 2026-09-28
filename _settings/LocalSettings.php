@@ -475,9 +475,6 @@ $wgHooks['AbortNewAccount'][] = function ( $user, &$error ) {
 	}
 };
 
-// WLDR-382 / MBSD-369
-wfLoadExtension( 'ExternalData' );
-
 // WLDR-382
 wfLoadExtension( 'MagicNoCache' );
 
