@@ -94,6 +94,7 @@ $wgDefaultSkin = 'chameleon';
 wfLoadExtension( 'Bootstrap' );
 
 wfLoadExtension( 'GTag' );
+wfLoadExtension( 'CookieConsent' );
 wfLoadExtension( 'CodeEditor' );
 wfLoadExtension( 'Nuke' );
 wfLoadExtension( 'ParserFunctions' );
@@ -324,6 +325,15 @@ $wgFooterIcons['poweredby']['semanticmediawiki'] = [
 $wgGTagAnalyticsId = 'G-YKH03F3F5K';
 $wgGroupPermissions['bot']['gtag-exempt'] = true;
 $wgGTagAnonymizeIP = true;
+
+$wgCookieConsentCategories = [
+	'statistics' => [
+		'namemsg' => 'cookieconsent-category-name-statistics',
+		'descriptionmsg' => 'cookieconsent-category-desc-statistics',
+	],
+];
+// Keep geolocation off: Varnish caches anonymous HTML, so the first visitor's country would be reused for everyone.
+$wgCookieConsentEnableGeolocation = false;
 
 $wgHooks['SkinAddFooterLinks'][] = function ( $skin, string $key, array &$footerlinks  ) {
 	if ( $key === 'info' ) {
