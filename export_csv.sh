@@ -4,6 +4,10 @@ CURDATE=$(date +%Y-%m-%d_%H)
 
 cd /var/www/mediawiki/w/ || exit 1
 
+SCRIPT_DIR=$(cd "$(dirname "$(readlink -f "$0")")" && pwd)
+STUDIES_CSV="/var/www/mediawiki/w/images/csv_reports/studies.$CURDATE.csv"
+REVIEWS_CSV="/tmp/bugsigdb-reviews.$CURDATE.csv"
+
 echo "[$CURDATE] Exporting studies.."
 php extensions/SemanticReports/maintenance/GenerateReport.php \
   -q "[[Category:Studies]] |?Study design |?PMID |?DOI |?URI |?Authors list |?Title |?Journal |?Year |?Abstract |?Keyword list=Keywords |?State |?Reviewer" \
@@ -11,7 +15,22 @@ php extensions/SemanticReports/maintenance/GenerateReport.php \
   -v ',' \
   -s ',' \
   -f "csv" \
-  -o "/var/www/mediawiki/w/images/csv_reports/studies.$CURDATE.csv"
+  -o "$STUDIES_CSV"
+echo "Done"
+
+echo "Exporting study reviews.."
+php extensions/SemanticReports/maintenance/GenerateReport.php \
+  -q "[[Category:Reviews]] |?Subject |?Review state |?Quality control tag" \
+  -m '-' \
+  -v ',' \
+  -s ',' \
+  -f "csv" \
+  -o "$REVIEWS_CSV"
+echo "Done"
+
+echo "Merging Review state and Quality control tag into studies CSV.."
+php "$SCRIPT_DIR/merge_study_review_columns.php" "$STUDIES_CSV" "$REVIEWS_CSV" || exit 1
+rm -f "$REVIEWS_CSV"
 echo "Done"
 
 echo "Exporting experiments.."
