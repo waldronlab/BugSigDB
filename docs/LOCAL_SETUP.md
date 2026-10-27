@@ -65,8 +65,8 @@ cp .env.example .env
 
 Edit the `.env` file and ensure the following are set:
 - `MYSQL_ROOT_PASSWORD=anypassword` (set a password, can be anything for local dev)
-- `MW_SITE_SERVER=http://localhost:8081` (for setup **without Traefik**)
-- For setup **with Traefik**: Use the domain configured in your Traefik setup (typically `http://localtest.me`)
+- `MW_SITE_SERVER=http://localhost:8081` (for setup **without Traefik**; this is also the default in `compose.local.yml`)
+- For setup **with Traefik**: `compose.localtest.yml` sets `MW_SITE_SERVER` to `https://bugsigdb.traefik.localtest.me`, so leave it unset
 
 **Note:** Even if you're not using Matomo, you need to add empty values for Matomo environment variables to avoid Docker Compose validation errors:
 
@@ -89,7 +89,11 @@ export COMPOSE_FILE=compose.yml:compose.local.yml
 
 You can set this in your shell before running commands, or add it to your environment configuration so it is loaded automatically.
 
-For **setup with Traefik**, use the default `compose.yml` only (do **not** include `compose.local.yml` in `COMPOSE_FILE`).
+For **setup with Traefik**, use the Traefik override instead:
+
+```bash
+export COMPOSE_FILE=compose.yml:compose.localtest.yml
+```
 
 For the remainder of this guide, commands using `docker compose` assume you have configured `COMPOSE_FILE` appropriately for your chosen setup.
 
@@ -160,31 +164,29 @@ To get a copy of the production database with all BugSigDB content:
 
 ### Manual Database Setup (If Automated Setup Fails)
 
-If the automated database initialization hangs or fails, you can manually create and import the database:
+If the automated database initialization hangs or fails, you can manually create and import the database.
+
+Stop everything, start only the database, and open a MySQL shell in it:
 
 ```bash
-# Stop all containers
 docker compose down
-
-# Start only the database container
 docker compose up -d db
+docker compose exec db mysql -uroot -p
+# Enter the password from secrets/db_root_password.txt
+```
 
-# Access the web container
-docker compose exec web bash
+In the MySQL shell, create the database and load the backup:
 
-# Connect to MySQL
-mysql -p
-# Enter password when prompted (from your secrets/db_root_password.txt)
-
-# Create database manually
-show databases;
+```sql
 create database mediawiki;
 use mediawiki;
-source /docker-entrypoint-initdb.d/your.database.backup.sql;
+source /docker-entrypoint-initdb.d/database.sql;
 exit
-exit
+```
 
-# Start all containers
+Then start all containers:
+
+```bash
 docker compose up -d
 ```
 
@@ -220,33 +222,16 @@ The BugSigDB MediaWiki stack is designed to work with Traefik for production-lik
 
 **Steps:**
 
-1. **Start Traefik:**
-   
-   ```bash
-   # Clone Traefik repo (if not already done)
-   cd /path/to/traefik/docker/compose
-   
-   # Create symlink for environment file
-   ln -s .env.localtest.me .env
-   # Or rename it: mv .env.localtest.me .env
-   
-   # Start Traefik
-   docker compose up -d
-   ```
+1. **Start Traefik** following the instructions in that repository, using its `localtest.me` configuration.
 
-3. **Configure wiki stack:**
-   
-   ```bash
-   # Return to bugsigdb.org directory
-   cd /path/to/bugsigdb.org
-   
-   # Create symlink for environment file
-   ln -s .env.localtest.me .env
-   
-   # Ensure .env has appropriate MW_SITE_SERVER for your Traefik setup
-   ```
+2. **Configure the wiki stack:**
+   - Create `.env` from `.env.example` if you haven't already (see [Configure Environment File](#configure-environment-file)). Leave `MW_SITE_SERVER` unset.
+   - Set `BASIC_USERNAME` and `BASIC_PASSWORD` in `.env`; `compose.localtest.yml` requires them and puts the site behind basic auth.
+   - Set `COMPOSE_FILE=compose.yml:compose.localtest.yml` (see [Configure Docker Compose files](#configure-docker-compose-files-recommended-for-local-setup)).
 
-4. **Start the stack** (see [Starting the Stack](#starting-the-stack))
+3. **Start the stack** (see [Starting the Stack](#starting-the-stack))
+
+4. **Access the wiki** at `https://bugsigdb.traefik.localtest.me`
 
 ## Starting the Stack
 
@@ -296,7 +281,6 @@ web-1  | Transcoder started.
 Once you see these messages, navigate to your configured URL (`http://localhost:8081` or your Traefik domain) to access the wiki.
 
 ## Troubleshooting
-
 
 ### Missing Environment Variables
 
