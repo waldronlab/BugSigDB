@@ -1,5 +1,16 @@
 # Containerized MediaWiki for bugsigdb.org
 
+## Running BugSigDB Locally
+
+**For detailed instructions on setting up and running BugSigDB locally, including troubleshooting and maintenance, see [docs/LOCAL_SETUP.md](docs/LOCAL_SETUP.md).**
+
+The local setup guide covers:
+- Getting started and prerequisites
+- Database setup (with and without backups)
+- Networking options (with and without Traefik)
+- Common troubleshooting issues
+- Updating images and maintenance tasks
+
 ## Briefly
 
 This repo contains [Docker Compose](https://docs.docker.com/compose/) containers to run the [MediaWiki](https://www.mediawiki.org/) software.
@@ -56,7 +67,7 @@ If changed, ensure corresponding database passwords (`MW_DB_PASS` in the web sec
 - `MW_SITE_LANG` configures [$wgLanguageCode](https://www.mediawiki.org/wiki/Manual:$wgLanguageCode)
 - `MW_ENABLE_UPLOADS` configures [$wgEnableUploads](https://www.mediawiki.org/wiki/Manual:$wgEnableUploads)
 - `MW_ADMIN_USER` configures the default administrator username
-- `MW_ADMIN_PASSWORD` configures the default administrator password
+- `MW_ADMIN_PASS` configures the default administrator password, used only on a fresh install
 - `MW_DB_NAME` specifies the database name MediaWiki uses
 - `MW_DB_USER` specifies the DB user MediaWiki uses; default is `root`
 - `MW_DB_PASS` specifies the DB user password; must match your MySQL password
