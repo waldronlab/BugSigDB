@@ -19,7 +19,7 @@ This guide provides step-by-step instructions for setting up and running BugSigD
 
 ## Prerequisites
 
-- Docker and Docker Compose installed
+- Docker and Docker Compose 2.24 or newer (`compose.local.yml` uses `!reset`)
 - Git
 - Access to the BugSigDB repository
 - (Optional) Access to `https://github.com/WikiTeq/docker-mediawiki-traefik` if using Traefik
@@ -63,19 +63,14 @@ Create the `.env` file from the example:
 cp .env.example .env
 ```
 
-Edit the `.env` file and ensure the following are set:
-- `MYSQL_ROOT_PASSWORD=anypassword` (set a password, can be anything for local dev)
+Edit the `.env` file:
+- `MYSQL_ROOT_PASSWORD=anypassword` (any value works for local development)
+- `MW_ADMIN_PASS=anyotherpassword` (the wiki `admin` account password, used only on a fresh install; `compose.local.yml` defaults it to `anyotherpassword` if left blank)
+- `COMPOSE_PROFILES=` (clear it; the example enables Matomo, which needs host directories under `/matomo/`)
 - `MW_SITE_SERVER=http://localhost:8081` (for setup **without Traefik**; this is also the default in `compose.local.yml`)
 - For setup **with Traefik**: `compose.localtest.yml` sets `MW_SITE_SERVER` to `https://bugsigdb.traefik.localtest.me`, so leave it unset
 
-**Note:** Even if you're not using Matomo, you need to add empty values for Matomo environment variables to avoid Docker Compose validation errors:
-
-```bash
-# Add to .env file
-MATOMO_MYSQL_ROOT_PASSWORD=
-MATOMO_MYSQL_PASSWORD=
-MATOMO_PASSWORD=
-```
+Leave the `MATOMO_*` variables present but empty, as in the example; Docker Compose needs them defined even when Matomo is off.
 
 ### Configure Docker Compose files (recommended for local setup)
 
@@ -99,28 +94,9 @@ For the remainder of this guide, commands using `docker compose` assume you have
 
 ## Secrets Configuration
 
-Create the necessary secret files for the stack to operate **before** starting the containers:
+All passwords for a local setup come from `.env`. The `secrets/` directory is only used by the production backup container, so nothing needs to be created there.
 
-```bash
-cd secrets
-
-# Create empty secret files (if the script exists)
-./_create_empty_secret_files.sh
-
-# Set required passwords
-echo anypassword > db_root_password.txt
-echo anyotherpassword > mw_admin_pass.txt
-
-# Note: The password in db_root_password.txt should match MYSQL_ROOT_PASSWORD in .env
-cd ..
-
-# Add MW_ADMIN_PASS to .env file (should match mw_admin_pass.txt)
-echo "MW_ADMIN_PASS=anyotherpassword" >> .env
-```
-
-**Note:** Replace `anypassword` and `anyotherpassword` with secure passwords if needed. For local development, any password is acceptable as long as they match across configuration files.
-
-**Important:** The `compose.yml` file already has `MW_DB_INSTALLDB_PASS` configured to use `MYSQL_ROOT_PASSWORD` from your `.env` file, so no additional configuration is needed.
+`compose.yml` passes `MYSQL_ROOT_PASSWORD` to MediaWiki as both the database password and the install-time password (`MW_DB_INSTALLDB_PASS`), so one value in `.env` covers both.
 
 ## Database Setup
 
@@ -172,7 +148,7 @@ Stop everything, start only the database, and open a MySQL shell in it:
 docker compose down
 docker compose up -d db
 docker compose exec db mysql -uroot -p
-# Enter the password from secrets/db_root_password.txt
+# Enter MYSQL_ROOT_PASSWORD from .env
 ```
 
 In the MySQL shell, create the database and load the backup:
@@ -291,16 +267,13 @@ If you see errors about missing variables:
    - Ensure `MYSQL_ROOT_PASSWORD` is set in your `.env` file
 
 2. **MW_ADMIN_PASS must be defined:**
-   - Add `MW_ADMIN_PASS=anyotherpassword` to your `.env` file
-   - This is already configured in `compose.yml` to use the value from `.env`
-   - Ensure this matches the value in `secrets/mw_admin_pass.txt`
+   - Set `MW_ADMIN_PASS` in your `.env` file, or use `compose.local.yml`, which defaults it to `anyotherpassword`
 
 ### LocalSettings.php Not Found
 
 If you see "There is no LocalSettings.php file" or "The file /var/www/mediawiki/w/LocalSettings.php must exist":
-- Ensure `_settings/LocalSettings.php` exists in your repository
-- The Taqasta image should automatically copy it from `_settings/` to the correct location
-- If the issue persists, check that the `_settings` directory is properly mounted in `compose.yml`
+- The Taqasta image writes its own `LocalSettings.php` into the web volume on a fresh install, and that file includes the repository's `_settings/LocalSettings.php`, which `compose.yml` bind-mounts into the container
+- Ensure `_settings/LocalSettings.php` exists in your checkout and that the install finished (watch `docker compose logs -f web`)
 
 ### Semantic MediaWiki Maintenance Screen
 
@@ -334,8 +307,7 @@ If you see "The server is temporarily unable to service your request" at `http:/
    - Check that no other service is using port 8081
 
 3. **Check LocalSettings.php:**
-   - If logs show "There is no LocalSettings.php file", ensure the `_settings/` directory contains `LocalSettings.php`
-   - The file should be automatically created during initialization
+   - If logs show "There is no LocalSettings.php file", see [LocalSettings.php Not Found](#localsettingsphp-not-found)
 
 4. **Verify database connection:**
    - Check that the database container is running: `docker compose ps db`
@@ -387,7 +359,7 @@ If MediaWiki reports that the database doesn't exist:
 1. **Check if database was created:**
    ```bash
    docker compose exec db mysql -uroot -p
-   # Enter password from secrets/db_root_password.txt
+   # Enter MYSQL_ROOT_PASSWORD from .env
    show databases;
    ```
 
@@ -478,7 +450,7 @@ docker compose exec web bash
 
 # Access database
 docker compose exec db mysql -uroot -p
-# Enter password from secrets/db_root_password.txt
+# Enter MYSQL_ROOT_PASSWORD from .env
 ```
 
 ### Stopping and Starting
@@ -501,9 +473,10 @@ docker compose restart web
 git pull
 git submodule update --init --recursive
 
-# Rebuild and restart
+# Pull updated images and restart
 docker compose down
-docker compose up -d --build
+docker compose pull
+docker compose up -d
 ```
 
 ### Running Maintenance Scripts

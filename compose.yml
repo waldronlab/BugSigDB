@@ -65,7 +65,7 @@ services:
             - MW_RECAPTCHA_SITE_KEY=${MW_RECAPTCHA_SITE_KEY:-}
             - MW_RECAPTCHA_SECRET_KEY=${MW_RECAPTCHA_SECRET_KEY:-}
             - MW_ADMIN_USER=admin
-            - MW_ADMIN_PASS=${MW_ADMIN_PASS:-anyotherpassword}
+            - MW_ADMIN_PASS=${MW_ADMIN_PASS:-}
             - MW_SITE_NAME=BugSigDB
             - MW_SITE_LANG=en
             - MW_ENABLE_UPLOADS=1

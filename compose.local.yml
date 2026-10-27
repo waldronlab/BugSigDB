@@ -7,12 +7,16 @@
 # This file:
 # - exposes varnish on http://localhost:8081
 # - sets MW_SITE_SERVER to http://localhost:8081 unless .env sets it
+# - sets a default admin password for fresh installs unless .env sets it
 # - removes the traefik-public network from the stack
+#
+# Requires Docker Compose 2.24 or newer for `!reset`.
 
 services:
     web:
         environment:
             - MW_SITE_SERVER=${MW_SITE_SERVER:-http://localhost:8081}
+            - MW_ADMIN_PASS=${MW_ADMIN_PASS:-anyotherpassword}
 
     varnish:
         ports:
