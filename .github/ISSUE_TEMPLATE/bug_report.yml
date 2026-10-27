@@ -1,0 +1,42 @@
+name: Bug report
+description: Something on bugsigdb.org does not work the way it should.
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this form when the website misbehaves: a page will not save, a button does nothing, an error appears, data shows up in the wrong place.
+
+        **Not for curation requests.** Renaming or moving a study page, fixing a wrong PMID, or correcting curated data goes to [BugSigDBcuration](https://github.com/waldronlab/BugSigDBcuration/issues) instead (example: [BugSigDBcuration#2145](https://github.com/waldronlab/BugSigDBcuration/issues/2145)).
+
+        Before filing: refresh the page, and search [existing issues](https://github.com/waldronlab/BugSigDB/issues?q=is%3Aissue) in case it is already reported.
+  - type: input
+    id: url
+    attributes:
+      label: Page URL
+      description: The exact page where the problem happens.
+      placeholder: https://bugsigdb.org/12345678/Experiment_1
+    validations:
+      required: true
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened
+      description: What you did, what you saw, and what you expected instead. Numbered steps help if the problem can be reproduced.
+      placeholder: |
+        1. Opened Experiment 1 and clicked "Duplicate this Experiment"
+        2. Saved the copy
+        3. The copy is missing from the study page and appears under Orphaned experiments
+    validations:
+      required: true
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: Screenshots
+      description: Optional. Drag images here.
+  - type: input
+    id: environment
+    attributes:
+      label: Browser and device
+      description: Optional, but useful for display problems.
+      placeholder: Chrome on Windows 11 laptop
