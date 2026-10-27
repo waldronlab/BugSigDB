@@ -1,0 +1,5 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Curation issue or page rename
+    url: https://github.com/waldronlab/BugSigDBcuration/issues/new/choose
+    about: Wrong study name or PMID, data that needs correcting, or a paper to curate. These go to the curation repository, not here.
