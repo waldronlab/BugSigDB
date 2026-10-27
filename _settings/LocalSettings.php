@@ -94,13 +94,13 @@ $wgDefaultSkin = 'chameleon';
 wfLoadExtension( 'Bootstrap' );
 
 wfLoadExtension( 'GTag' );
+wfLoadExtension( 'CookieConsent' );
 wfLoadExtension( 'CodeEditor' );
 wfLoadExtension( 'Nuke' );
 wfLoadExtension( 'ParserFunctions' );
 wfLoadExtension( 'ReplaceText' );
 wfLoadExtension( 'WikiEditor' );
 wfLoadExtension( 'Interwiki' );
-wfLoadExtension( 'CodeEditor' );
 wfLoadExtension( 'Scribunto' );
 wfLoadExtension( 'SyntaxHighlight_GeSHi' );
 wfLoadExtension( 'DataTransfer' );
@@ -175,8 +175,8 @@ enableSemantics( 'bugsigdb.org' ); # Keep this first
 $smwgEntityCollation = $wgCategoryCollation;
 $wgNamespacesWithSubpages[102] = true; // SMW_NS_PROPERTY
 $smwgQMaxInlineLimit = 220000;
-# Enable embedded query updates, see MBSD-142
-$smwgEnabledQueryDependencyLinksStore = false;
+# Enable embedded query updates, see MBSD-142, MBSD-387
+$smwgEnabledQueryDependencyLinksStore = true;
 
 $smwgCacheType = 'redis';
 $smwgQueryResultCacheType = 'redis';
@@ -326,6 +326,15 @@ $wgGTagAnalyticsId = 'G-YKH03F3F5K';
 $wgGroupPermissions['bot']['gtag-exempt'] = true;
 $wgGTagAnonymizeIP = true;
 
+$wgCookieConsentCategories = [
+	'statistics' => [
+		'namemsg' => 'cookieconsent-category-name-statistics',
+		'descriptionmsg' => 'cookieconsent-category-desc-statistics',
+	],
+];
+// Keep geolocation off: Varnish caches anonymous HTML, so the first visitor's country would be reused for everyone.
+$wgCookieConsentEnableGeolocation = false;
+
 $wgHooks['SkinAddFooterLinks'][] = function ( $skin, string $key, array &$footerlinks  ) {
 	if ( $key === 'info' ) {
 		$footerlinks['funded'] = 'Funded by NIH 5R01CA230551 to the City University of New York';
@@ -350,7 +359,8 @@ wfLoadExtension( 'WikiSEO' );
 // WLDR-194
 wfLoadExtension( 'ContributionScores' );
 $wgContribScoreIgnoreBots = true;
-$wgContribScoreIgnoreBlockedUsers = true;
+// MBSD-369 Stops ContributionScores from looking into the retired ipblocks (bug T379715)
+$wgContribScoreIgnoreBlockedUsers = false;
 $wgContribScoreIgnoreUsernames = [
 	'Wikiteq',
 	'WikiWorks',
@@ -391,7 +401,7 @@ $wgGLAuthoritativeMode = true;
 **/
 
 // WLDR-258
-wfLoadExtension( 'DynamicPageList3' );
+wfLoadExtension( 'DynamicPageList4' );
 $wgDplSettings['functionalRichness'] = 3;
 
 wfLoadExtension( 'VariablesLua' );
@@ -426,6 +436,10 @@ $wgHiddenPrefs[] = 'skin';
 $wgHiddenPrefs[] = 'skin-responsive';
 $wgHiddenPrefs[] = 'skin-prefs';
 $wgHiddenPrefs[] = 'VectorSkinVersion'; // 1.35 Vector
+// Vector 1.43 prefs use hide-if on skin; must hide them too (MSEN-183)
+$wgHiddenPrefs[] = 'vector-limited-width';
+$wgHiddenPrefs[] = 'vector-font-size';
+$wgHiddenPrefs[] = 'vector-theme';
 
 // WLDR-301 Install DiscussionTools
 wfLoadExtensions([
@@ -438,6 +452,8 @@ wfLoadExtensions([
 $wgCirrusSearchCustomPageFields[ 'display_title' ] = \SearchIndexField::INDEX_TYPE_TEXT;
 // Match the default weight of the real title
 $wgCirrusSearchWeights[ 'display_title' ] = 20;
+// MBSD-430: wiki-runjobs runs ElasticaWrite in taqasta-worker-cirrus
+$wgJobTypesExcludedFromDefaultQueue[] = 'cirrusSearchElasticaWrite';
 
 // WLDR-388
 wfLoadExtension( 'DismissableSiteNotice' );
@@ -468,3 +484,25 @@ $wgHooks['AbortNewAccount'][] = function ( $user, &$error ) {
 		// Don't do anything
 	}
 };
+
+// WLDR-382 / MBSD-369
+wfLoadExtension( 'ExternalData' );
+
+// WLDR-382
+wfLoadExtension( 'MagicNoCache' );
+
+// WLDR-406
+wfLoadExtension( 'Widgets' );
+
+// MBSD-370
+wfLoadExtension( 'CrawlerProtection' );
+
+if ( getenv( 'SMTP_SERVER' ) ) {
+	$wgSMTP = [
+		'host' => getenv( 'SMTP_SERVER' ),
+		'port' => getenv( 'SMTP_PORT' ),
+		'auth' => true,
+		'username' => getenv( 'SMTP_USER' ),
+		'password' => getenv( 'SMTP_PASSWORD' )
+	];
+}

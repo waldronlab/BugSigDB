@@ -35,13 +35,13 @@ sub vcl_recv {
             }
         }
 
-        # Pass any requests that Varnish does not understand straight to the backend.
-        if (req.method != "GET" && req.method != "HEAD" &&
-            req.method != "PUT" && req.method != "POST" &&
-            req.method != "TRACE" && req.method != "OPTIONS" &&
-            req.method != "DELETE") {
-                return (pipe);
-        } /* Non-RFC2616 or CONNECT which is weird. */
+        # Reject non-standard HTTP methods at the edge (no TCP tunnel to backend).
+        # Allowlist rationale (MediaWiki only):
+        # - OPTIONS: browser CORS preflight for cross-origin calls to api.php / rest.php (/w/rest.php/...).
+        # - PUT, PATCH, DELETE: used by some MediaWiki REST routes (/w/rest.php/...); not TRACE (unused, XST risk).
+        if (req.method !~ "^(GET|HEAD|PUT|POST|PATCH|DELETE|OPTIONS)$") {
+            return (synth(405, "Method Not Allowed"));
+        }
 
         # Pass anything other than GET and HEAD directly.
         if (req.method != "GET" && req.method != "HEAD") {
@@ -75,7 +75,7 @@ sub vcl_recv {
 
         # Pass requests from logged-in users directly.
         # Only detect cookies with "session" and "Token" in file name, otherwise nothing get cached.
-        if (req.http.Authorization || req.http.Cookie ~ "_session" || req.http.Cookie ~ "Token") {
+        if (req.http.Authorization || ( req.http.Cookie ~ "_session" && req.http.Cookie ~ "UserID" ) || req.http.Cookie ~ "Token") {
             return (pass);
         } /* Not cacheable by default */
 
@@ -107,20 +107,26 @@ sub vcl_purge {
 #    }
 }
 
-sub vcl_pipe {
-    # Note that only the first request to the backend will have
-    # X-Forwarded-For set.  If you use X-Forwarded-For and want to
-    # have it set for all requests, make sure to have:
-    # set req.http.connection = "close";
-    # This is otherwise not necessary if you do not do any request rewriting.
-    set req.http.connection = "close";
-}
-
 # Called after a document has been successfully retrieved from the backend.
 sub vcl_backend_response {
     # Don't cache 50x responses
     if (beresp.status >= 500) {
         call beresp_hitmiss;
+    }
+    # force cache for main page, MBSD-400
+    if (beresp.status == 200 &&
+      (bereq.url ~ "^/Main_Page$" ||
+      bereq.url ~ "^/w/index\\.php\\?.*\\btitle=Main_Page\\b")) {
+        # Ignore backend cache headers
+        unset beresp.http.Cache-Control;
+        unset beresp.http.Pragma;
+        unset beresp.http.Expires;
+
+        # Force cacheability (1d)
+        set beresp.ttl = 1d;
+        set beresp.grace = 4w;
+        set beresp.uncacheable = false;
+        return (deliver);
     }
     if (!beresp.ttl > 0s) {
         call beresp_hitmiss;
@@ -159,4 +165,3 @@ sub vsv8 {
 
 sub vcl_synth { call vsv8; }
 sub vcl_deliver { call vsv8; }
-
