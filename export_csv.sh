@@ -10,7 +10,7 @@ REVIEWS_CSV="/tmp/bugsigdb-reviews.$CURDATE.csv"
 
 echo "[$CURDATE] Exporting studies.."
 php extensions/SemanticReports/maintenance/GenerateReport.php \
-  -q "[[Category:Studies]] |?Study design |?PMID |?DOI |?URI |?Authors list |?Title |?Journal |?Year |?Abstract |?Keyword list=Keywords |?State |?Reviewer" \
+  -q "[[Category:Studies]] |?Study design |?PMID |?DOI |?URI |?Authors list |?Title |?Journal |?Year |?Abstract |?Keyword list=Keywords |?State |?Reviewer |?Curation method |?Curation protocol" \
   -m 'Study page name' \
   -v ',' \
   -s ',' \
