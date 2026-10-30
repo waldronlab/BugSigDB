@@ -88,7 +88,7 @@ services:
             - ./_resources/footer_icons/cuny.png:/var/www/mediawiki/w/cuny.png
             - ./_resources/footer_icons/mw.png:/var/www/mediawiki/w/mw.png
             - ./_resources/footer_icons/smw.png:/var/www/mediawiki/w/smw.png
-            - ./_resources/footer_icons/ww.png:/var/www/mediawiki/w/ww.png
+            - ./_resources/footer_icons/wikiteq.png:/var/www/mediawiki/w/wikiteq.png
             - ./_resources/footer_icons/bioc.png:/var/www/mediawiki/w/bioc.png
             - ./_resources/extensions/CategoryLockdown:/var/www/mediawiki/w/extensions/CategoryLockdown
             - ./_resources/extensions/SubpageWatchlist:/var/www/mediawiki/w/extensions/SubpageWatchlist
