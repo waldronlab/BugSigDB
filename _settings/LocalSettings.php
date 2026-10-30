@@ -506,3 +506,7 @@ if ( getenv( 'SMTP_SERVER' ) ) {
 		'password' => getenv( 'SMTP_PASSWORD' )
 	];
 }
+
+// WLDR-448: block new study pages whose names fail the PMID or manual-name rules
+require_once __DIR__ . '/StudyPageName.php';
+BugSigDBStudyPageName::register();
