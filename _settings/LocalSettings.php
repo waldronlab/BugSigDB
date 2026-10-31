@@ -216,12 +216,19 @@ define("NS_REVIEW_TALK", 3101);
 $wgExtraNamespaces[NS_REVIEW] = "Review";
 $wgExtraNamespaces[NS_REVIEW_TALK] = "Review_talk";
 
+// WLDR-440. Page titles are NCBI taxonomy ids: Taxon:562
+define("NS_TAXON", 3200);
+define("NS_TAXON_TALK", 3201);
+$wgExtraNamespaces[NS_TAXON] = "Taxon";
+$wgExtraNamespaces[NS_TAXON_TALK] = "Taxon_talk";
+
 // WLDR-356
 # $wgNamespaceProtection[NS_REVIEW] = [ 'review' ]; # removed in favor of CategoryLockdown
 wfLoadExtension( 'CategoryLockdown' );
 $wgCategoryLockdown['Reviews']['edit'] = 'reviewer';
 
 $smwgNamespacesWithSemanticLinks[NS_REVIEW] = true;
+$smwgNamespacesWithSemanticLinks[NS_TAXON] = true;
 //wfLoadExtension( 'CodeMirror' );
 $wgDefaultUserOptions['usecodemirror'] = 1;
 //wfLoadExtension( 'MyVariables' );
