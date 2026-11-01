@@ -298,10 +298,10 @@ $wgFooterIcons['poweredby']['bioconductor'] = [
 	'style' => 'padding-right: 15px; border-right: 1px solid lightgray;'
 ];
 
-$wgFooterIcons['poweredby']['wikiworks'] = [
-	'src' => $wgScriptPath . '/ww.png',
-	'url' => 'https://wikiworks.com/',
-	'alt' => 'WikiWorks',
+$wgFooterIcons['poweredby']['wikiteq'] = [
+	'src' => $wgScriptPath . '/wikiteq.png',
+	'url' => 'https://wikiteq.com/',
+	'alt' => 'WikiTeq',
 	'width' => 'auto',
 	'height' => '48'
 ];
