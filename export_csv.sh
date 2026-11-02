@@ -1,5 +1,10 @@
 #!/bin/bash
 
+# Exit on the first failing command. GenerateReport.php exits non-zero when a
+# report fails, so the job stops instead of uploading partial CSVs. The same
+# applies to the symlink and cleanup steps at the end.
+set -e
+
 CURDATE=$(date +%Y-%m-%d_%H)
 
 cd /var/www/mediawiki/w/ || exit 1
