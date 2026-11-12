@@ -77,7 +77,7 @@ services:
       - ./_logs/restic:/var/log
 
   updateEFO:
-    image: python:3.7
+    image: python:3.12
     restart: always
     environment:
       - UPDATE_EFO_PAUSE=86400

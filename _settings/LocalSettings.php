@@ -94,6 +94,7 @@ $wgDefaultSkin = 'chameleon';
 wfLoadExtension( 'Bootstrap' );
 
 wfLoadExtension( 'GTag' );
+wfLoadExtension( 'CookieConsent' );
 wfLoadExtension( 'CodeEditor' );
 wfLoadExtension( 'Nuke' );
 wfLoadExtension( 'ParserFunctions' );
@@ -185,6 +186,9 @@ $smwgValueLookupCacheType = 'redis';
 
 //wfLoadExtension( 'NCBITaxonomyLookup' );
 $wgNCBITaxonomyLookupCacheTTL = 1296000; # 15 days
+if ( getenv( 'MW_NCBI_TAXONOMY_API_URL' ) ) {
+	$wgNCBITaxonomyLookupApiURL = getenv( 'MW_NCBI_TAXONOMY_API_URL' );
+}
 $wgNCBITaxonomyApiKey = getenv( 'MW_NCBI_TAXONOMY_API_KEY' );
 $wgNCBITaxonomyApiTimeout = 30;
 $wgNCBITaxonomyLookupCacheRandomizeTTL = true;
@@ -304,10 +308,10 @@ $wgFooterIcons['poweredby']['bioconductor'] = [
 	'style' => 'padding-right: 15px; border-right: 1px solid lightgray;'
 ];
 
-$wgFooterIcons['poweredby']['wikiworks'] = [
-	'src' => $wgScriptPath . '/ww.png',
-	'url' => 'https://wikiworks.com/',
-	'alt' => 'WikiWorks',
+$wgFooterIcons['poweredby']['wikiteq'] = [
+	'src' => $wgScriptPath . '/wikiteq.png',
+	'url' => 'https://wikiteq.com/',
+	'alt' => 'WikiTeq',
 	'width' => 'auto',
 	'height' => '48'
 ];
@@ -331,6 +335,15 @@ $wgFooterIcons['poweredby']['semanticmediawiki'] = [
 $wgGTagAnalyticsId = 'G-YKH03F3F5K';
 $wgGroupPermissions['bot']['gtag-exempt'] = true;
 $wgGTagAnonymizeIP = true;
+
+$wgCookieConsentCategories = [
+	'statistics' => [
+		'namemsg' => 'cookieconsent-category-name-statistics',
+		'descriptionmsg' => 'cookieconsent-category-desc-statistics',
+	],
+];
+// Keep geolocation off: Varnish caches anonymous HTML, so the first visitor's country would be reused for everyone.
+$wgCookieConsentEnableGeolocation = false;
 
 $wgHooks['SkinAddFooterLinks'][] = function ( $skin, string $key, array &$footerlinks  ) {
 	if ( $key === 'info' ) {
@@ -449,6 +462,8 @@ wfLoadExtensions([
 $wgCirrusSearchCustomPageFields[ 'display_title' ] = \SearchIndexField::INDEX_TYPE_TEXT;
 // Match the default weight of the real title
 $wgCirrusSearchWeights[ 'display_title' ] = 20;
+// MBSD-430: wiki-runjobs runs ElasticaWrite in taqasta-worker-cirrus
+$wgJobTypesExcludedFromDefaultQueue[] = 'cirrusSearchElasticaWrite';
 
 // WLDR-388
 wfLoadExtension( 'DismissableSiteNotice' );
@@ -488,6 +503,9 @@ wfLoadExtension( 'MagicNoCache' );
 
 // WLDR-406
 wfLoadExtension( 'Widgets' );
+
+// MBSD-370
+wfLoadExtension( 'CrawlerProtection' );
 
 if ( getenv( 'SMTP_SERVER' ) ) {
 	$wgSMTP = [
