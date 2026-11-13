@@ -233,7 +233,8 @@ $wgPageFormsAutoeditNamespaces[] = NS_REVIEW;
 //wfLoadExtension( 'SemanticExtraSpecialProperties' );
 $sespgEnabledPropertyList = [ '_EUSER', '_CUSER' ];
 //wfLoadExtension('Arrays');
-$smwgPageSpecialProperties[] = '_CDAT';
+// Full list. On SMW 7 an append drops the default `_MDAT` (provide_default).
+$smwgPageSpecialProperties = [ '_MDAT', '_CDAT' ];
 
 //wfLoadExtension( 'Scribunto' );
 //$wgScribuntoDefaultEngine = 'luastandalone';
