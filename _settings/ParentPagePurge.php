@@ -106,7 +106,10 @@ class BugSigDBParentPagePurge {
 			return;
 		}
 		self::invalidateQueryResultCache( $title );
-		WikiPage::factory( $title )->doPurge();
+		\MediaWiki\MediaWikiServices::getInstance()
+			->getWikiPageFactory()
+			->newFromTitle( $title )
+			->doPurge();
 	}
 
 	/**
