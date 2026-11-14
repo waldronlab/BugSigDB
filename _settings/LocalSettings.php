@@ -519,3 +519,8 @@ if ( getenv( 'SMTP_SERVER' ) ) {
 // WLDR-448: block new study pages whose names fail the PMID or manual-name rules
 require_once __DIR__ . '/StudyPageName.php';
 BugSigDBStudyPageName::register();
+
+// WLDR-387: purge the experiment and study when a signature changes, and the
+// study when an experiment changes. Embedded queries otherwise keep the old list.
+require_once __DIR__ . '/ParentPagePurge.php';
+BugSigDBParentPagePurge::register();
