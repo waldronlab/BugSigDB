@@ -4,14 +4,16 @@
  *
  * A signature save does not edit the experiment, and an experiment save does
  * not edit the study. Embedded queries on those parents otherwise keep the
- * previous result. Purge drops the SMW query-result cache and the parser cache
- * the same way as action=purge. The next view renders the current list.
+ * previous result. The next view renders the current list.
  *
- * On a web request the purge is queued POSTSEND. Semantic MediaWiki queues
+ * doPurge() drops the parser cache. It does not drop the query-result entry
+ * the embedded ask reads. That entry hangs off the page itself; ArticlePurge
+ * only deletes _ASK ids. Invalidate the page first, then doPurge().
+ *
+ * On a web request both steps are queued POSTSEND. Semantic MediaWiki queues
  * its store write earlier in the same request, also POSTSEND, so the write
- * runs first. Purging in the hook itself would bump page_touched while the
- * new signature is still absent from the store, and the next view could
- * cache that empty list for a week.
+ * runs first. Clearing the cache in the hook itself would let the next view
+ * store an empty list for a week.
  */
 class BugSigDBParentPagePurge {
 
@@ -103,7 +105,20 @@ class BugSigDBParentPagePurge {
 		if ( !$title || !$title->exists() ) {
 			return;
 		}
+		self::invalidateQueryResultCache( $title );
 		WikiPage::factory( $title )->doPurge();
+	}
+
+	/**
+	 * Drop cached ask results stored against this page.
+	 *
+	 * @param Title $title
+	 */
+	private static function invalidateQueryResultCache( Title $title ) {
+		$subject = \SMW\DataItems\WikiPage::newFromTitle( $title );
+		\SMW\Services\ServicesFactory::getInstance()
+			->singleton( 'ResultCache' )
+			->invalidateCache( $subject, 'ParentPagePurge' );
 	}
 
 }
